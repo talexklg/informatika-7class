@@ -1,1497 +1,1584 @@
 <!doctype html>
 <html lang="ru" data-theme="light">
-    <head>
-        <meta charset="UTF-8" />
-        <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-        />
-        <title>ВПР Информатика 7 класс: Устройство компьютера</title>
-        <style>
-            :root {
-                --bg-gradient: linear-gradient(135deg, #667eea, #764ba2);
-                --container-bg: #ffffff;
-                --header-gradient: linear-gradient(135deg, #f093fb, #f5576c);
-                --task-card-gradient: linear-gradient(135deg, #667eea, #764ba2);
-                --text-primary: #212529;
-                --text-secondary: #495057;
-                --text-muted: #6c757d;
-                --border-color: #dee2e6;
-                --card-bg: #f8f9fa;
-                --option-bg: #ffffff;
-                --option-text: #212529;
-                --accent-color: #667eea;
-                --success-color: #11998e;
-                --error-color: #dc3545;
-                --warning-bg: linear-gradient(135deg, #fff3cd, #ffe69c);
-                --warning-text: #5a4700;
-                --warning-border: #ffc107;
-                --shadow-color: rgba(0, 0, 0, 0.3);
-                --info-bg: #f8f9fa;
-                --info-accent: #667eea;
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>ВПР Информатика 7 класс: Устройство компьютера</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #667eea, #764ba2);
+            --container-bg: #ffffff;
+            --header-gradient: linear-gradient(135deg, #f093fb, #f5576c);
+            --task-card-gradient: linear-gradient(135deg, #667eea, #764ba2);
+            --text-primary: #212529;
+            --text-secondary: #495057;
+            --text-muted: #6c757d;
+            --border-color: #dee2e6;
+            --card-bg: #f8f9fa;
+            --option-bg: #ffffff;
+            --option-text: #212529;
+            --accent-color: #667eea;
+            --success-color: #11998e;
+            --error-color: #dc3545;
+            --warning-bg: linear-gradient(135deg, #fff3cd, #ffe69c);
+            --warning-text: #5a4700;
+            --warning-border: #ffc107;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --info-bg: #f8f9fa;
+            --info-accent: #667eea;
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #1a1a2e, #16213e);
+            --container-bg: #0f1419;
+            --header-gradient: linear-gradient(135deg, #7c3aed, #ec4899);
+            --task-card-gradient: linear-gradient(135deg, #5865f2, #7c3aed);
+            --text-primary: #e4e6eb;
+            --text-secondary: #b0b3b8;
+            --text-muted: #8a8d91;
+            --border-color: #3a3f47;
+            --card-bg: #1c1f26;
+            --option-bg: #1c1f26;
+            --option-text: #e4e6eb;
+            --accent-color: #5865f2;
+            --success-color: #3ba55c;
+            --error-color: #ed4245;
+            --warning-bg: linear-gradient(135deg, #2d2a1f, #3a3520);
+            --warning-text: #ffd700;
+            --warning-border: #f0a500;
+            --shadow-color: rgba(0, 0, 0, 0.6);
+            --info-bg: #1c1f26;
+            --info-accent: #5865f2;
+        }
+
+        * {
+            box-sizing: border-box;
+            transition:
+                background 0.3s ease,
+                border-color 0.3s ease,
+                color 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-primary);
+            min-height: 100vh;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: pan-y;
+        }
+
+        .header-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: var(--header-gradient);
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px var(--shadow-color);
+            color: white;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Кнопка темы — компактная, только иконка */
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            padding: 0;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1) rotate(15deg);
+        }
+
+        /* Группа кнопок в шапке */
+        .header-buttons {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Кнопка "На главную" — в том же стиле, что и кнопка темы */
+        .home-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            transition: all 0.2s ease;
+            text-decoration: none;
+            /* убираем подчёркивание ссылки */
+        }
+
+        .home-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1) rotate(-10deg);
+        }
+
+        .hint {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            text-align: center;
+            background: var(--info-bg);
+            padding: 15px 25px;
+            border-radius: 12px;
+            border-left: 5px solid var(--info-accent);
+            box-shadow: 0 4px 10px var(--shadow-color);
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .task-nav {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 1200px;
+        }
+
+        /* Базовый стиль кнопки навигации */
+        .nav-btn {
+            padding: 10px 16px;
+            font-size: 0.95rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 3px 6px var(--shadow-color);
+            transition: all 0.2s ease;
+            min-width: 48px;
+        }
+
+        /* Активная кнопка (текущая задача) — всегда имеет приоритет */
+        .nav-btn.active {
+            background: var(--task-card-gradient);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(2px);
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+
+        .nav-btn:hover:not(.active) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px var(--shadow-color);
+        }
+
+        /* ✅ Решено правильно */
+        .nav-btn.solved-correct:not(.active) {
+            background: var(--success-color);
+            color: white;
+            border-color: transparent;
+        }
+
+        .nav-btn.solved-correct:not(.active):hover {
+            filter: brightness(1.15);
+        }
+
+        /* ❌ Решено с ошибками */
+        .nav-btn.solved-incorrect:not(.active) {
+            background: var(--error-color);
+            color: white;
+            border-color: transparent;
+        }
+
+        .nav-btn.solved-incorrect:not(.active):hover {
+            filter: brightness(1.15);
+        }
+
+        .task-container {
+            display: none;
+            width: 100%;
+            max-width: 1200px;
+            background: var(--container-bg);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .task-container.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
             }
 
-            [data-theme="dark"] {
-                --bg-gradient: linear-gradient(135deg, #1a1a2e, #16213e);
-                --container-bg: #0f1419;
-                --header-gradient: linear-gradient(135deg, #7c3aed, #ec4899);
-                --task-card-gradient: linear-gradient(135deg, #5865f2, #7c3aed);
-                --text-primary: #e4e6eb;
-                --text-secondary: #b0b3b8;
-                --text-muted: #8a8d91;
-                --border-color: #3a3f47;
-                --card-bg: #1c1f26;
-                --option-bg: #1c1f26;
-                --option-text: #e4e6eb;
-                --accent-color: #5865f2;
-                --success-color: #3ba55c;
-                --error-color: #ed4245;
-                --warning-bg: linear-gradient(135deg, #2d2a1f, #3a3520);
-                --warning-text: #ffd700;
-                --warning-border: #f0a500;
-                --shadow-color: rgba(0, 0, 0, 0.6);
-                --info-bg: #1c1f26;
-                --info-accent: #5865f2;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
+        }
 
-            * {
-                box-sizing: border-box;
-                transition:
-                    background 0.3s ease,
-                    border-color 0.3s ease,
-                    color 0.3s ease,
-                    box-shadow 0.3s ease;
-            }
+        .task-title {
+            font-size: 1.4rem;
+            color: var(--text-primary);
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: bold;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+        }
 
-            html,
-            body {
-                overflow-x: hidden;
-            }
+        .workspace {
+            display: flex;
+            gap: 30px;
+            min-height: 350px;
+        }
 
-            body {
-                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-                background: var(--bg-gradient);
-                background-attachment: fixed;
-                margin: 0;
-                padding: 20px;
-                display: flex;
+        .zone {
+            flex: 1;
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-content: flex-start;
+            position: relative;
+            min-height: 200px;
+        }
+
+        .source-zone {
+            background: var(--card-bg);
+            border: 3px dashed var(--border-color);
+        }
+
+        .target-zone {
+            background: var(--info-bg);
+            border: 3px solid var(--success-color);
+        }
+
+        .target-zone::before {
+            content: attr(data-label);
+            position: absolute;
+            top: -16px;
+            left: 20px;
+            background: var(--success-color);
+            color: white;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1rem;
+            box-shadow: 0 4px 10px var(--shadow-color);
+        }
+
+        .zone.hovered {
+            background: var(--info-bg);
+            border-style: solid;
+            transform: scale(1.01);
+            box-shadow: 0 0 15px var(--shadow-color);
+        }
+
+        .card {
+            padding: 12px 18px;
+            background: var(--option-bg);
+            border: 2px solid var(--accent-color);
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 8px var(--shadow-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: var(--option-text);
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+            transition:
+                transform 0.15s ease,
+                box-shadow 0.15s ease,
+                background 0.3s ease,
+                border-color 0.3s ease,
+                opacity 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px var(--shadow-color);
+        }
+
+        .card.dragging {
+            opacity: 0.3;
+            transform: scale(0.95);
+        }
+
+        .card.selected {
+            background: var(--warning-bg);
+            border-color: var(--warning-border);
+            color: var(--warning-text);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 193, 7, 0.4);
+            z-index: 10;
+        }
+
+        .card.correct {
+            background: rgba(17, 153, 142, 0.15);
+            border-color: var(--success-color);
+            color: var(--success-color);
+        }
+
+        [data-theme="dark"] .card.correct {
+            background: rgba(59, 165, 92, 0.15);
+        }
+
+        .card.incorrect {
+            background: rgba(220, 53, 69, 0.15);
+            border-color: var(--error-color);
+            color: var(--error-color);
+        }
+
+        [data-theme="dark"] .card.incorrect {
+            background: rgba(237, 66, 69, 0.15);
+        }
+
+        .card.missed {
+            border: 3px dashed var(--warning-border);
+            opacity: 0.8;
+        }
+
+        .card-ghost {
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            opacity: 0.9;
+            transition: none !important;
+            padding: 12px 18px;
+            background: var(--option-bg);
+            border: 2px solid var(--accent-color);
+            border-radius: 10px;
+            font-size: 1.1rem;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: var(--option-text);
+            transform: rotate(2deg) scale(1.05);
+        }
+
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 15px 30px;
+            font-size: 1.15rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 6px 12px var(--shadow-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover:not(:disabled) {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .check-btn {
+            background: var(--success-color);
+        }
+
+        .reset-btn {
+            background: var(--error-color);
+        }
+
+        .prev-btn {
+            background: var(--accent-color);
+        }
+
+        .next-btn {
+            background: var(--accent-color);
+        }
+
+        .result-message {
+            text-align: center;
+            font-size: 1.3rem;
+            margin-top: 25px;
+            font-weight: bold;
+            min-height: 40px;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            max-width: 1200px;
+            height: 8px;
+            background: var(--card-bg);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            box-shadow: inset 0 1px 3px var(--shadow-color);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--task-card-gradient);
+            transition: width 0.4s ease;
+            border-radius: 4px;
+        }
+
+        /* Счётчик статистики */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-secondary);
+        }
+
+        .stat-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .stat-dot.correct {
+            background: var(--success-color);
+        }
+
+        .stat-dot.incorrect {
+            background: var(--error-color);
+        }
+
+        .stat-dot.pending {
+            background: var(--border-color);
+        }
+
+        @media (max-width: 900px) {
+            .workspace {
                 flex-direction: column;
-                align-items: center;
-                color: var(--text-primary);
-                min-height: 100vh;
-                user-select: none;
-                -webkit-user-select: none;
-                touch-action: pan-y;
             }
 
             .header-wrapper {
-                width: 100%;
-                max-width: 1200px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 20px;
-                background: var(--header-gradient);
-                padding: 20px 30px;
-                border-radius: 15px;
-                box-shadow: 0 8px 20px var(--shadow-color);
-                color: white;
-            }
-
-            h1 {
-                font-size: 1.8rem;
-                margin: 0;
-                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            }
-
-            /* Кнопка темы — компактная, только иконка */
-            .theme-toggle {
-                background: rgba(255, 255, 255, 0.2);
-                border: 2px solid rgba(255, 255, 255, 0.4);
-                color: white;
-                width: 50px;
-                height: 50px;
-                border-radius: 50%;
-                font-size: 1.5rem;
-                cursor: pointer;
-                font-weight: bold;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                backdrop-filter: blur(5px);
-                transition: all 0.2s ease;
-                flex-shrink: 0;
-                padding: 0;
-            }
-            .theme-toggle:hover {
-                background: rgba(255, 255, 255, 0.3);
-                transform: scale(1.1) rotate(15deg);
-            }
-
-            .hint {
-                font-size: 1.1rem;
-                color: var(--text-secondary);
-                margin-bottom: 20px;
+                flex-direction: column;
+                gap: 15px;
                 text-align: center;
-                background: var(--info-bg);
-                padding: 15px 25px;
-                border-radius: 12px;
-                border-left: 5px solid var(--info-accent);
-                box-shadow: 0 4px 10px var(--shadow-color);
-                max-width: 1200px;
-                width: 100%;
-            }
-
-            .task-nav {
-                display: flex;
-                gap: 8px;
-                margin-bottom: 20px;
-                flex-wrap: wrap;
-                justify-content: center;
-                max-width: 1200px;
-            }
-
-            /* Базовый стиль кнопки навигации */
-            .nav-btn {
-                padding: 10px 16px;
-                font-size: 0.95rem;
-                border: 2px solid var(--border-color);
-                border-radius: 8px;
-                background: var(--card-bg);
-                color: var(--text-primary);
-                cursor: pointer;
-                font-weight: bold;
-                box-shadow: 0 3px 6px var(--shadow-color);
-                transition: all 0.2s ease;
-                min-width: 48px;
-            }
-
-            /* Активная кнопка (текущая задача) — всегда имеет приоритет */
-            .nav-btn.active {
-                background: var(--task-card-gradient);
-                color: white;
-                border-color: rgba(255, 255, 255, 0.3);
-                transform: translateY(2px);
-                box-shadow: 0 2px 4px var(--shadow-color);
-            }
-
-            .nav-btn:hover:not(.active) {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 12px var(--shadow-color);
-            }
-
-            /* ✅ Решено правильно */
-            .nav-btn.solved-correct:not(.active) {
-                background: var(--success-color);
-                color: white;
-                border-color: transparent;
-            }
-            .nav-btn.solved-correct:not(.active):hover {
-                filter: brightness(1.15);
-            }
-
-            /* ❌ Решено с ошибками */
-            .nav-btn.solved-incorrect:not(.active) {
-                background: var(--error-color);
-                color: white;
-                border-color: transparent;
-            }
-            .nav-btn.solved-incorrect:not(.active):hover {
-                filter: brightness(1.15);
-            }
-
-            .task-container {
-                display: none;
-                width: 100%;
-                max-width: 1200px;
-                background: var(--container-bg);
-                padding: 30px;
-                border-radius: 20px;
-                box-shadow: 0 10px 30px var(--shadow-color);
-                border: 1px solid var(--border-color);
-            }
-            .task-container.active {
-                display: block;
-                animation: fadeIn 0.4s ease;
-            }
-            @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                    transform: translateY(15px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-
-            .task-title {
-                font-size: 1.4rem;
-                color: var(--text-primary);
-                margin-bottom: 25px;
-                text-align: center;
-                font-weight: bold;
-                padding-bottom: 15px;
-                border-bottom: 2px solid var(--border-color);
-            }
-
-            .workspace {
-                display: flex;
-                gap: 30px;
-                min-height: 350px;
-            }
-            .zone {
-                flex: 1;
-                border-radius: 15px;
-                padding: 20px;
-                display: flex;
-                flex-wrap: wrap;
-                gap: 12px;
-                align-content: flex-start;
-                position: relative;
-                min-height: 200px;
-            }
-            .source-zone {
-                background: var(--card-bg);
-                border: 3px dashed var(--border-color);
-            }
-            .target-zone {
-                background: var(--info-bg);
-                border: 3px solid var(--success-color);
-            }
-            .target-zone::before {
-                content: attr(data-label);
-                position: absolute;
-                top: -16px;
-                left: 20px;
-                background: var(--success-color);
-                color: white;
-                padding: 6px 18px;
-                border-radius: 20px;
-                font-weight: bold;
-                font-size: 1rem;
-                box-shadow: 0 4px 10px var(--shadow-color);
-            }
-            .zone.hovered {
-                background: var(--info-bg);
-                border-style: solid;
-                transform: scale(1.01);
-                box-shadow: 0 0 15px var(--shadow-color);
             }
 
             .card {
-                padding: 12px 18px;
-                background: var(--option-bg);
-                border: 2px solid var(--accent-color);
-                border-radius: 10px;
-                font-size: 1.1rem;
-                cursor: pointer;
-                box-shadow: 0 4px 8px var(--shadow-color);
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                font-weight: 600;
-                color: var(--option-text);
-                touch-action: none;
-                user-select: none;
-                -webkit-user-select: none;
-                transition:
-                    transform 0.15s ease,
-                    box-shadow 0.15s ease,
-                    background 0.3s ease,
-                    border-color 0.3s ease,
-                    opacity 0.2s ease;
-            }
-            .card:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 8px 16px var(--shadow-color);
-            }
-            .card.dragging {
-                opacity: 0.3;
-                transform: scale(0.95);
-            }
-            .card.selected {
-                background: var(--warning-bg);
-                border-color: var(--warning-border);
-                color: var(--warning-text);
-                transform: scale(1.05);
-                box-shadow: 0 0 20px rgba(255, 193, 7, 0.4);
-                z-index: 10;
-            }
-            .card.correct {
-                background: rgba(17, 153, 142, 0.15);
-                border-color: var(--success-color);
-                color: var(--success-color);
-            }
-            [data-theme="dark"] .card.correct {
-                background: rgba(59, 165, 92, 0.15);
-            }
-            .card.incorrect {
-                background: rgba(220, 53, 69, 0.15);
-                border-color: var(--error-color);
-                color: var(--error-color);
-            }
-            [data-theme="dark"] .card.incorrect {
-                background: rgba(237, 66, 69, 0.15);
-            }
-            .card.missed {
-                border: 3px dashed var(--warning-border);
-                opacity: 0.8;
-            }
-
-            .card-ghost {
-                position: fixed;
-                pointer-events: none;
-                z-index: 10000;
-                opacity: 0.9;
-                transition: none !important;
-                padding: 12px 18px;
-                background: var(--option-bg);
-                border: 2px solid var(--accent-color);
-                border-radius: 10px;
-                font-size: 1.1rem;
-                box-shadow: 0 10px 30px var(--shadow-color);
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                font-weight: 600;
-                color: var(--option-text);
-                transform: rotate(2deg) scale(1.05);
-            }
-
-            .controls {
-                margin-top: 30px;
-                display: flex;
-                gap: 15px;
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-            .action-btn {
-                padding: 15px 30px;
-                font-size: 1.15rem;
-                border: none;
-                border-radius: 12px;
-                cursor: pointer;
-                font-weight: bold;
-                color: white;
-                box-shadow: 0 6px 12px var(--shadow-color);
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                transition: all 0.2s ease;
-            }
-            .action-btn:hover:not(:disabled) {
-                filter: brightness(1.1);
-                transform: translateY(-2px);
-            }
-            .action-btn:disabled {
-                opacity: 0.5;
-                cursor: not-allowed;
-            }
-
-            .check-btn {
-                background: var(--success-color);
-            }
-            .reset-btn {
-                background: var(--error-color);
-            }
-            .prev-btn {
-                background: var(--accent-color);
-            }
-            .next-btn {
-                background: var(--accent-color);
-            }
-
-            .result-message {
-                text-align: center;
-                font-size: 1.3rem;
-                margin-top: 25px;
-                font-weight: bold;
-                min-height: 40px;
-                padding: 10px;
-                border-radius: 10px;
-            }
-
-            .progress-bar {
-                width: 100%;
-                max-width: 1200px;
-                height: 8px;
-                background: var(--card-bg);
-                border-radius: 4px;
-                overflow: hidden;
-                margin-bottom: 15px;
-                box-shadow: inset 0 1px 3px var(--shadow-color);
-            }
-            .progress-fill {
-                height: 100%;
-                background: var(--task-card-gradient);
-                transition: width 0.4s ease;
-                border-radius: 4px;
-            }
-
-            /* Счётчик статистики */
-            .stats-bar {
-                display: flex;
-                justify-content: center;
-                gap: 25px;
-                margin-bottom: 15px;
                 font-size: 1rem;
-                font-weight: bold;
-                flex-wrap: wrap;
-            }
-            .stat-item {
-                display: flex;
-                align-items: center;
-                gap: 6px;
-                color: var(--text-secondary);
-            }
-            .stat-dot {
-                width: 14px;
-                height: 14px;
-                border-radius: 50%;
-                display: inline-block;
-            }
-            .stat-dot.correct {
-                background: var(--success-color);
-            }
-            .stat-dot.incorrect {
-                background: var(--error-color);
-            }
-            .stat-dot.pending {
-                background: var(--border-color);
+                padding: 10px 14px;
             }
 
-            @media (max-width: 900px) {
-                .workspace {
-                    flex-direction: column;
-                }
-                .header-wrapper {
-                    flex-direction: column;
-                    gap: 15px;
-                    text-align: center;
-                }
-                .card {
-                    font-size: 1rem;
-                    padding: 10px 14px;
-                }
-                h1 {
-                    font-size: 1.4rem;
-                    text-align: center;
-                }
-                .nav-btn {
-                    padding: 8px 12px;
-                    font-size: 0.85rem;
-                }
-                .action-btn {
-                    padding: 12px 20px;
-                    font-size: 1rem;
-                }
+            h1 {
+                font-size: 1.4rem;
+                text-align: center;
             }
-        </style>
-    </head>
-    <body>
-        <div class="header-wrapper">
-            <h1>🖥️ ВПР Информатика 7 класс: Устройство компьютера</h1>
-            <button
-                class="theme-toggle"
-                id="themeToggle"
-                onclick="toggleTheme()"
-                title="Переключить тему"
-            >
+
+            .nav-btn {
+                padding: 8px 12px;
+                font-size: 0.85rem;
+            }
+
+            .action-btn {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ✅ Стало: -->
+    <div class="header-wrapper">
+        <h1>🖥️ ВПР Информатика 7 класс: Устройство компьютера</h1>
+
+        <!-- Группа кнопок справа: на главную + смена темы -->
+        <div class="header-buttons">
+            <a href="../index.html" class="home-btn" title="Вернуться на главную">🏠</a>
+            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Переключить тему">
                 <span id="themeIcon">🌙</span>
             </button>
         </div>
+    </div>
+    <div class="hint">
+        💡 <b>Как работать:</b> Перетащите карточку пальцем/пером/мышью в
+        целевую зону. Или: нажмите на карточку (подсветится), затем на зону.
+    </div>
 
-        <div class="hint">
-            💡 <b>Как работать:</b> Перетащите карточку пальцем/пером/мышью в
-            целевую зону. Или: нажмите на карточку (подсветится), затем на зону.
-        </div>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    </div>
 
-        <div class="progress-bar">
-            <div
-                class="progress-fill"
-                id="progressFill"
-                style="width: 0%"
-            ></div>
-        </div>
+    <div class="task-nav" id="taskNav"></div>
 
-        <div class="task-nav" id="taskNav"></div>
+    <div id="tasksContainer"></div>
 
-        <div id="tasksContainer"></div>
+    <div class="controls">
+        <button class="action-btn prev-btn" id="prevBtn" onclick="prevTask()">
+            ⬅️ Назад
+        </button>
+        <button class="action-btn reset-btn" onclick="resetTask()">
+            🔄 Сброс
+        </button>
+        <button class="action-btn check-btn" onclick="checkAnswers()">
+            ✅ Проверить
+        </button>
+        <button class="action-btn next-btn" id="nextBtn" onclick="nextTask()">
+            Далее ➡️
+        </button>
+    </div>
 
-        <div class="controls">
-            <button
-                class="action-btn prev-btn"
-                id="prevBtn"
-                onclick="prevTask()"
-            >
-                ⬅️ Назад
-            </button>
-            <button class="action-btn reset-btn" onclick="resetTask()">
-                🔄 Сброс
-            </button>
-            <button class="action-btn check-btn" onclick="checkAnswers()">
-                ✅ Проверить
-            </button>
-            <button
-                class="action-btn next-btn"
-                id="nextBtn"
-                onclick="nextTask()"
-            >
-                Далее ➡️
-            </button>
-        </div>
+    <div class="result-message" id="resultMessage"></div>
 
-        <div class="result-message" id="resultMessage"></div>
+    <script>
+        /* =========================================
+ТЕМА
+========================================= */
+        function initTheme() {
+            const savedTheme = localStorage.getItem("theme") || "light";
+            document.documentElement.setAttribute("data-theme", savedTheme);
+            updateThemeButton(savedTheme);
+        }
 
-        <script>
-            /* =========================================
-   ТЕМА
-   ========================================= */
-            function initTheme() {
-                const savedTheme = localStorage.getItem("theme") || "light";
-                document.documentElement.setAttribute("data-theme", savedTheme);
-                updateThemeButton(savedTheme);
+        function toggleTheme() {
+            const currentTheme =
+                document.documentElement.getAttribute("data-theme");
+            const newTheme = currentTheme === "light" ? "dark" : "light";
+            document.documentElement.setAttribute("data-theme", newTheme);
+            localStorage.setItem("theme", newTheme);
+            updateThemeButton(newTheme);
+        }
+
+        function updateThemeButton(theme) {
+            const icon = document.getElementById("themeIcon");
+            // Только иконка, без текста
+            if (theme === "dark") {
+                icon.textContent = "☀️";
+            } else {
+                icon.textContent = "🌙";
             }
+        }
 
-            function toggleTheme() {
-                const currentTheme =
-                    document.documentElement.getAttribute("data-theme");
-                const newTheme = currentTheme === "light" ? "dark" : "light";
-                document.documentElement.setAttribute("data-theme", newTheme);
-                localStorage.setItem("theme", newTheme);
-                updateThemeButton(newTheme);
-            }
+        /* =========================================
+ОЧИСТКА ЗАГОЛОВКА
+Убирает "Задание N (ID: xxx):" и "(вариант N)"
+========================================= */
+        function cleanTitle(title) {
+            return title
+                .replace(/\s*\(вариант\s*\d+\)/gi, "") // Убираем "(вариант 2)", "(вариант 3)" и т.д.
+                .replace(/\s*\(ID:\s*\d+\)/gi, "") // На всякий случай убираем ID
+                .replace(/^\s*Задание\s*\d+\s*:?\s*/i, "") // Убираем "Задание N:" в начале
+                .trim();
+        }
 
-            function updateThemeButton(theme) {
-                const icon = document.getElementById("themeIcon");
-                // Только иконка, без текста
-                if (theme === "dark") {
-                    icon.textContent = "☀️";
-                } else {
-                    icon.textContent = "🌙";
-                }
-            }
+        /* =========================================
+БАЗА ЗАДАНИЙ (35 заданий ВПР)
+========================================= */
+        const tasks = [
+            {
+                id: 1,
+                title: "Устройства ввода информации",
+                targetLabel: "📥 Устройства ввода",
+                items: [
+                    { name: "Сканер", icon: "📠", correct: true },
+                    { name: "Принтер", icon: "🖨️", correct: false },
+                    { name: "Процессор", icon: "🧠", correct: false },
+                    { name: "Жёсткий диск", icon: "💾", correct: false },
+                    { name: "Колонки", icon: "🔊", correct: false },
+                    { name: "Микрофон", icon: "🎤", correct: true },
+                    { name: "USB-флешка", icon: "💿", correct: false },
+                    { name: "Тачпад", icon: "👆", correct: true },
+                ],
+            },
+            {
+                id: 2,
+                title: "Устройства вывода информации",
+                targetLabel: "📤 Устройства вывода",
+                items: [
+                    { name: "Сканер", icon: "📠", correct: false },
+                    { name: "Принтер", icon: "🖨️", correct: true },
+                    { name: "Процессор", icon: "🧠", correct: false },
+                    { name: "Жёсткий диск", icon: "💾", correct: false },
+                    { name: "Колонки", icon: "🔊", correct: true },
+                    { name: "Микрофон", icon: "🎤", correct: false },
+                    { name: "USB-флешка", icon: "💿", correct: false },
+                    { name: "Монитор", icon: "🖥️", correct: true },
+                ],
+            },
+            {
+                id: 3,
+                title: "Устройства ввода информации (вариант 2)",
+                targetLabel: "📥 Устройства ввода",
+                items: [
+                    { name: "Мышь", icon: "🖱️", correct: true },
+                    { name: "Клавиатура", icon: "⌨️", correct: true },
+                    { name: "Микрофон", icon: "🎤", correct: true },
+                    { name: "Наушники", icon: "🎧", correct: false },
+                    { name: "Веб-камера", icon: "📷", correct: true },
+                    { name: "Колонки", icon: "🔊", correct: false },
+                    { name: "Монитор", icon: "🖥️", correct: false },
+                    { name: "Принтер", icon: "🖨️", correct: false },
+                ],
+            },
+            {
+                id: 4,
+                title: "Внутренние устройства компьютера",
+                targetLabel: "⚙️ Внутренние устройства",
+                items: [
+                    { name: "Сканер", icon: "📠", correct: false },
+                    { name: "Принтер", icon: "🖨️", correct: false },
+                    { name: "Процессор", icon: "🧠", correct: true },
+                    { name: "Жёсткий диск", icon: "💾", correct: true },
+                    { name: "Колонки", icon: "🔊", correct: false },
+                    { name: "Микрофон", icon: "🎤", correct: false },
+                    { name: "Видеокарта", icon: "🎮", correct: true },
+                    { name: "Монитор", icon: "🖥️", correct: false },
+                ],
+            },
+            {
+                id: 5,
+                title: "Устройства хранения данных",
+                targetLabel: "🗄️ Устройства хранения",
+                items: [
+                    { name: "Жёсткий диск", icon: "💾", correct: true },
+                    { name: "Флешка", icon: "💿", correct: true },
+                    {
+                        name: "Оперативная память",
+                        icon: "📟",
+                        correct: true,
+                    },
+                    { name: "Процессор", icon: "🧠", correct: false },
+                    { name: "SD-карта", icon: "🗃️", correct: true },
+                    { name: "Видеокарта", icon: "🎮", correct: false },
+                    {
+                        name: "Материнская плата",
+                        icon: "🏗️",
+                        correct: false,
+                    },
+                    {
+                        name: "Bluetooth-динамик",
+                        icon: "🔈",
+                        correct: false,
+                    },
+                ],
+            },
+            {
+                id: 6,
+                title: "Внешние устройства компьютера",
+                targetLabel: "🔌 Внешние устройства",
+                items: [
+                    { name: "Сканер", icon: "📠", correct: true },
+                    { name: "Принтер", icon: "🖨️", correct: true },
+                    { name: "Процессор", icon: "🧠", correct: false },
+                    { name: "Жёсткий диск", icon: "💾", correct: false },
+                    { name: "Колонки", icon: "🔊", correct: true },
+                    {
+                        name: "Оперативная память",
+                        icon: "📟",
+                        correct: false,
+                    },
+                    { name: "Видеокарта", icon: "🎮", correct: false },
+                    { name: "Монитор", icon: "🖥️", correct: true },
+                ],
+            },
+            {
+                id: 7,
+                title: "Устройства, выводящие изображение на экран",
+                targetLabel: "🖥️ Вывод изображения",
+                items: [
+                    { name: "Проектор", icon: "📽️", correct: true },
+                    { name: "Телевизор", icon: "📺", correct: true },
+                    { name: "Монитор", icon: "🖥️", correct: true },
+                    { name: "Фотоаппарат", icon: "📷", correct: false },
+                    { name: "Смартфон", icon: "📱", correct: true },
+                    { name: "VR-очки", icon: "🥽", correct: true },
+                    { name: "Наушники", icon: "🎧", correct: false },
+                    { name: "Динамики", icon: "🔊", correct: false },
+                ],
+            },
+            {
+                id: 8,
+                title: "Устройства ввода информации (вариант 3)",
+                targetLabel: "📥 Устройства ввода",
+                items: [
+                    { name: "Трекбол", icon: "🖲️", correct: true },
+                    { name: "Принтер", icon: "🖨️", correct: false },
+                    { name: "Мышь", icon: "🖱️", correct: true },
+                    { name: "Жёсткий диск", icon: "💾", correct: false },
+                    { name: "Тачпад", icon: "👆", correct: true },
+                    { name: "Колонки", icon: "🔊", correct: false },
+                    { name: "Клавиатура", icon: "⌨️", correct: true },
+                    { name: "Монитор", icon: "🖥️", correct: false },
+                ],
+            },
+            {
+                id: 9,
+                title: "Персональные компьютеры",
+                targetLabel: "💻 Персональные ПК",
+                items: [
+                    { name: "Ноутбук", icon: "💻", correct: true },
+                    { name: "Телевизор", icon: "📺", correct: false },
+                    { name: "Игровая консоль", icon: "🎮", correct: false },
+                    { name: "Планшет", icon: "📱", correct: true },
+                    { name: "Смартфон", icon: "📱", correct: true },
+                    { name: "Суперкомпьютер", icon: "🖥️", correct: false },
+                    { name: "Смарт-часы", icon: "⌚", correct: false },
+                    {
+                        name: "Погодная станция",
+                        icon: "🌡️",
+                        correct: false,
+                    },
+                ],
+            },
+            {
+                id: 10,
+                title: "Устройства, подключаемые через USB-порт",
+                targetLabel: "🔌 USB-устройства",
+                items: [
+                    { name: "Наушники", icon: "🎧", correct: false },
+                    { name: "Принтер", icon: "🖨️", correct: true },
+                    { name: "Клавиатура", icon: "⌨️", correct: true },
+                    { name: "Флешка", icon: "💿", correct: true },
+                    { name: "Мышь", icon: "🖱️", correct: true },
+                    { name: "Веб-камера", icon: "📷", correct: true },
+                    {
+                        name: "Игровая приставка",
+                        icon: "🎮",
+                        correct: false,
+                    },
+                    { name: "Телефон", icon: "📱", correct: true },
+                ],
+            },
+            {
+                id: 11,
+                title: "Устройства оперативной памяти",
+                targetLabel: "🧠 Оперативная память",
+                items: [
+                    { name: "DDR", icon: "📟", correct: true },
+                    { name: "DVD", icon: "💿", correct: false },
+                    { name: "CD-R", icon: "💿", correct: false },
+                    { name: "DIMM", icon: "📟", correct: true },
+                    { name: "DVD", icon: "💿", correct: false },
+                    { name: "SSD", icon: "💾", correct: false },
+                    { name: "DRAM", icon: "📟", correct: true },
+                    { name: "HDD", icon: "💽", correct: false },
+                ],
+            },
+            {
+                id: 12,
+                title: "Устройства, не относящиеся к ПК",
+                targetLabel: "❌ Не ПК",
+                items: [
+                    { name: "Планшет", icon: "📱", correct: false },
+                    { name: "Часы", icon: "⌚", correct: true },
+                    { name: "Робот-пылесос", icon: "🤖", correct: true },
+                    { name: "Игровая консоль", icon: "🎮", correct: true },
+                    { name: "Телевизор", icon: "📺", correct: true },
+                    { name: "Ноутбук", icon: "💻", correct: false },
+                    { name: "Суперкомпьютер", icon: "🖥️", correct: true },
+                    { name: "Телефон", icon: "📱", correct: true },
+                ],
+            },
+            {
+                id: 13,
+                title: "Устройства хранения информации",
+                targetLabel: "🗄️ Устройства хранения",
+                items: [
+                    { name: "Blu-Ray Disc", icon: "💿", correct: true },
+                    { name: "SSD", icon: "💾", correct: true },
+                    { name: "Дисковод", icon: "📀", correct: false },
+                    { name: "Multimedia card", icon: "🗃️", correct: true },
+                    { name: "Процессор", icon: "🧠", correct: false },
+                    { name: "Смартфон", icon: "📱", correct: false },
+                    { name: "Модем", icon: "📡", correct: false },
+                    {
+                        name: "Оперативная память",
+                        icon: "📟",
+                        correct: true,
+                    },
+                ],
+            },
+            {
+                id: 14,
+                title: "Устройства вывода звука",
+                targetLabel: "🔊 Вывод звука",
+                items: [
+                    { name: "Наушники", icon: "🎧", correct: true },
+                    { name: "Колонки", icon: "🔊", correct: true },
+                    { name: "Микрофон", icon: "🎤", correct: false },
+                    { name: "Аудиосистема", icon: "🎛️", correct: true },
+                    { name: "Гарнитура", icon: "🎙️", correct: true },
+                    { name: "Саундбар", icon: "📻", correct: true },
+                    {
+                        name: "Зарядное устройство",
+                        icon: "🔋",
+                        correct: false,
+                    },
+                    { name: "Оптическая мышь", icon: "🖱️", correct: false },
+                ],
+            },
+            {
+                id: 15,
+                title: "Устройства для вывода графической информации",
+                targetLabel: "🖼️ Вывод графики",
+                items: [
+                    { name: "Монитор", icon: "🖥️", correct: true },
+                    { name: "Клавиатура", icon: "⌨️", correct: false },
+                    { name: "Мышь", icon: "🖱️", correct: false },
+                    { name: "Принтер", icon: "🖨️", correct: true },
+                    { name: "Процессор", icon: "🧠", correct: false },
+                    { name: "Проектор", icon: "📽️", correct: true },
+                    { name: "Модем", icon: "📡", correct: false },
+                    { name: "Сканер", icon: "📠", correct: false },
+                ],
+            },
+            {
+                id: 16,
+                title: "Устройства для ввода графической информации",
+                targetLabel: "✏️ Ввод графики",
+                items: [
+                    { name: "Веб-камера", icon: "📷", correct: true },
+                    { name: "Клавиатура", icon: "⌨️", correct: false },
+                    {
+                        name: "Графический планшет",
+                        icon: "✏️",
+                        correct: true,
+                    },
+                    { name: "Принтер", icon: "🖨️", correct: false },
+                    { name: "Процессор", icon: "🧠", correct: false },
+                    { name: "Проектор", icon: "📽️", correct: false },
+                    { name: "Модем", icon: "📡", correct: false },
+                    { name: "Сканер", icon: "📠", correct: true },
+                ],
+            },
+            {
+                id: 17,
+                title: "Устройства, без которых компьютер не работает",
+                targetLabel: "⚡ Основные устройства",
+                items: [
+                    { name: "Веб-камера", icon: "📷", correct: false },
+                    { name: "Процессор", icon: "🧠", correct: true },
+                    { name: "Дисковод", icon: "📀", correct: false },
+                    { name: "Принтер", icon: "🖨️", correct: false },
+                    {
+                        name: "Оперативная память",
+                        icon: "📟",
+                        correct: true,
+                    },
+                    { name: "Проектор", icon: "📽️", correct: false },
+                    { name: "Модем", icon: "📡", correct: false },
+                    { name: "Видеокарта", icon: "🎮", correct: true },
+                ],
+            },
+            {
+                id: 18,
+                title: "Устройства долговременного хранения информации",
+                targetLabel: "💾 Долговременное хранение",
+                items: [
+                    { name: "Жёсткий диск", icon: "💽", correct: true },
+                    { name: "Процессор", icon: "🧠", correct: false },
+                    { name: "Дисковод", icon: "📀", correct: false },
+                    { name: "CD", icon: "💿", correct: true },
+                    {
+                        name: "Оперативная память",
+                        icon: "📟",
+                        correct: false,
+                    },
+                    { name: "Flash-память", icon: "🔌", correct: true },
+                    { name: "Модем", icon: "📡", correct: false },
+                    { name: "Видеокарта", icon: "🎮", correct: false },
+                ],
+            },
+            {
+                id: 19,
+                title: "Устройства для подключения к компьютерным сетям",
+                targetLabel: "🌐 Сетевые устройства",
+                items: [
+                    { name: "Жёсткий диск", icon: "💾", correct: false },
+                    { name: "Процессор", icon: "🧠", correct: false },
+                    { name: "Дисковод", icon: "📀", correct: false },
+                    { name: "CD", icon: "💿", correct: false },
+                    { name: "Роутер", icon: "📡", correct: true },
+                    { name: "Свитч", icon: "🔌", correct: true },
+                    { name: "Модем", icon: "📡", correct: true },
+                    { name: "Видеокарта", icon: "🎮", correct: false },
+                ],
+            },
+            {
+                id: 20,
+                title: "Названия портов компьютера",
+                targetLabel: "🔌 Порты",
+                items: [
+                    { name: "DVD", icon: "💿", correct: false },
+                    { name: "PS/2", icon: "🔌", correct: true },
+                    { name: "DDR", icon: "📟", correct: false },
+                    { name: "CD", icon: "💿", correct: false },
+                    { name: "VGA", icon: "🔌", correct: true },
+                    { name: "HDD", icon: "💾", correct: false },
+                    { name: "HDMI", icon: "🔌", correct: true },
+                    { name: "SSD", icon: "💾", correct: false },
+                ],
+            },
+            {
+                id: 21,
+                title: "Устройства, находящиеся в системном блоке",
+                targetLabel: "⚙️ В системном блоке",
+                items: [
+                    { name: "Принтер", icon: "🖨️", correct: false },
+                    { name: "Модем", icon: "📡", correct: false },
+                    {
+                        name: "Оперативная память",
+                        icon: "📟",
+                        correct: true,
+                    },
+                    { name: "Процессор", icon: "🧠", correct: true },
+                    { name: "Сканер", icon: "📠", correct: false },
+                    { name: "Монитор", icon: "🖥️", correct: false },
+                    { name: "Трекпад", icon: "👆", correct: false },
+                    {
+                        name: "Материнская плата",
+                        icon: "🏗️",
+                        correct: true,
+                    },
+                ],
+            },
+            {
+                id: 22,
+                title: "Устройства памяти",
+                targetLabel: "🧠 Устройства памяти",
+                items: [
+                    { name: "USB-флешка", icon: "🔌", correct: true },
+                    { name: "Сканер", icon: "📠", correct: false },
+                    {
+                        name: "Интерактивная панель",
+                        icon: "📺",
+                        correct: false,
+                    },
+                    { name: "SSD диск", icon: "💾", correct: true },
+                    { name: "Мышь", icon: "🖱️", correct: false },
+                    { name: "Процессор", icon: "🧠", correct: false },
+                    { name: "Жёсткий диск", icon: "💽", correct: true },
+                    { name: "Гарнитура", icon: "🎧", correct: false },
+                ],
+            },
+            {
+                id: 23,
+                title: "Устройства ввода и вывода одновременно",
+                targetLabel: "🔄 Ввод и вывод",
+                items: [
+                    { name: "USB-флешка", icon: "🔌", correct: false },
+                    { name: "Сканер", icon: "📠", correct: false },
+                    {
+                        name: "Интерактивная панель",
+                        icon: "📺",
+                        correct: true,
+                    },
+                    { name: "SSD диск", icon: "💾", correct: false },
+                    { name: "Мышь", icon: "🖱️", correct: false },
+                    { name: "Процессор", icon: "🧠", correct: false },
+                    { name: "Жёсткий диск", icon: "💽", correct: false },
+                    { name: "Гарнитура", icon: "🎧", correct: true },
+                ],
+            },
+            {
+                id: 24,
+                title: "Устройства ввода информации (вариант 4)",
+                targetLabel: "📥 Устройства ввода",
+                items: [
+                    { name: "Проектор", icon: "📽️", correct: false },
+                    {
+                        name: "Графический планшет",
+                        icon: "✏️",
+                        correct: true,
+                    },
+                    { name: "Джойстик", icon: "🕹️", correct: true },
+                    { name: "SSD диск", icon: "💾", correct: false },
+                    { name: "Процессор", icon: "🧠", correct: false },
+                    { name: "Микрофон", icon: "🎤", correct: true },
+                    { name: "Жёсткий диск", icon: "💽", correct: false },
+                    { name: "Колонки", icon: "🔊", correct: false },
+                ],
+            },
+            {
+                id: 25,
+                title: "Устройства вывода информации (вариант 4)",
+                targetLabel: "📤 Устройства вывода",
+                items: [
+                    { name: "Сканер", icon: "📠", correct: false },
+                    { name: "Наушники", icon: "🎧", correct: true },
+                    {
+                        name: "Графический планшет",
+                        icon: "✏️",
+                        correct: false,
+                    },
+                    { name: "Монитор", icon: "🖥️", correct: true },
+                    { name: "Системный блок", icon: "🖥️", correct: false },
+                    { name: "Принтер", icon: "🖨️", correct: true },
+                    { name: "Микрофон", icon: "🎤", correct: false },
+                    { name: "Колонки", icon: "🔊", correct: true },
+                ],
+            },
+            {
+                id: 26,
+                title: "Устройства внутри системного блока стационарного ПК",
+                targetLabel: "⚙️ Внутри системника",
+                items: [
+                    { name: "Блок питания", icon: "🔋", correct: true },
+                    { name: "Монитор", icon: "🖥️", correct: false },
+                    {
+                        name: "Материнская плата",
+                        icon: "🏗️",
+                        correct: true,
+                    },
+                    { name: "Модем", icon: "📡", correct: false },
+                    { name: "Вентилятор", icon: "🌀", correct: true },
+                    {
+                        name: "Внешний аудиоадаптер",
+                        icon: "🎧",
+                        correct: false,
+                    },
+                    { name: "Видеокарта", icon: "🎮", correct: true },
+                    {
+                        name: "Оперативная память",
+                        icon: "📟",
+                        correct: true,
+                    },
+                ],
+            },
+            {
+                id: 27,
+                title: "Устройства ввода информации (вариант 5)",
+                targetLabel: "📥 Устройства ввода",
+                items: [
+                    { name: "Монитор", icon: "🖥️", correct: false },
+                    { name: "Сканер", icon: "📠", correct: true },
+                    { name: "Веб-камера", icon: "📷", correct: true },
+                    {
+                        name: "Оперативная память",
+                        icon: "📟",
+                        correct: false,
+                    },
+                    { name: "Принтер", icon: "🖨️", correct: false },
+                    { name: "Клавиатура", icon: "⌨️", correct: true },
+                    { name: "Микрофон", icon: "🎤", correct: true },
+                    { name: "Наушники", icon: "🎧", correct: false },
+                ],
+            },
+            {
+                id: 28,
+                title: "Устройства долговременного хранения (вариант 2)",
+                targetLabel: "💾 Долговременное хранение",
+                items: [
+                    { name: "Жёсткий диск", icon: "💽", correct: true },
+                    { name: "Дисковод", icon: "📀", correct: false },
+                    {
+                        name: "Центральный процессор",
+                        icon: "🧠",
+                        correct: false,
+                    },
+                    { name: "SD-карта", icon: "🗃️", correct: true },
+                    { name: "Монитор", icon: "🖥️", correct: false },
+                    { name: "Флеш-накопитель", icon: "💿", correct: true },
+                    { name: "Колонки", icon: "🔊", correct: false },
+                    {
+                        name: "Оперативная память",
+                        icon: "📟",
+                        correct: false,
+                    },
+                ],
+            },
+            {
+                id: 29,
+                title: "Периферийные устройства",
+                targetLabel: "🔌 Периферия",
+                items: [
+                    { name: "Мышь", icon: "🖱️", correct: true },
+                    {
+                        name: "Материнская плата",
+                        icon: "🏗️",
+                        correct: false,
+                    },
+                    { name: "Монитор", icon: "🖥️", correct: true },
+                    { name: "Флеш-накопитель", icon: "💿", correct: true },
+                    {
+                        name: "Центральный процессор",
+                        icon: "🧠",
+                        correct: false,
+                    },
+                    {
+                        name: "Внутренний жёсткий диск",
+                        icon: "💽",
+                        correct: false,
+                    },
+                    {
+                        name: "Оперативная память",
+                        icon: "📟",
+                        correct: false,
+                    },
+                    { name: "Клавиатура", icon: "⌨️", correct: true },
+                ],
+            },
+            {
+                id: 30,
+                title: "Устройства, без которых компьютер не работает (вариант 2)",
+                targetLabel: "⚡ Основные устройства",
+                items: [
+                    { name: "Процессор", icon: "🧠", correct: true },
+                    { name: "Клавиатура", icon: "⌨️", correct: false },
+                    { name: "Проектор", icon: "📽️", correct: false },
+                    { name: "Видеокарта", icon: "🎮", correct: true },
+                    {
+                        name: "Оперативная память",
+                        icon: "📟",
+                        correct: true,
+                    },
+                    { name: "Сканер", icon: "📠", correct: false },
+                    { name: "Колонки", icon: "🔊", correct: false },
+                    { name: "Дисковод", icon: "📀", correct: false },
+                ],
+            },
+            {
+                id: 31,
+                title: "Устройства, подключаемые через HDMI-порт",
+                targetLabel: "🔌 HDMI-устройства",
+                items: [
+                    { name: "Мышка", icon: "🖱️", correct: false },
+                    { name: "Колонки", icon: "🔊", correct: false },
+                    { name: "Монитор", icon: "🖥️", correct: true },
+                    { name: "Клавиатура", icon: "⌨️", correct: false },
+                    { name: "Флеш-накопитель", icon: "💿", correct: false },
+                    { name: "Проектор", icon: "📽️", correct: true },
+                    { name: "Принтер", icon: "🖨️", correct: false },
+                    { name: "Сканер", icon: "📠", correct: false },
+                ],
+            },
+            {
+                id: 32,
+                title: "Устройства вывода информации (вариант 5)",
+                targetLabel: "📤 Устройства вывода",
+                items: [
+                    { name: "Игровой руль", icon: "🎮", correct: false },
+                    { name: "Флеш-карта", icon: "💿", correct: false },
+                    { name: "Микрофон", icon: "🎤", correct: false },
+                    { name: "USB-флешка", icon: "💿", correct: false },
+                    { name: "Колонка", icon: "🔊", correct: true },
+                    {
+                        name: "Внешний жёсткий диск",
+                        icon: "💽",
+                        correct: false,
+                    },
+                    { name: "Наушники", icon: "🎧", correct: true },
+                    { name: "VR-очки", icon: "🥽", correct: true },
+                ],
+            },
+            {
+                id: 33,
+                title: "Устройства ввода и вывода одновременно (вариант 2)",
+                targetLabel: "🔄 Ввод и вывод",
+                items: [
+                    {
+                        name: "Оперативная память",
+                        icon: "📟",
+                        correct: false,
+                    },
+                    { name: "Сканер", icon: "📠", correct: false },
+                    { name: "Принтер", icon: "🖨️", correct: false },
+                    { name: "Флеш-карта", icon: "💿", correct: false },
+                    { name: "Сенсорный экран", icon: "📱", correct: true },
+                    { name: "DVD-диск", icon: "💿", correct: false },
+                    { name: "Гарнитура", icon: "🎙️", correct: true },
+                    { name: "Джойстик", icon: "🕹️", correct: false },
+                ],
+            },
+            {
+                id: 34,
+                title: "Устройства ввода и вывода одновременно (вариант 3)",
+                targetLabel: "🔄 Ввод и вывод",
+                items: [
+                    { name: "Игровой руль", icon: "🎮", correct: false },
+                    {
+                        name: "Оперативная память",
+                        icon: "📟",
+                        correct: false,
+                    },
+                    { name: "Сенсорный экран", icon: "📱", correct: true },
+                    { name: "USB-флешка", icon: "💿", correct: false },
+                    { name: "Колонка", icon: "🔊", correct: false },
+                    {
+                        name: "Внешний жёсткий диск",
+                        icon: "💽",
+                        correct: false,
+                    },
+                    { name: "Джойстик", icon: "🕹️", correct: false },
+                    {
+                        name: "Микрофон с наушниками",
+                        icon: "🎙️",
+                        correct: true,
+                    },
+                ],
+            },
+            {
+                id: 35,
+                title: "Запоминающие устройства",
+                targetLabel: "🧠 Запоминающие устройства",
+                items: [
+                    {
+                        name: "Оперативная память",
+                        icon: "📟",
+                        correct: true,
+                    },
+                    { name: "Сканер", icon: "📠", correct: false },
+                    { name: "Принтер", icon: "🖨️", correct: false },
+                    { name: "Флеш-карта", icon: "💿", correct: true },
+                    { name: "DVD-диск", icon: "💿", correct: true },
+                    { name: "Монитор", icon: "🖥️", correct: false },
+                    { name: "Микрофон", icon: "🎤", correct: false },
+                    { name: "Джойстик", icon: "🕹️", correct: false },
+                ],
+            },
+        ];
 
-            /* =========================================
-   ОЧИСТКА ЗАГОЛОВКА
-   Убирает "Задание N (ID: xxx):" и "(вариант N)"
-   ========================================= */
-            function cleanTitle(title) {
-                return title
-                    .replace(/\s*\(вариант\s*\d+\)/gi, "") // Убираем "(вариант 2)", "(вариант 3)" и т.д.
-                    .replace(/\s*\(ID:\s*\d+\)/gi, "") // На всякий случай убираем ID
-                    .replace(/^\s*Задание\s*\d+\s*:?\s*/i, "") // Убираем "Задание N:" в начале
-                    .trim();
-            }
+        let currentTaskIndex = 0;
+        let selectedCard = null;
 
-            /* =========================================
-   БАЗА ЗАДАНИЙ (35 заданий ВПР)
-   ========================================= */
-            const tasks = [
-                {
-                    id: 1,
-                    title: "Устройства ввода информации",
-                    targetLabel: "📥 Устройства ввода",
-                    items: [
-                        { name: "Сканер", icon: "📠", correct: true },
-                        { name: "Принтер", icon: "🖨️", correct: false },
-                        { name: "Процессор", icon: "🧠", correct: false },
-                        { name: "Жёсткий диск", icon: "💾", correct: false },
-                        { name: "Колонки", icon: "🔊", correct: false },
-                        { name: "Микрофон", icon: "🎤", correct: true },
-                        { name: "USB-флешка", icon: "💿", correct: false },
-                        { name: "Тачпад", icon: "👆", correct: true },
-                    ],
-                },
-                {
-                    id: 2,
-                    title: "Устройства вывода информации",
-                    targetLabel: "📤 Устройства вывода",
-                    items: [
-                        { name: "Сканер", icon: "📠", correct: false },
-                        { name: "Принтер", icon: "🖨️", correct: true },
-                        { name: "Процессор", icon: "🧠", correct: false },
-                        { name: "Жёсткий диск", icon: "💾", correct: false },
-                        { name: "Колонки", icon: "🔊", correct: true },
-                        { name: "Микрофон", icon: "🎤", correct: false },
-                        { name: "USB-флешка", icon: "💿", correct: false },
-                        { name: "Монитор", icon: "🖥️", correct: true },
-                    ],
-                },
-                {
-                    id: 3,
-                    title: "Устройства ввода информации (вариант 2)",
-                    targetLabel: "📥 Устройства ввода",
-                    items: [
-                        { name: "Мышь", icon: "🖱️", correct: true },
-                        { name: "Клавиатура", icon: "⌨️", correct: true },
-                        { name: "Микрофон", icon: "🎤", correct: true },
-                        { name: "Наушники", icon: "🎧", correct: false },
-                        { name: "Веб-камера", icon: "📷", correct: true },
-                        { name: "Колонки", icon: "🔊", correct: false },
-                        { name: "Монитор", icon: "🖥️", correct: false },
-                        { name: "Принтер", icon: "🖨️", correct: false },
-                    ],
-                },
-                {
-                    id: 4,
-                    title: "Внутренние устройства компьютера",
-                    targetLabel: "⚙️ Внутренние устройства",
-                    items: [
-                        { name: "Сканер", icon: "📠", correct: false },
-                        { name: "Принтер", icon: "🖨️", correct: false },
-                        { name: "Процессор", icon: "🧠", correct: true },
-                        { name: "Жёсткий диск", icon: "💾", correct: true },
-                        { name: "Колонки", icon: "🔊", correct: false },
-                        { name: "Микрофон", icon: "🎤", correct: false },
-                        { name: "Видеокарта", icon: "🎮", correct: true },
-                        { name: "Монитор", icon: "🖥️", correct: false },
-                    ],
-                },
-                {
-                    id: 5,
-                    title: "Устройства хранения данных",
-                    targetLabel: "🗄️ Устройства хранения",
-                    items: [
-                        { name: "Жёсткий диск", icon: "💾", correct: true },
-                        { name: "Флешка", icon: "💿", correct: true },
-                        {
-                            name: "Оперативная память",
-                            icon: "📟",
-                            correct: true,
-                        },
-                        { name: "Процессор", icon: "🧠", correct: false },
-                        { name: "SD-карта", icon: "🗃️", correct: true },
-                        { name: "Видеокарта", icon: "🎮", correct: false },
-                        {
-                            name: "Материнская плата",
-                            icon: "🏗️",
-                            correct: false,
-                        },
-                        {
-                            name: "Bluetooth-динамик",
-                            icon: "🔈",
-                            correct: false,
-                        },
-                    ],
-                },
-                {
-                    id: 6,
-                    title: "Внешние устройства компьютера",
-                    targetLabel: "🔌 Внешние устройства",
-                    items: [
-                        { name: "Сканер", icon: "📠", correct: true },
-                        { name: "Принтер", icon: "🖨️", correct: true },
-                        { name: "Процессор", icon: "🧠", correct: false },
-                        { name: "Жёсткий диск", icon: "💾", correct: false },
-                        { name: "Колонки", icon: "🔊", correct: true },
-                        {
-                            name: "Оперативная память",
-                            icon: "📟",
-                            correct: false,
-                        },
-                        { name: "Видеокарта", icon: "🎮", correct: false },
-                        { name: "Монитор", icon: "🖥️", correct: true },
-                    ],
-                },
-                {
-                    id: 7,
-                    title: "Устройства, выводящие изображение на экран",
-                    targetLabel: "🖥️ Вывод изображения",
-                    items: [
-                        { name: "Проектор", icon: "📽️", correct: true },
-                        { name: "Телевизор", icon: "📺", correct: true },
-                        { name: "Монитор", icon: "🖥️", correct: true },
-                        { name: "Фотоаппарат", icon: "📷", correct: false },
-                        { name: "Смартфон", icon: "📱", correct: true },
-                        { name: "VR-очки", icon: "🥽", correct: true },
-                        { name: "Наушники", icon: "🎧", correct: false },
-                        { name: "Динамики", icon: "🔊", correct: false },
-                    ],
-                },
-                {
-                    id: 8,
-                    title: "Устройства ввода информации (вариант 3)",
-                    targetLabel: "📥 Устройства ввода",
-                    items: [
-                        { name: "Трекбол", icon: "🖲️", correct: true },
-                        { name: "Принтер", icon: "🖨️", correct: false },
-                        { name: "Мышь", icon: "🖱️", correct: true },
-                        { name: "Жёсткий диск", icon: "💾", correct: false },
-                        { name: "Тачпад", icon: "👆", correct: true },
-                        { name: "Колонки", icon: "🔊", correct: false },
-                        { name: "Клавиатура", icon: "⌨️", correct: true },
-                        { name: "Монитор", icon: "🖥️", correct: false },
-                    ],
-                },
-                {
-                    id: 9,
-                    title: "Персональные компьютеры",
-                    targetLabel: "💻 Персональные ПК",
-                    items: [
-                        { name: "Ноутбук", icon: "💻", correct: true },
-                        { name: "Телевизор", icon: "📺", correct: false },
-                        { name: "Игровая консоль", icon: "🎮", correct: false },
-                        { name: "Планшет", icon: "📱", correct: true },
-                        { name: "Смартфон", icon: "📱", correct: true },
-                        { name: "Суперкомпьютер", icon: "🖥️", correct: false },
-                        { name: "Смарт-часы", icon: "⌚", correct: false },
-                        {
-                            name: "Погодная станция",
-                            icon: "🌡️",
-                            correct: false,
-                        },
-                    ],
-                },
-                {
-                    id: 10,
-                    title: "Устройства, подключаемые через USB-порт",
-                    targetLabel: "🔌 USB-устройства",
-                    items: [
-                        { name: "Наушники", icon: "🎧", correct: false },
-                        { name: "Принтер", icon: "🖨️", correct: true },
-                        { name: "Клавиатура", icon: "⌨️", correct: true },
-                        { name: "Флешка", icon: "💿", correct: true },
-                        { name: "Мышь", icon: "🖱️", correct: true },
-                        { name: "Веб-камера", icon: "📷", correct: true },
-                        {
-                            name: "Игровая приставка",
-                            icon: "🎮",
-                            correct: false,
-                        },
-                        { name: "Телефон", icon: "📱", correct: true },
-                    ],
-                },
-                {
-                    id: 11,
-                    title: "Устройства оперативной памяти",
-                    targetLabel: "🧠 Оперативная память",
-                    items: [
-                        { name: "DDR", icon: "📟", correct: true },
-                        { name: "DVD", icon: "💿", correct: false },
-                        { name: "CD-R", icon: "💿", correct: false },
-                        { name: "DIMM", icon: "📟", correct: true },
-                        { name: "DVD", icon: "💿", correct: false },
-                        { name: "SSD", icon: "💾", correct: false },
-                        { name: "DRAM", icon: "📟", correct: true },
-                        { name: "HDD", icon: "💽", correct: false },
-                    ],
-                },
-                {
-                    id: 12,
-                    title: "Устройства, не относящиеся к ПК",
-                    targetLabel: "❌ Не ПК",
-                    items: [
-                        { name: "Планшет", icon: "📱", correct: false },
-                        { name: "Часы", icon: "⌚", correct: true },
-                        { name: "Робот-пылесос", icon: "🤖", correct: true },
-                        { name: "Игровая консоль", icon: "🎮", correct: true },
-                        { name: "Телевизор", icon: "📺", correct: true },
-                        { name: "Ноутбук", icon: "💻", correct: false },
-                        { name: "Суперкомпьютер", icon: "🖥️", correct: true },
-                        { name: "Телефон", icon: "📱", correct: true },
-                    ],
-                },
-                {
-                    id: 13,
-                    title: "Устройства хранения информации",
-                    targetLabel: "🗄️ Устройства хранения",
-                    items: [
-                        { name: "Blu-Ray Disc", icon: "💿", correct: true },
-                        { name: "SSD", icon: "💾", correct: true },
-                        { name: "Дисковод", icon: "📀", correct: false },
-                        { name: "Multimedia card", icon: "🗃️", correct: true },
-                        { name: "Процессор", icon: "🧠", correct: false },
-                        { name: "Смартфон", icon: "📱", correct: false },
-                        { name: "Модем", icon: "📡", correct: false },
-                        {
-                            name: "Оперативная память",
-                            icon: "📟",
-                            correct: true,
-                        },
-                    ],
-                },
-                {
-                    id: 14,
-                    title: "Устройства вывода звука",
-                    targetLabel: "🔊 Вывод звука",
-                    items: [
-                        { name: "Наушники", icon: "🎧", correct: true },
-                        { name: "Колонки", icon: "🔊", correct: true },
-                        { name: "Микрофон", icon: "🎤", correct: false },
-                        { name: "Аудиосистема", icon: "🎛️", correct: true },
-                        { name: "Гарнитура", icon: "🎙️", correct: true },
-                        { name: "Саундбар", icon: "📻", correct: true },
-                        {
-                            name: "Зарядное устройство",
-                            icon: "🔋",
-                            correct: false,
-                        },
-                        { name: "Оптическая мышь", icon: "🖱️", correct: false },
-                    ],
-                },
-                {
-                    id: 15,
-                    title: "Устройства для вывода графической информации",
-                    targetLabel: "🖼️ Вывод графики",
-                    items: [
-                        { name: "Монитор", icon: "🖥️", correct: true },
-                        { name: "Клавиатура", icon: "⌨️", correct: false },
-                        { name: "Мышь", icon: "🖱️", correct: false },
-                        { name: "Принтер", icon: "🖨️", correct: true },
-                        { name: "Процессор", icon: "🧠", correct: false },
-                        { name: "Проектор", icon: "📽️", correct: true },
-                        { name: "Модем", icon: "📡", correct: false },
-                        { name: "Сканер", icon: "📠", correct: false },
-                    ],
-                },
-                {
-                    id: 16,
-                    title: "Устройства для ввода графической информации",
-                    targetLabel: "✏️ Ввод графики",
-                    items: [
-                        { name: "Веб-камера", icon: "📷", correct: true },
-                        { name: "Клавиатура", icon: "⌨️", correct: false },
-                        {
-                            name: "Графический планшет",
-                            icon: "✏️",
-                            correct: true,
-                        },
-                        { name: "Принтер", icon: "🖨️", correct: false },
-                        { name: "Процессор", icon: "🧠", correct: false },
-                        { name: "Проектор", icon: "📽️", correct: false },
-                        { name: "Модем", icon: "📡", correct: false },
-                        { name: "Сканер", icon: "📠", correct: true },
-                    ],
-                },
-                {
-                    id: 17,
-                    title: "Устройства, без которых компьютер не работает",
-                    targetLabel: "⚡ Основные устройства",
-                    items: [
-                        { name: "Веб-камера", icon: "📷", correct: false },
-                        { name: "Процессор", icon: "🧠", correct: true },
-                        { name: "Дисковод", icon: "📀", correct: false },
-                        { name: "Принтер", icon: "🖨️", correct: false },
-                        {
-                            name: "Оперативная память",
-                            icon: "📟",
-                            correct: true,
-                        },
-                        { name: "Проектор", icon: "📽️", correct: false },
-                        { name: "Модем", icon: "📡", correct: false },
-                        { name: "Видеокарта", icon: "🎮", correct: true },
-                    ],
-                },
-                {
-                    id: 18,
-                    title: "Устройства долговременного хранения информации",
-                    targetLabel: "💾 Долговременное хранение",
-                    items: [
-                        { name: "Жёсткий диск", icon: "💽", correct: true },
-                        { name: "Процессор", icon: "🧠", correct: false },
-                        { name: "Дисковод", icon: "📀", correct: false },
-                        { name: "CD", icon: "💿", correct: true },
-                        {
-                            name: "Оперативная память",
-                            icon: "📟",
-                            correct: false,
-                        },
-                        { name: "Flash-память", icon: "🔌", correct: true },
-                        { name: "Модем", icon: "📡", correct: false },
-                        { name: "Видеокарта", icon: "🎮", correct: false },
-                    ],
-                },
-                {
-                    id: 19,
-                    title: "Устройства для подключения к компьютерным сетям",
-                    targetLabel: "🌐 Сетевые устройства",
-                    items: [
-                        { name: "Жёсткий диск", icon: "💾", correct: false },
-                        { name: "Процессор", icon: "🧠", correct: false },
-                        { name: "Дисковод", icon: "📀", correct: false },
-                        { name: "CD", icon: "💿", correct: false },
-                        { name: "Роутер", icon: "📡", correct: true },
-                        { name: "Свитч", icon: "🔌", correct: true },
-                        { name: "Модем", icon: "📡", correct: true },
-                        { name: "Видеокарта", icon: "🎮", correct: false },
-                    ],
-                },
-                {
-                    id: 20,
-                    title: "Названия портов компьютера",
-                    targetLabel: "🔌 Порты",
-                    items: [
-                        { name: "DVD", icon: "💿", correct: false },
-                        { name: "PS/2", icon: "🔌", correct: true },
-                        { name: "DDR", icon: "📟", correct: false },
-                        { name: "CD", icon: "💿", correct: false },
-                        { name: "VGA", icon: "🔌", correct: true },
-                        { name: "HDD", icon: "💾", correct: false },
-                        { name: "HDMI", icon: "🔌", correct: true },
-                        { name: "SSD", icon: "💾", correct: false },
-                    ],
-                },
-                {
-                    id: 21,
-                    title: "Устройства, находящиеся в системном блоке",
-                    targetLabel: "⚙️ В системном блоке",
-                    items: [
-                        { name: "Принтер", icon: "🖨️", correct: false },
-                        { name: "Модем", icon: "📡", correct: false },
-                        {
-                            name: "Оперативная память",
-                            icon: "📟",
-                            correct: true,
-                        },
-                        { name: "Процессор", icon: "🧠", correct: true },
-                        { name: "Сканер", icon: "📠", correct: false },
-                        { name: "Монитор", icon: "🖥️", correct: false },
-                        { name: "Трекпад", icon: "👆", correct: false },
-                        {
-                            name: "Материнская плата",
-                            icon: "🏗️",
-                            correct: true,
-                        },
-                    ],
-                },
-                {
-                    id: 22,
-                    title: "Устройства памяти",
-                    targetLabel: "🧠 Устройства памяти",
-                    items: [
-                        { name: "USB-флешка", icon: "🔌", correct: true },
-                        { name: "Сканер", icon: "📠", correct: false },
-                        {
-                            name: "Интерактивная панель",
-                            icon: "📺",
-                            correct: false,
-                        },
-                        { name: "SSD диск", icon: "💾", correct: true },
-                        { name: "Мышь", icon: "🖱️", correct: false },
-                        { name: "Процессор", icon: "🧠", correct: false },
-                        { name: "Жёсткий диск", icon: "💽", correct: true },
-                        { name: "Гарнитура", icon: "🎧", correct: false },
-                    ],
-                },
-                {
-                    id: 23,
-                    title: "Устройства ввода и вывода одновременно",
-                    targetLabel: "🔄 Ввод и вывод",
-                    items: [
-                        { name: "USB-флешка", icon: "🔌", correct: false },
-                        { name: "Сканер", icon: "📠", correct: false },
-                        {
-                            name: "Интерактивная панель",
-                            icon: "📺",
-                            correct: true,
-                        },
-                        { name: "SSD диск", icon: "💾", correct: false },
-                        { name: "Мышь", icon: "🖱️", correct: false },
-                        { name: "Процессор", icon: "🧠", correct: false },
-                        { name: "Жёсткий диск", icon: "💽", correct: false },
-                        { name: "Гарнитура", icon: "🎧", correct: true },
-                    ],
-                },
-                {
-                    id: 24,
-                    title: "Устройства ввода информации (вариант 4)",
-                    targetLabel: "📥 Устройства ввода",
-                    items: [
-                        { name: "Проектор", icon: "📽️", correct: false },
-                        {
-                            name: "Графический планшет",
-                            icon: "✏️",
-                            correct: true,
-                        },
-                        { name: "Джойстик", icon: "🕹️", correct: true },
-                        { name: "SSD диск", icon: "💾", correct: false },
-                        { name: "Процессор", icon: "🧠", correct: false },
-                        { name: "Микрофон", icon: "🎤", correct: true },
-                        { name: "Жёсткий диск", icon: "💽", correct: false },
-                        { name: "Колонки", icon: "🔊", correct: false },
-                    ],
-                },
-                {
-                    id: 25,
-                    title: "Устройства вывода информации (вариант 4)",
-                    targetLabel: "📤 Устройства вывода",
-                    items: [
-                        { name: "Сканер", icon: "📠", correct: false },
-                        { name: "Наушники", icon: "🎧", correct: true },
-                        {
-                            name: "Графический планшет",
-                            icon: "✏️",
-                            correct: false,
-                        },
-                        { name: "Монитор", icon: "🖥️", correct: true },
-                        { name: "Системный блок", icon: "🖥️", correct: false },
-                        { name: "Принтер", icon: "🖨️", correct: true },
-                        { name: "Микрофон", icon: "🎤", correct: false },
-                        { name: "Колонки", icon: "🔊", correct: true },
-                    ],
-                },
-                {
-                    id: 26,
-                    title: "Устройства внутри системного блока стационарного ПК",
-                    targetLabel: "⚙️ Внутри системника",
-                    items: [
-                        { name: "Блок питания", icon: "🔋", correct: true },
-                        { name: "Монитор", icon: "🖥️", correct: false },
-                        {
-                            name: "Материнская плата",
-                            icon: "🏗️",
-                            correct: true,
-                        },
-                        { name: "Модем", icon: "📡", correct: false },
-                        { name: "Вентилятор", icon: "🌀", correct: true },
-                        {
-                            name: "Внешний аудиоадаптер",
-                            icon: "🎧",
-                            correct: false,
-                        },
-                        { name: "Видеокарта", icon: "🎮", correct: true },
-                        {
-                            name: "Оперативная память",
-                            icon: "📟",
-                            correct: true,
-                        },
-                    ],
-                },
-                {
-                    id: 27,
-                    title: "Устройства ввода информации (вариант 5)",
-                    targetLabel: "📥 Устройства ввода",
-                    items: [
-                        { name: "Монитор", icon: "🖥️", correct: false },
-                        { name: "Сканер", icon: "📠", correct: true },
-                        { name: "Веб-камера", icon: "📷", correct: true },
-                        {
-                            name: "Оперативная память",
-                            icon: "📟",
-                            correct: false,
-                        },
-                        { name: "Принтер", icon: "🖨️", correct: false },
-                        { name: "Клавиатура", icon: "⌨️", correct: true },
-                        { name: "Микрофон", icon: "🎤", correct: true },
-                        { name: "Наушники", icon: "🎧", correct: false },
-                    ],
-                },
-                {
-                    id: 28,
-                    title: "Устройства долговременного хранения (вариант 2)",
-                    targetLabel: "💾 Долговременное хранение",
-                    items: [
-                        { name: "Жёсткий диск", icon: "💽", correct: true },
-                        { name: "Дисковод", icon: "📀", correct: false },
-                        {
-                            name: "Центральный процессор",
-                            icon: "🧠",
-                            correct: false,
-                        },
-                        { name: "SD-карта", icon: "🗃️", correct: true },
-                        { name: "Монитор", icon: "🖥️", correct: false },
-                        { name: "Флеш-накопитель", icon: "💿", correct: true },
-                        { name: "Колонки", icon: "🔊", correct: false },
-                        {
-                            name: "Оперативная память",
-                            icon: "📟",
-                            correct: false,
-                        },
-                    ],
-                },
-                {
-                    id: 29,
-                    title: "Периферийные устройства",
-                    targetLabel: "🔌 Периферия",
-                    items: [
-                        { name: "Мышь", icon: "🖱️", correct: true },
-                        {
-                            name: "Материнская плата",
-                            icon: "🏗️",
-                            correct: false,
-                        },
-                        { name: "Монитор", icon: "🖥️", correct: true },
-                        { name: "Флеш-накопитель", icon: "💿", correct: true },
-                        {
-                            name: "Центральный процессор",
-                            icon: "🧠",
-                            correct: false,
-                        },
-                        {
-                            name: "Внутренний жёсткий диск",
-                            icon: "💽",
-                            correct: false,
-                        },
-                        {
-                            name: "Оперативная память",
-                            icon: "📟",
-                            correct: false,
-                        },
-                        { name: "Клавиатура", icon: "⌨️", correct: true },
-                    ],
-                },
-                {
-                    id: 30,
-                    title: "Устройства, без которых компьютер не работает (вариант 2)",
-                    targetLabel: "⚡ Основные устройства",
-                    items: [
-                        { name: "Процессор", icon: "🧠", correct: true },
-                        { name: "Клавиатура", icon: "⌨️", correct: false },
-                        { name: "Проектор", icon: "📽️", correct: false },
-                        { name: "Видеокарта", icon: "🎮", correct: true },
-                        {
-                            name: "Оперативная память",
-                            icon: "📟",
-                            correct: true,
-                        },
-                        { name: "Сканер", icon: "📠", correct: false },
-                        { name: "Колонки", icon: "🔊", correct: false },
-                        { name: "Дисковод", icon: "📀", correct: false },
-                    ],
-                },
-                {
-                    id: 31,
-                    title: "Устройства, подключаемые через HDMI-порт",
-                    targetLabel: "🔌 HDMI-устройства",
-                    items: [
-                        { name: "Мышка", icon: "🖱️", correct: false },
-                        { name: "Колонки", icon: "🔊", correct: false },
-                        { name: "Монитор", icon: "🖥️", correct: true },
-                        { name: "Клавиатура", icon: "⌨️", correct: false },
-                        { name: "Флеш-накопитель", icon: "💿", correct: false },
-                        { name: "Проектор", icon: "📽️", correct: true },
-                        { name: "Принтер", icon: "🖨️", correct: false },
-                        { name: "Сканер", icon: "📠", correct: false },
-                    ],
-                },
-                {
-                    id: 32,
-                    title: "Устройства вывода информации (вариант 5)",
-                    targetLabel: "📤 Устройства вывода",
-                    items: [
-                        { name: "Игровой руль", icon: "🎮", correct: false },
-                        { name: "Флеш-карта", icon: "💿", correct: false },
-                        { name: "Микрофон", icon: "🎤", correct: false },
-                        { name: "USB-флешка", icon: "💿", correct: false },
-                        { name: "Колонка", icon: "🔊", correct: true },
-                        {
-                            name: "Внешний жёсткий диск",
-                            icon: "💽",
-                            correct: false,
-                        },
-                        { name: "Наушники", icon: "🎧", correct: true },
-                        { name: "VR-очки", icon: "🥽", correct: true },
-                    ],
-                },
-                {
-                    id: 33,
-                    title: "Устройства ввода и вывода одновременно (вариант 2)",
-                    targetLabel: "🔄 Ввод и вывод",
-                    items: [
-                        {
-                            name: "Оперативная память",
-                            icon: "📟",
-                            correct: false,
-                        },
-                        { name: "Сканер", icon: "📠", correct: false },
-                        { name: "Принтер", icon: "🖨️", correct: false },
-                        { name: "Флеш-карта", icon: "💿", correct: false },
-                        { name: "Сенсорный экран", icon: "📱", correct: true },
-                        { name: "DVD-диск", icon: "💿", correct: false },
-                        { name: "Гарнитура", icon: "🎙️", correct: true },
-                        { name: "Джойстик", icon: "🕹️", correct: false },
-                    ],
-                },
-                {
-                    id: 34,
-                    title: "Устройства ввода и вывода одновременно (вариант 3)",
-                    targetLabel: "🔄 Ввод и вывод",
-                    items: [
-                        { name: "Игровой руль", icon: "🎮", correct: false },
-                        {
-                            name: "Оперативная память",
-                            icon: "📟",
-                            correct: false,
-                        },
-                        { name: "Сенсорный экран", icon: "📱", correct: true },
-                        { name: "USB-флешка", icon: "💿", correct: false },
-                        { name: "Колонка", icon: "🔊", correct: false },
-                        {
-                            name: "Внешний жёсткий диск",
-                            icon: "💽",
-                            correct: false,
-                        },
-                        { name: "Джойстик", icon: "🕹️", correct: false },
-                        {
-                            name: "Микрофон с наушниками",
-                            icon: "🎙️",
-                            correct: true,
-                        },
-                    ],
-                },
-                {
-                    id: 35,
-                    title: "Запоминающие устройства",
-                    targetLabel: "🧠 Запоминающие устройства",
-                    items: [
-                        {
-                            name: "Оперативная память",
-                            icon: "📟",
-                            correct: true,
-                        },
-                        { name: "Сканер", icon: "📠", correct: false },
-                        { name: "Принтер", icon: "🖨️", correct: false },
-                        { name: "Флеш-карта", icon: "💿", correct: true },
-                        { name: "DVD-диск", icon: "💿", correct: true },
-                        { name: "Монитор", icon: "🖥️", correct: false },
-                        { name: "Микрофон", icon: "🎤", correct: false },
-                        { name: "Джойстик", icon: "🕹️", correct: false },
-                    ],
-                },
-            ];
+        // Состояние решённых задач: null | 'correct' | 'incorrect'
+        const taskResults = new Array(tasks.length).fill(null);
 
-            let currentTaskIndex = 0;
-            let selectedCard = null;
+        // Состояние Drag & Drop через Pointer Events
+        let dragState = {
+            active: false,
+            card: null,
+            ghost: null,
+            startX: 0,
+            startY: 0,
+            offsetX: 0,
+            offsetY: 0,
+            moved: false,
+            pointerId: null,
+        };
 
-            // Состояние решённых задач: null | 'correct' | 'incorrect'
-            const taskResults = new Array(tasks.length).fill(null);
+        const DRAG_THRESHOLD = 8;
 
-            // Состояние Drag & Drop через Pointer Events
-            let dragState = {
-                active: false,
-                card: null,
-                ghost: null,
-                startX: 0,
-                startY: 0,
-                offsetX: 0,
-                offsetY: 0,
-                moved: false,
-                pointerId: null,
-            };
+        /* =========================================
+ИНИЦИАЛИЗАЦИЯ
+========================================= */
+        function init() {
+            initTheme();
+            const nav = document.getElementById("taskNav");
+            const container = document.getElementById("tasksContainer");
 
-            const DRAG_THRESHOLD = 8;
+            tasks.forEach((task, index) => {
+                const btn = document.createElement("button");
+                btn.className = `nav-btn ${index === 0 ? "active" : ""}`;
+                btn.textContent = `№${index + 1}`;
+                btn.title = cleanTitle(task.title);
+                btn.dataset.index = index;
+                btn.onclick = () => switchTask(index);
+                nav.appendChild(btn);
 
-            /* =========================================
-   ИНИЦИАЛИЗАЦИЯ
-   ========================================= */
-            function init() {
-                initTheme();
-                const nav = document.getElementById("taskNav");
-                const container = document.getElementById("tasksContainer");
-
-                tasks.forEach((task, index) => {
-                    const btn = document.createElement("button");
-                    btn.className = `nav-btn ${index === 0 ? "active" : ""}`;
-                    btn.textContent = `№${index + 1}`;
-                    btn.title = cleanTitle(task.title);
-                    btn.dataset.index = index;
-                    btn.onclick = () => switchTask(index);
-                    nav.appendChild(btn);
-
-                    const taskDiv = document.createElement("div");
-                    taskDiv.className = `task-container ${index === 0 ? "active" : ""}`;
-                    taskDiv.id = `task-${index}`;
-                    // Чистый заголовок без "Задание" и "(вариант N)"
-                    taskDiv.innerHTML = `
+                const taskDiv = document.createElement("div");
+                taskDiv.className = `task-container ${index === 0 ? "active" : ""}`;
+                taskDiv.id = `task-${index}`;
+                // Чистый заголовок без "Задание" и "(вариант N)"
+                taskDiv.innerHTML = `
       <div class="task-title">${cleanTitle(task.title)}</div>
       <div class="workspace">
         <div class="zone source-zone" id="source-${index}"></div>
         <div class="zone target-zone" id="target-${index}" data-label="${task.targetLabel}"></div>
       </div>
     `;
-                    container.appendChild(taskDiv);
+                container.appendChild(taskDiv);
+            });
+
+            renderTask(0);
+            updateNavButtons();
+            updateStats();
+        }
+
+        function switchTask(index) {
+            currentTaskIndex = index;
+            document.querySelectorAll(".nav-btn").forEach((btn, i) => {
+                btn.classList.toggle("active", i === index);
+            });
+            document
+                .querySelectorAll(".task-container")
+                .forEach((div, i) => {
+                    div.classList.toggle("active", i === index);
                 });
+            document.getElementById("resultMessage").innerHTML = "";
+            document.getElementById("resultMessage").style.background =
+                "transparent";
 
-                renderTask(0);
-                updateNavButtons();
-                updateStats();
+            document
+                .getElementById(`task-${index}`)
+                .scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+            renderTask(index);
+            updateNavButtons();
+        }
+
+        function nextTask() {
+            if (currentTaskIndex < tasks.length - 1) {
+                switchTask(currentTaskIndex + 1);
             }
+        }
 
-            function switchTask(index) {
-                currentTaskIndex = index;
-                document.querySelectorAll(".nav-btn").forEach((btn, i) => {
-                    btn.classList.toggle("active", i === index);
-                });
-                document
-                    .querySelectorAll(".task-container")
-                    .forEach((div, i) => {
-                        div.classList.toggle("active", i === index);
-                    });
-                document.getElementById("resultMessage").innerHTML = "";
-                document.getElementById("resultMessage").style.background =
-                    "transparent";
-
-                document
-                    .getElementById(`task-${index}`)
-                    .scrollIntoView({ behavior: "smooth", block: "nearest" });
-
-                renderTask(index);
-                updateNavButtons();
+        function prevTask() {
+            if (currentTaskIndex > 0) {
+                switchTask(currentTaskIndex - 1);
             }
+        }
 
-            function nextTask() {
-                if (currentTaskIndex < tasks.length - 1) {
-                    switchTask(currentTaskIndex + 1);
+        function updateNavButtons() {
+            const prevBtn = document.getElementById("prevBtn");
+            const nextBtn = document.getElementById("nextBtn");
+
+            if (prevBtn) prevBtn.disabled = currentTaskIndex === 0;
+            if (nextBtn) {
+                if (currentTaskIndex === tasks.length - 1) {
+                    nextBtn.textContent = "🏁 Завершено";
+                    nextBtn.disabled = true;
+                } else {
+                    nextBtn.textContent = "Далее ➡️";
+                    nextBtn.disabled = false;
                 }
             }
+        }
 
-            function prevTask() {
-                if (currentTaskIndex > 0) {
-                    switchTask(currentTaskIndex - 1);
+        /* =========================================
+СТАТУСЫ ЗАДАЧ И СТАТИСТИКА
+========================================= */
+        function updateTaskStatus(index, status) {
+            taskResults[index] = status;
+            const btn = document.querySelector(
+                `.nav-btn[data-index="${index}"]`,
+            );
+            if (btn) {
+                btn.classList.remove("solved-correct", "solved-incorrect");
+                if (status === "correct") {
+                    btn.classList.add("solved-correct");
+                } else if (status === "incorrect") {
+                    btn.classList.add("solved-incorrect");
                 }
             }
+            updateStats();
+        }
 
-            function updateNavButtons() {
-                const prevBtn = document.getElementById("prevBtn");
-                const nextBtn = document.getElementById("nextBtn");
+        function updateStats() {
+            const correct = taskResults.filter(
+                (s) => s === "correct",
+            ).length;
+            const incorrect = taskResults.filter(
+                (s) => s === "incorrect",
+            ).length;
+            const pending = taskResults.filter((s) => s === null).length;
 
-                if (prevBtn) prevBtn.disabled = currentTaskIndex === 0;
-                if (nextBtn) {
-                    if (currentTaskIndex === tasks.length - 1) {
-                        nextBtn.textContent = "🏁 Завершено";
-                        nextBtn.disabled = true;
-                    } else {
-                        nextBtn.textContent = "Далее ➡️";
-                        nextBtn.disabled = false;
-                    }
-                }
+            document.getElementById("statCorrect").textContent = correct;
+            document.getElementById("statIncorrect").textContent =
+                incorrect;
+            document.getElementById("statPending").textContent = pending;
+
+            // Прогресс-бар = процент решённых задач (верно + неверно)
+            const solved = correct + incorrect;
+            const progress = (solved / tasks.length) * 100;
+            document.getElementById("progressFill").style.width =
+                progress + "%";
+        }
+
+        function shuffle(array) {
+            const newArr = [...array];
+            for (let i = newArr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+            }
+            return newArr;
+        }
+
+        function renderTask(index) {
+            const task = tasks[index];
+            const sourceZone = document.getElementById(`source-${index}`);
+            const targetZone = document.getElementById(`target-${index}`);
+            sourceZone.innerHTML = "";
+            targetZone.innerHTML = "";
+            selectedCard = null;
+
+            shuffle(task.items).forEach((item) => {
+                const card = document.createElement("div");
+                card.className = "card";
+                card.innerHTML = `<span>${item.icon}</span> <span>${item.name}</span>`;
+                card.dataset.correct = item.correct;
+                card.dataset.name = item.name;
+
+                setupCardInteraction(card);
+                sourceZone.appendChild(card);
+            });
+        }
+
+        /* =========================================
+POINTER EVENTS (DRAG + CLICK)
+========================================= */
+        function setupCardInteraction(card) {
+            card.addEventListener("pointerdown", onPointerDown);
+        }
+
+        function onPointerDown(e) {
+            const card = e.currentTarget;
+            if (e.button === 2) return;
+
+            card.setPointerCapture(e.pointerId);
+
+            dragState = {
+                active: true,
+                card: card,
+                ghost: null,
+                startX: e.clientX,
+                startY: e.clientY,
+                moved: false,
+                pointerId: e.pointerId,
+            };
+
+            e.preventDefault();
+
+            card.addEventListener("pointermove", onPointerMove);
+            card.addEventListener("pointerup", onPointerUp);
+            card.addEventListener("pointercancel", onPointerCancel);
+        }
+
+        function onPointerMove(e) {
+            if (!dragState.active || dragState.card !== e.currentTarget)
+                return;
+
+            const dx = e.clientX - dragState.startX;
+            const dy = e.clientY - dragState.startY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (!dragState.moved && distance < DRAG_THRESHOLD) return;
+
+            if (!dragState.moved) {
+                dragState.moved = true;
+
+                const rect = dragState.card.getBoundingClientRect();
+                dragState.offsetX = e.clientX - rect.left;
+                dragState.offsetY = e.clientY - rect.top;
+
+                dragState.ghost = dragState.card.cloneNode(true);
+                dragState.ghost.className = "card card-ghost";
+                dragState.ghost.style.left = rect.left + "px";
+                dragState.ghost.style.top = rect.top + "px";
+                dragState.ghost.style.width = rect.width + "px";
+                document.body.appendChild(dragState.ghost);
+
+                dragState.card.classList.add("dragging");
             }
 
-            /* =========================================
-   СТАТУСЫ ЗАДАЧ И СТАТИСТИКА
-   ========================================= */
-            function updateTaskStatus(index, status) {
-                taskResults[index] = status;
-                const btn = document.querySelector(
-                    `.nav-btn[data-index="${index}"]`,
-                );
-                if (btn) {
-                    btn.classList.remove("solved-correct", "solved-incorrect");
-                    if (status === "correct") {
-                        btn.classList.add("solved-correct");
-                    } else if (status === "incorrect") {
-                        btn.classList.add("solved-incorrect");
-                    }
-                }
-                updateStats();
+            e.preventDefault();
+
+            dragState.ghost.style.left =
+                e.clientX - dragState.offsetX + "px";
+            dragState.ghost.style.top =
+                e.clientY - dragState.offsetY + "px";
+
+            dragState.ghost.style.visibility = "hidden";
+            const elemUnderPointer = document.elementFromPoint(
+                e.clientX,
+                e.clientY,
+            );
+            dragState.ghost.style.visibility = "visible";
+
+            document
+                .querySelectorAll(".zone")
+                .forEach((z) => z.classList.remove("hovered"));
+            if (elemUnderPointer) {
+                const zone = elemUnderPointer.closest(".zone");
+                if (zone) zone.classList.add("hovered");
             }
+        }
 
-            function updateStats() {
-                const correct = taskResults.filter(
-                    (s) => s === "correct",
-                ).length;
-                const incorrect = taskResults.filter(
-                    (s) => s === "incorrect",
-                ).length;
-                const pending = taskResults.filter((s) => s === null).length;
+        function onPointerUp(e) {
+            const card = e.currentTarget;
 
-                document.getElementById("statCorrect").textContent = correct;
-                document.getElementById("statIncorrect").textContent =
-                    incorrect;
-                document.getElementById("statPending").textContent = pending;
+            card.removeEventListener("pointermove", onPointerMove);
+            card.removeEventListener("pointerup", onPointerUp);
+            card.removeEventListener("pointercancel", onPointerCancel);
 
-                // Прогресс-бар = процент решённых задач (верно + неверно)
-                const solved = correct + incorrect;
-                const progress = (solved / tasks.length) * 100;
-                document.getElementById("progressFill").style.width =
-                    progress + "%";
-            }
+            try {
+                card.releasePointerCapture(dragState.pointerId);
+            } catch (err) { }
 
-            function shuffle(array) {
-                const newArr = [...array];
-                for (let i = newArr.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
-                }
-                return newArr;
-            }
+            if (!dragState.active) return;
 
-            function renderTask(index) {
-                const task = tasks[index];
-                const sourceZone = document.getElementById(`source-${index}`);
-                const targetZone = document.getElementById(`target-${index}`);
-                sourceZone.innerHTML = "";
-                targetZone.innerHTML = "";
-                selectedCard = null;
-
-                shuffle(task.items).forEach((item) => {
-                    const card = document.createElement("div");
-                    card.className = "card";
-                    card.innerHTML = `<span>${item.icon}</span> <span>${item.name}</span>`;
-                    card.dataset.correct = item.correct;
-                    card.dataset.name = item.name;
-
-                    setupCardInteraction(card);
-                    sourceZone.appendChild(card);
-                });
-            }
-
-            /* =========================================
-   POINTER EVENTS (DRAG + CLICK)
-   ========================================= */
-            function setupCardInteraction(card) {
-                card.addEventListener("pointerdown", onPointerDown);
-            }
-
-            function onPointerDown(e) {
-                const card = e.currentTarget;
-                if (e.button === 2) return;
-
-                card.setPointerCapture(e.pointerId);
-
-                dragState = {
-                    active: true,
-                    card: card,
-                    ghost: null,
-                    startX: e.clientX,
-                    startY: e.clientY,
-                    moved: false,
-                    pointerId: e.pointerId,
-                };
-
-                e.preventDefault();
-
-                card.addEventListener("pointermove", onPointerMove);
-                card.addEventListener("pointerup", onPointerUp);
-                card.addEventListener("pointercancel", onPointerCancel);
-            }
-
-            function onPointerMove(e) {
-                if (!dragState.active || dragState.card !== e.currentTarget)
-                    return;
-
-                const dx = e.clientX - dragState.startX;
-                const dy = e.clientY - dragState.startY;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-
-                if (!dragState.moved && distance < DRAG_THRESHOLD) return;
-
-                if (!dragState.moved) {
-                    dragState.moved = true;
-
-                    const rect = dragState.card.getBoundingClientRect();
-                    dragState.offsetX = e.clientX - rect.left;
-                    dragState.offsetY = e.clientY - rect.top;
-
-                    dragState.ghost = dragState.card.cloneNode(true);
-                    dragState.ghost.className = "card card-ghost";
-                    dragState.ghost.style.left = rect.left + "px";
-                    dragState.ghost.style.top = rect.top + "px";
-                    dragState.ghost.style.width = rect.width + "px";
-                    document.body.appendChild(dragState.ghost);
-
-                    dragState.card.classList.add("dragging");
-                }
-
-                e.preventDefault();
-
-                dragState.ghost.style.left =
-                    e.clientX - dragState.offsetX + "px";
-                dragState.ghost.style.top =
-                    e.clientY - dragState.offsetY + "px";
-
+            if (!dragState.moved) {
+                handleCardClick(card);
+            } else {
                 dragState.ghost.style.visibility = "hidden";
                 const elemUnderPointer = document.elementFromPoint(
                     e.clientX,
@@ -1499,76 +1586,23 @@
                 );
                 dragState.ghost.style.visibility = "visible";
 
-                document
-                    .querySelectorAll(".zone")
-                    .forEach((z) => z.classList.remove("hovered"));
+                let targetZone = null;
                 if (elemUnderPointer) {
-                    const zone = elemUnderPointer.closest(".zone");
-                    if (zone) zone.classList.add("hovered");
+                    targetZone = elemUnderPointer.closest(".zone");
                 }
-            }
 
-            function onPointerUp(e) {
-                const card = e.currentTarget;
-
-                card.removeEventListener("pointermove", onPointerMove);
-                card.removeEventListener("pointerup", onPointerUp);
-                card.removeEventListener("pointercancel", onPointerCancel);
-
-                try {
-                    card.releasePointerCapture(dragState.pointerId);
-                } catch (err) {}
-
-                if (!dragState.active) return;
-
-                if (!dragState.moved) {
-                    handleCardClick(card);
-                } else {
-                    dragState.ghost.style.visibility = "hidden";
-                    const elemUnderPointer = document.elementFromPoint(
-                        e.clientX,
-                        e.clientY,
+                if (targetZone) {
+                    targetZone.appendChild(card);
+                    card.classList.remove(
+                        "selected",
+                        "correct",
+                        "incorrect",
+                        "missed",
                     );
-                    dragState.ghost.style.visibility = "visible";
-
-                    let targetZone = null;
-                    if (elemUnderPointer) {
-                        targetZone = elemUnderPointer.closest(".zone");
-                    }
-
-                    if (targetZone) {
-                        targetZone.appendChild(card);
-                        card.classList.remove(
-                            "selected",
-                            "correct",
-                            "incorrect",
-                            "missed",
-                        );
-                        if (selectedCard === card) selectedCard = null;
-                    }
-
-                    card.classList.remove("dragging");
-                    document
-                        .querySelectorAll(".zone")
-                        .forEach((z) => z.classList.remove("hovered"));
-
-                    if (dragState.ghost) {
-                        dragState.ghost.remove();
-                        dragState.ghost = null;
-                    }
+                    if (selectedCard === card) selectedCard = null;
                 }
 
-                dragState.active = false;
-                dragState.card = null;
-            }
-
-            function onPointerCancel(e) {
-                const card = e.currentTarget;
-                card.removeEventListener("pointermove", onPointerMove);
-                card.removeEventListener("pointerup", onPointerUp);
-                card.removeEventListener("pointercancel", onPointerCancel);
-
-                if (dragState.card) dragState.card.classList.remove("dragging");
+                card.classList.remove("dragging");
                 document
                     .querySelectorAll(".zone")
                     .forEach((z) => z.classList.remove("hovered"));
@@ -1577,119 +1611,141 @@
                     dragState.ghost.remove();
                     dragState.ghost = null;
                 }
-
-                dragState.active = false;
-                dragState.card = null;
             }
 
-            /* =========================================
-   ОБРАБОТКА КЛИКОВ
-   ========================================= */
-            function handleCardClick(card) {
-                if (selectedCard === card) {
-                    card.classList.remove("selected");
-                    selectedCard = null;
+            dragState.active = false;
+            dragState.card = null;
+        }
+
+        function onPointerCancel(e) {
+            const card = e.currentTarget;
+            card.removeEventListener("pointermove", onPointerMove);
+            card.removeEventListener("pointerup", onPointerUp);
+            card.removeEventListener("pointercancel", onPointerCancel);
+
+            if (dragState.card) dragState.card.classList.remove("dragging");
+            document
+                .querySelectorAll(".zone")
+                .forEach((z) => z.classList.remove("hovered"));
+
+            if (dragState.ghost) {
+                dragState.ghost.remove();
+                dragState.ghost = null;
+            }
+
+            dragState.active = false;
+            dragState.card = null;
+        }
+
+        /* =========================================
+ОБРАБОТКА КЛИКОВ
+========================================= */
+        function handleCardClick(card) {
+            if (selectedCard === card) {
+                card.classList.remove("selected");
+                selectedCard = null;
+            } else {
+                if (selectedCard) selectedCard.classList.remove("selected");
+                selectedCard = card;
+                card.classList.add("selected");
+            }
+        }
+
+        document.addEventListener("click", (e) => {
+            if (dragState.moved) return;
+
+            const zone = e.target.closest(".zone");
+            const card = e.target.closest(".card");
+
+            if (zone && !card && selectedCard) {
+                zone.appendChild(selectedCard);
+                selectedCard.classList.remove(
+                    "selected",
+                    "correct",
+                    "incorrect",
+                    "missed",
+                );
+                selectedCard = null;
+            }
+        });
+
+        /* =========================================
+ПРОВЕРКА И СБРОС
+========================================= */
+        function checkAnswers() {
+            const task = tasks[currentTaskIndex];
+            const targetZone = document.getElementById(
+                `target-${currentTaskIndex}`,
+            );
+            const sourceZone = document.getElementById(
+                `source-${currentTaskIndex}`,
+            );
+
+            let correctCount = 0;
+            const totalCorrect = task.items.filter((i) => i.correct).length;
+            let mistakes = 0;
+
+            Array.from(targetZone.children).forEach((card) => {
+                if (card.dataset.correct === "true") {
+                    card.classList.add("correct");
+                    correctCount++;
                 } else {
-                    if (selectedCard) selectedCard.classList.remove("selected");
-                    selectedCard = card;
-                    card.classList.add("selected");
-                }
-            }
-
-            document.addEventListener("click", (e) => {
-                if (dragState.moved) return;
-
-                const zone = e.target.closest(".zone");
-                const card = e.target.closest(".card");
-
-                if (zone && !card && selectedCard) {
-                    zone.appendChild(selectedCard);
-                    selectedCard.classList.remove(
-                        "selected",
-                        "correct",
-                        "incorrect",
-                        "missed",
-                    );
-                    selectedCard = null;
+                    card.classList.add("incorrect");
+                    mistakes++;
                 }
             });
 
-            /* =========================================
-   ПРОВЕРКА И СБРОС
-   ========================================= */
-            function checkAnswers() {
-                const task = tasks[currentTaskIndex];
-                const targetZone = document.getElementById(
-                    `target-${currentTaskIndex}`,
-                );
-                const sourceZone = document.getElementById(
-                    `source-${currentTaskIndex}`,
-                );
-
-                let correctCount = 0;
-                const totalCorrect = task.items.filter((i) => i.correct).length;
-                let mistakes = 0;
-
-                Array.from(targetZone.children).forEach((card) => {
-                    if (card.dataset.correct === "true") {
-                        card.classList.add("correct");
-                        correctCount++;
-                    } else {
-                        card.classList.add("incorrect");
-                        mistakes++;
-                    }
-                });
-
-                Array.from(sourceZone.children).forEach((card) => {
-                    if (card.dataset.correct === "true") {
-                        card.classList.add("missed");
-                    }
-                });
-
-                const msg = document.getElementById("resultMessage");
-
-                if (correctCount === totalCorrect && mistakes === 0) {
-                    msg.innerHTML = `<span style="color:var(--success-color)">🎉 Отлично! Всё верно! (${correctCount}/${totalCorrect})</span>`;
-                    msg.style.background = "rgba(17, 153, 142, 0.1)";
-
-                    // ✅ Помечаем задачу как решённую правильно
-                    updateTaskStatus(currentTaskIndex, "correct");
-
-                    if (currentTaskIndex < tasks.length - 1) {
-                        setTimeout(() => {
-                            nextTask();
-                        }, 1500);
-                    }
-                } else {
-                    msg.innerHTML = `<span style="color:var(--error-color)">⚠️ Ошибки/пропуски. Найдено: ${correctCount} из ${totalCorrect}. Лишних: ${mistakes}</span>`;
-                    msg.style.background = "rgba(220, 53, 69, 0.1)";
-
-                    // ❌ Помечаем задачу как решённую с ошибкой
-                    updateTaskStatus(currentTaskIndex, "incorrect");
-                }
-            }
-
-            function resetTask() {
-                renderTask(currentTaskIndex);
-
-                // Сбрасываем статус задачи (кнопка становится обычной)
-                updateTaskStatus(currentTaskIndex, null);
-
-                const msg = document.getElementById("resultMessage");
-                msg.innerHTML = "";
-                msg.style.background = "transparent";
-            }
-
-            /* =========================================
-   ЗАПУСК
-   ========================================= */
-            document.addEventListener("contextmenu", (e) => {
-                if (e.target.closest(".card")) {
-                    e.preventDefault();
+            Array.from(sourceZone.children).forEach((card) => {
+                if (card.dataset.correct === "true") {
+                    card.classList.add("missed");
                 }
             });
 
-            init();
-        </script>
-    </body>
+            const msg = document.getElementById("resultMessage");
+
+            if (correctCount === totalCorrect && mistakes === 0) {
+                msg.innerHTML = `<span style="color:var(--success-color)">🎉 Отлично! Всё верно! (${correctCount}/${totalCorrect})</span>`;
+                msg.style.background = "rgba(17, 153, 142, 0.1)";
+
+                // ✅ Помечаем задачу как решённую правильно
+                updateTaskStatus(currentTaskIndex, "correct");
+
+                if (currentTaskIndex < tasks.length - 1) {
+                    setTimeout(() => {
+                        nextTask();
+                    }, 1500);
+                }
+            } else {
+                msg.innerHTML = `<span style="color:var(--error-color)">⚠️ Ошибки/пропуски. Найдено: ${correctCount} из ${totalCorrect}. Лишних: ${mistakes}</span>`;
+                msg.style.background = "rgba(220, 53, 69, 0.1)";
+
+                // ❌ Помечаем задачу как решённую с ошибкой
+                updateTaskStatus(currentTaskIndex, "incorrect");
+            }
+        }
+
+        function resetTask() {
+            renderTask(currentTaskIndex);
+
+            // Сбрасываем статус задачи (кнопка становится обычной)
+            updateTaskStatus(currentTaskIndex, null);
+
+            const msg = document.getElementById("resultMessage");
+            msg.innerHTML = "";
+            msg.style.background = "transparent";
+        }
+
+        /* =========================================
+ЗАПУСК
+========================================= */
+        document.addEventListener("contextmenu", (e) => {
+            if (e.target.closest(".card")) {
+                e.preventDefault();
+            }
+        });
+
+        init();
+    </script>
+</body>
+
 </html>

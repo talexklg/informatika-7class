@@ -67,6 +67,7 @@
   }
   .iconbtn:hover{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.15)}
   .iconbtn.danger:hover{border-color:var(--red);color:var(--red);box-shadow:0 0 0 3px rgba(255,84,112,.15)}
+  a.iconbtn{text-decoration:none}
 
   main{max-width:1180px;margin:0 auto;padding:18px 20px 60px}
 
@@ -242,6 +243,42 @@
   #confetti{position:fixed;inset:0;pointer-events:none;z-index:80}
   footer{max-width:1180px;margin:0 auto;padding:0 20px 40px;color:var(--muted);font-size:.78rem;text-align:center}
 
+  /* ---- светлая тема (переключатель в шапке) ---- */
+  body.light{
+    --ink:#eef3fb; --paper:#ffffff; --paper2:#f4f7fd; --line:#d7e0ee;
+    --board:#eef2f9; --text:#0f172a; --muted:#5b6b85; --used:#94a3b8;
+    --phos-soft:#86efac; --shadow:0 18px 50px rgba(15,23,42,.12);
+  }
+  body.light::before{opacity:.6}
+  body.light header{background:linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.75))}
+  body.light .prog b{color:#15803d}
+  body.light .tno{background:linear-gradient(90deg,#0891b2,#16a34a);-webkit-background-clip:text;background-clip:text;color:transparent}
+  body.light .badge.orig{color:#15803d;border-color:#86efac}
+  body.light .badge.type{color:#0e7490;border-color:#a5f3fc}
+  body.light .origlink{color:#0e7490}
+  body.light .origlink:hover{background:rgba(34,211,238,.15);border-color:#0e7490}
+  body.light .desc{color:#334155}
+  body.light .rule b{color:#b45309}
+  body.light .desk{border-color:#c3cede;box-shadow:inset 0 0 60px rgba(15,23,42,.08), 0 0 0 1px rgba(34,197,94,.08)}
+  body.light .desk::before{background:repeating-linear-gradient(0deg,rgba(15,23,42,.03) 0 1px,transparent 1px 4px)}
+  body.light .page{border-color:#c3cede}
+  body.light .page::before{background:linear-gradient(225deg,var(--board) 50%,#c3cede 50%)}
+  body.light .ext{color:#15803d;text-shadow:none;background:rgba(34,197,94,.12);border-color:#86efac}
+  body.light .fname{color:#334155}
+  body.light .folder{background:linear-gradient(180deg,#fff3d6,#ffe9b8);border-color:#d9a83c}
+  body.light .folder::before{background:#fff3d6;border-color:#d9a83c}
+  body.light .flabel{color:#7c4a03}
+  body.light .chip{background:#fff8e1;border-color:#d9a83c;color:#5b3a00}
+  body.light .acell.lh{color:#0e7490;border-color:#a5f3fc;background:rgba(34,211,238,.12)}
+  body.light .acell.filled{color:#15803d;text-shadow:none}
+  body.light .ansstr{color:#15803d;text-shadow:none}
+  body.light .banner{color:#15803d}
+  body.light .overlay{background:rgba(15,23,42,.45)}
+  body.light .mcell.done{background:linear-gradient(135deg,#e8f7ee,#d1fae5);border-color:#22c55e}
+  body.light .mcell.done b{color:#15803d}
+  body.light .ct{color:#0e7490}
+  body.light .exts{color:#15803d}
+
   @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
   @keyframes pulse{0%{transform:scale(1)}40%{transform:scale(1.04)}100%{transform:scale(1)}}
   @keyframes pop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
@@ -268,6 +305,8 @@
     </div>
     <div class="hspace"></div>
     <div class="prog"><div class="bar"><div class="fill" id="progFill"></div></div><b id="progressBadge">0 / 37</b></div>
+    <a class="iconbtn" id="btnHome" href="../index.html" title="На главную" aria-label="На главную">🏠</a>
+    <button class="iconbtn" id="btnTheme" title="Включить светлую тему" aria-label="Сменить тему">☀️</button>
     <button class="iconbtn" id="btnSound" title="Звук">🔊</button>
     <button class="iconbtn" id="btnFull" title="На весь экран (для интерактивной доски)">⛶</button>
   </div>
@@ -400,7 +439,7 @@ const WORDS = ['kotik','raketa','plan','otchet','risunok','pesnya','urok','klass
 const SKEY = 'vpr7_files_folders_v1';
 
 let cur = 0, files = [], mistakes = 0, selected = -1, done = false, drag = null;
-let store = { solved: {}, sound: true };
+let store = { solved: {}, sound: true, theme: 'dark' };
 
 function $(id){ return document.getElementById(id); }
 function load(){ try{ const s = JSON.parse(localStorage.getItem(SKEY)); if(s && s.solved) store = s; }catch(e){} }
@@ -696,6 +735,18 @@ function init(){
     $('btnSound').textContent = store.sound ? '🔊' : '🔇';
   });
   $('btnSound').textContent = store.sound ? '🔊' : '🔇';
+  function applyTheme(){
+    const light = store.theme === 'light';
+    document.body.classList.toggle('light', light);
+    $('btnTheme').textContent = light ? '🌙' : '☀️';
+    $('btnTheme').title = light ? 'Включить тёмную тему' : 'Включить светлую тему';
+  }
+  applyTheme();
+  $('btnTheme').addEventListener('click', function(){
+    store.theme = (store.theme === 'light') ? 'dark' : 'light';
+    save();
+    applyTheme();
+  });
   $('btnFull').addEventListener('click', function(){
     if(document.fullscreenElement){ document.exitFullscreen(); }
     else if(document.documentElement.requestFullscreen){ document.documentElement.requestFullscreen().catch(function(){}); }
