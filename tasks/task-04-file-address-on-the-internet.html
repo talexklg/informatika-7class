@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ВПР 7 класс: Сборка интернет-адреса (с условием)</title>
+<style>
+  :root {
+    --primary: #3498db;
+    --success: #27ae60;
+    --danger: #e74c3c;
+    --warning: #f39c12;
+    --bg: #f0f4f8;
+    --text: #2c3e50;
+    --slot-bg: #ffffff;
+  }
+  body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    background: var(--bg); margin: 0; padding: 20px; 
+    display: flex; flex-direction: column; align-items: center; 
+    color: var(--text); user-select: none; min-height: 100vh;
+  }
+  h1 { font-size: 1.8rem; margin-bottom: 5px; text-align: center; }
+  .progress-bar { 
+    width: 100%; max-width: 1000px; height: 12px; background: #dfe6e9; 
+    border-radius: 6px; margin-bottom: 15px; overflow: hidden; 
+  }
+  .progress-fill { 
+    height: 100%; background: var(--success); width: 0%; transition: width 0.5s ease; 
+  }
+  .hint-box { 
+    background: #e8f4f8; border-left: 5px solid var(--primary); 
+    padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; 
+    font-size: 1.05rem; max-width: 1000px; width: 100%; box-sizing: border-box; text-align: center;
+  }
+  
+  .task-container { 
+    width: 100%; max-width: 1000px; background: #ffffff; 
+    padding: 30px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.08); 
+    display: none; animation: fadeIn 0.4s ease;
+  }
+  .task-container.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+  
+  .task-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .task-number { font-size: 1.2rem; font-weight: bold; color: var(--primary); }
+  .score-display { font-size: 1.1rem; font-weight: bold; color: var(--warning); }
+
+  .task-text { 
+    font-size: 1.25rem; line-height: 1.5; margin-bottom: 25px; font-weight: 500; 
+    text-align: center; background: #f8f9fa; padding: 20px; border-radius: 10px; border: 1px solid #e9ecef;
+  }
+  .highlight-protocol { color: #8e44ad; font-weight: bold; }
+  .highlight-server { color: #2980b9; font-weight: bold; }
+  .highlight-file { color: #c0392b; font-weight: bold; }
+  
+  /* Зона ответа (слоты) */
+  .answer-zone { 
+    display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; 
+    margin-bottom: 30px; padding: 20px; background: #f8f9fa; border-radius: 12px; border: 2px dashed #bdc3c7;
+  }
+  .slot { 
+    width: 90px; height: 65px; background: var(--slot-bg); border: 3px solid #bdc3c7; 
+    border-radius: 8px; display: flex; flex-direction: column; align-items: center; 
+    justify-content: center; cursor: pointer; transition: all 0.2s; position: relative;
+  }
+  .slot:hover { border-color: var(--primary); background: #ebf5fb; }
+  .slot.filled { border-color: var(--primary); background: #d6eaf8; }
+  .slot.correct { border-color: var(--success); background: #d5f5e3; }
+  .slot.wrong { border-color: var(--danger); background: #fadbd8; animation: shake 0.4s ease; }
+  @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+  
+  .slot-letter { font-size: 0.8rem; color: #7f8c8d; font-weight: bold; margin-bottom: 2px; }
+  .slot-text { font-size: 1rem; font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; word-break: break-all; text-align: center; line-height: 1.1; }
+
+  /* Зона фрагментов (пул) */
+  .pool-zone { 
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; 
+    margin-bottom: 25px; min-height: 80px;
+  }
+  .fragment { 
+    padding: 12px 16px; background: white; border: 2px solid var(--primary); 
+    border-radius: 8px; cursor: pointer; transition: all 0.2s; 
+    display: flex; flex-direction: column; align-items: center; min-width: 70px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  }
+  .fragment:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); background: #ebf5fb; }
+  .fragment .letter { font-size: 0.85rem; color: var(--primary); font-weight: bold; margin-bottom: 4px; }
+  .fragment .text { font-size: 1.1rem; font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
+
+  .controls { display: flex; gap: 15px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
+  .action-btn { 
+    padding: 14px 28px; font-size: 1.15rem; border: none; border-radius: 10px; 
+    cursor: pointer; font-weight: bold; color: white; transition: 0.2s; 
+    display: flex; align-items: center; gap: 8px;
+  }
+  .check-btn { background: var(--success); }
+  .check-btn:hover { background: #219653; }
+  .check-btn:disabled { background: #95a5a6; cursor: not-allowed; }
+  .next-btn { background: var(--primary); display: none; }
+  .next-btn:hover { background: #2980b9; }
+  .reset-btn { background: #95a5a6; }
+  .reset-btn:hover { background: #7f8c8d; }
+
+  .result-msg { text-align: center; font-size: 1.3rem; font-weight: bold; margin-top: 25px; min-height: 35px; }
+  .explanation { 
+    text-align: left; color: #34495e; font-size: 1.05rem; margin-top: 15px; 
+    background: #f8f9fa; padding: 20px; border-radius: 8px; display: none; border-left: 4px solid var(--primary);
+  }
+  .explanation.visible { display: block; animation: fadeIn 0.5s ease; }
+  .correct-url { color: var(--success); font-weight: bold; font-family: 'Consolas', monospace; font-size: 1.2rem; display: block; margin: 10px 0; text-align: center;}
+  .step-reason { margin-bottom: 8px; }
+
+  @media (max-width: 768px) {
+    .slot { width: 70px; height: 60px; }
+    .slot-text { font-size: 0.85rem; }
+    .fragment { min-width: 60px; padding: 10px; }
+    .fragment .text { font-size: 0.95rem; }
+    .task-text { font-size: 1.1rem; padding: 15px; }
+  }
+</style>
+</head>
+<body>
+
+<h1>🌐 ВПР 7 класс: Сборка интернет-адреса</h1>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<div class="hint-box">💡 <b>Как работать:</b> Сначала прочитай условие и найди протокол, сервер и файл. Затем нажми на фрагмент внизу, чтобы переместить его в первую свободную ячейку наверху. Нажми на ячейку наверху, чтобы вернуть фрагмент обратно.</div>
+
+<div id="tasksContainer"></div>
+
+<div class="controls">
+  <button class="action-btn reset-btn" onclick="resetCurrentTask()">🔄 Сбросить</button>
+  <button class="action-btn check-btn" id="checkBtn" onclick="checkAnswer()" disabled>✅ Проверить</button>
+  <button class="action-btn next-btn" id="nextBtn" onclick="nextTask()">➡️ Следующее задание</button>
+</div>
+
+<div class="result-msg" id="resultMsg"></div>
+<div class="explanation" id="explanation"></div>
+
+<script>
+const tasks = [
+  {
+    id: 1,
+    protocol: "http",
+    server: "school.ru",
+    file: "index.html",
+    fragments: [
+      { letter: 'А', text: '.ru' },
+      { letter: 'Б', text: '/' },
+      { letter: 'В', text: 'http' },
+      { letter: 'Г', text: '://' },
+      { letter: 'Д', text: 'school' },
+      { letter: 'Е', text: 'index' },
+      { letter: 'Ж', text: '.html' }
+    ],
+    correctOrder: ['В', 'Г', 'Д', 'А', 'Б', 'Е', 'Ж']
+  },
+  {
+    id: 2,
+    protocol: "https",
+    server: "mysite.org",
+    file: "about.html",
+    fragments: [
+      { letter: 'А', text: 'https' },
+      { letter: 'Б', text: '.org' },
+      { letter: 'В', text: '://' },
+      { letter: 'Г', text: '/' },
+      { letter: 'Д', text: 'about' },
+      { letter: 'Е', text: 'mysite' },
+      { letter: 'Ж', text: '.html' }
+    ],
+    correctOrder: ['А', 'В', 'Е', 'Б', 'Г', 'Д', 'Ж']
+  },
+  {
+    id: 3,
+    protocol: "http",
+    server: "site.com",
+    file: "info.htm",
+    fragments: [
+      { letter: 'А', text: '/' },
+      { letter: 'Б', text: 'com' },
+      { letter: 'В', text: 'http' },
+      { letter: 'Г', text: '://' },
+      { letter: 'Д', text: 'site' },
+      { letter: 'Е', text: 'info' },
+      { letter: 'Ж', text: '.htm' }
+    ],
+    correctOrder: ['В', 'Г', 'Д', 'Б', 'А', 'Е', 'Ж']
+  },
+  {
+    id: 4,
+    protocol: "https",
+    server: "portal.net",
+    file: "login.php",
+    fragments: [
+      { letter: 'А', text: 'net' },
+      { letter: 'Б', text: '/' },
+      { letter: 'В', text: 'https' },
+      { letter: 'Г', text: '://' },
+      { letter: 'Д', text: 'portal' },
+      { letter: 'Е', text: 'login' },
+      { letter: 'Ж', text: '.php' }
+    ],
+    correctOrder: ['В', 'Г', 'Д', 'А', 'Б', 'Е', 'Ж']
+  },
+  {
+    id: 5,
+    protocol: "http",
+    server: "exam.ru",
+    file: "vpr.pdf",
+    fragments: [
+      { letter: 'А', text: 'ru' },
+      { letter: 'Б', text: '://' },
+      { letter: 'В', text: '/' },
+      { letter: 'Г', text: 'http' },
+      { letter: 'Д', text: 'exam' },
+      { letter: 'Е', text: 'vpr' },
+      { letter: 'Ж', text: '.pdf' }
+    ],
+    correctOrder: ['Г', 'Б', 'Д', 'А', 'В', 'Е', 'Ж']
+  },
+  {
+    id: 6,
+    protocol: "https",
+    server: "library.edu",
+    file: "book.zip",
+    fragments: [
+      { letter: 'А', text: 'https' },
+      { letter: 'Б', text: '.edu' },
+      { letter: 'В', text: '://' },
+      { letter: 'Г', text: '/' },
+      { letter: 'Д', text: 'library' },
+      { letter: 'Е', text: 'book' },
+      { letter: 'Ж', text: '.zip' }
+    ],
+    correctOrder: ['А', 'В', 'Д', 'Б', 'Г', 'Е', 'Ж']
+  },
+  {
+    id: 7,
+    protocol: "http",
+    server: "wiki.org",
+    file: "main.html",
+    fragments: [
+      { letter: 'А', text: '/' },
+      { letter: 'Б', text: 'org' },
+      { letter: 'В', text: 'http' },
+      { letter: 'Г', text: '://' },
+      { letter: 'Д', text: 'wiki' },
+      { letter: 'Е', text: 'main' },
+      { letter: 'Ж', text: '.html' }
+    ],
+    correctOrder: ['В', 'Г', 'Д', 'Б', 'А', 'Е', 'Ж']
+  },
+  {
+    id: 8,
+    protocol: "https",
+    server: "shop.com",
+    file: "cart.html",
+    fragments: [
+      { letter: 'А', text: 'com' },
+      { letter: 'Б', text: '://' },
+      { letter: 'В', text: '/' },
+      { letter: 'Г', text: 'https' },
+      { letter: 'Д', text: 'shop' },
+      { letter: 'Е', text: 'cart' },
+      { letter: 'Ж', text: '.html' }
+    ],
+    correctOrder: ['Г', 'Б', 'Д', 'А', 'В', 'Е', 'Ж']
+  },
+  {
+    id: 9,
+    protocol: "http",
+    server: "news.ru",
+    file: "sport.htm",
+    fragments: [
+      { letter: 'А', text: 'ru' },
+      { letter: 'Б', text: '/' },
+      { letter: 'В', text: 'http' },
+      { letter: 'Г', text: '://' },
+      { letter: 'Д', text: 'news' },
+      { letter: 'Е', text: 'sport' },
+      { letter: 'Ж', text: '.htm' }
+    ],
+    correctOrder: ['В', 'Г', 'Д', 'А', 'Б', 'Е', 'Ж']
+  },
+  {
+    id: 10,
+    protocol: "https",
+    server: "cloud.net",
+    file: "file.txt",
+    fragments: [
+      { letter: 'А', text: 'https' },
+      { letter: 'Б', text: '.net' },
+      { letter: 'В', text: '://' },
+      { letter: 'Г', text: '/' },
+      { letter: 'Д', text: 'cloud' },
+      { letter: 'Е', text: 'file' },
+      { letter: 'Ж', text: '.txt' }
+    ],
+    correctOrder: ['А', 'В', 'Д', 'Б', 'Г', 'Е', 'Ж']
+  }
+];
+
+let currentTaskIndex = 0;
+let currentAnswer = [];
+let score = 0;
+
+function shuffle(array) {
+  const newArr = [...array];
+  for (let i = newArr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+  }
+  return newArr;
+}
+
+function init() {
+  const container = document.getElementById('tasksContainer');
+  
+  tasks.forEach((task, index) => {
+    const div = document.createElement('div');
+    div.className = `task-container ${index === 0 ? 'active' : ''}`;
+    div.id = `task-${index}`;
+    
+    let slotsHTML = '';
+    for (let i = 0; i < 7; i++) {
+      slotsHTML += `
+        <div class="slot" data-index="${i}" onclick="handleSlotClick(${i})">
+          <div class="slot-letter"></div>
+          <div class="slot-text"></div>
+        </div>
+      `;
+    }
+    
+    // Формируем текст задачи в стиле ВПР
+    const taskText = `Доступ к файлу <span class="highlight-file">${task.file}</span>, находящемуся на сервере <span class="highlight-server">${task.server}</span>, осуществляется по протоколу <span class="highlight-protocol">${task.protocol}</span>.<br>В таблице приведены фрагменты адреса. Расположи их в правильном порядке.`;
+    
+    div.innerHTML = `
+      <div class="task-header">
+        <div class="task-number">Задание ${task.id} из ${tasks.length}</div>
+        <div class="score-display">Баллы: ${score}</div>
+      </div>
+      <div class="task-text">${taskText}</div>
+      <div class="answer-zone" id="answer-zone-${index}">
+        ${slotsHTML}
+      </div>
+      <div class="pool-zone" id="pool-zone-${index}"></div>
+    `;
+    container.appendChild(div);
+  });
+  
+  renderTask(0);
+}
+
+function renderTask(index) {
+  currentTaskIndex = index;
+  currentAnswer = new Array(7).fill(null);
+  
+  const task = tasks[index];
+  const poolZone = document.getElementById(`pool-zone-${index}`);
+  poolZone.innerHTML = '';
+  
+  const shuffledFragments = shuffle(task.fragments);
+  
+  shuffledFragments.forEach(frag => {
+    const btn = document.createElement('div');
+    btn.className = 'fragment';
+    btn.dataset.letter = frag.letter;
+    btn.dataset.text = frag.text;
+    btn.innerHTML = `<div class="letter">${frag.letter}</div><div class="text">${frag.text}</div>`;
+    btn.onclick = () => handleFragmentClick(frag.letter, frag.text);
+    poolZone.appendChild(btn);
+  });
+  
+  updateSlotsUI(index);
+  
+  document.getElementById('checkBtn').disabled = true;
+  document.getElementById('checkBtn').style.display = 'flex';
+  document.getElementById('nextBtn').style.display = 'none';
+  document.getElementById('resultMsg').innerHTML = '';
+  document.getElementById('explanation').classList.remove('visible');
+  
+  updateProgress();
+}
+
+function handleFragmentClick(letter, text) {
+  const emptyIndex = currentAnswer.findIndex(val => val === null);
+  if (emptyIndex !== -1) {
+    currentAnswer[emptyIndex] = { letter, text };
+    updateSlotsUI(currentTaskIndex);
+    checkIfReady();
+  }
+}
+
+function handleSlotClick(index) {
+  if (currentAnswer[index] !== null) {
+    currentAnswer[index] = null;
+    updateSlotsUI(currentTaskIndex);
+    document.getElementById('checkBtn').disabled = true;
+    
+    document.querySelectorAll('.slot').forEach(s => {
+      s.classList.remove('correct', 'wrong');
+    });
+  }
+}
+
+function updateSlotsUI(taskIndex) {
+  const slots = document.querySelectorAll(`#task-${taskIndex} .slot`);
+  slots.forEach((slot, i) => {
+    const data = currentAnswer[i];
+    const letterDiv = slot.querySelector('.slot-letter');
+    const textDiv = slot.querySelector('.slot-text');
+    
+    if (data) {
+      slot.classList.add('filled');
+      letterDiv.textContent = data.letter;
+      textDiv.textContent = data.text;
+    } else {
+      slot.classList.remove('filled', 'correct', 'wrong');
+      letterDiv.textContent = i + 1;
+      textDiv.textContent = '';
+    }
+  });
+}
+
+function checkIfReady() {
+  const isFull = currentAnswer.every(val => val !== null);
+  document.getElementById('checkBtn').disabled = !isFull;
+}
+
+function checkAnswer() {
+  const task = tasks[currentTaskIndex];
+  const slots = document.querySelectorAll(`#task-${currentTaskIndex} .slot`);
+  let isAllCorrect = true;
+  
+  currentAnswer.forEach((ans, i) => {
+    const correctLetter = task.correctOrder[i];
+    if (ans.letter === correctLetter) {
+      slots[i].classList.add('correct');
+      slots[i].classList.remove('wrong');
+    } else {
+      slots[i].classList.add('wrong');
+      slots[i].classList.remove('correct');
+      isAllCorrect = false;
+    }
+  });
+  
+  if (isAllCorrect) {
+    score++;
+    document.getElementById('resultMsg').innerHTML = '<span style="color:var(--success)">🎉 Отлично! Адрес собран верно.</span>';
+  } else {
+    document.getElementById('resultMsg').innerHTML = '<span style="color:var(--danger)">❌ Есть ошибки. Проверь порядок фрагментов.</span>';
+  }
+  
+  updateProgress();
+  
+  // Формируем подробное объяснение на основе условия задачи
+  const correctUrl = task.correctOrder.map(letter => {
+    const frag = task.fragments.find(f => f.letter === letter);
+    return frag.text;
+  }).join('');
+  
+  const serverParts = task.server.split('.');
+  const domainName = serverParts[0];
+  const zone = serverParts[1];
+  
+  const expDiv = document.getElementById('explanation');
+  expDiv.innerHTML = `
+    <div style="text-align:center; margin-bottom:15px;">Правильный адрес:<br><span class="correct-url">${correctUrl}</span></div>
+    <div class="step-reason">🔹 <b>Протокол:</b> ${task.protocol} (фрагменты в начале)</div>
+    <div class="step-reason">🔹 <b>Разделитель:</b> :// (всегда идёт после протокола)</div>
+    <div class="step-reason">🔹 <b>Сервер:</b> ${task.server} (сначала имя домена <b>${domainName}</b>, затем зона <b>.${zone}</b>)</div>
+    <div class="step-reason">🔹 <b>Разделитель пути:</b> / (отделяет адрес сервера от файла)</div>
+    <div class="step-reason">🔹 <b>Файл:</b> ${task.file} (имя файла и его расширение в самом конце)</div>
+  `;
+  expDiv.classList.add('visible');
+  
+  document.getElementById('checkBtn').style.display = 'none';
+  if (currentTaskIndex < tasks.length - 1) {
+    document.getElementById('nextBtn').style.display = 'flex';
+  } else {
+    document.getElementById('resultMsg').innerHTML += `<br><span style="font-size:1.1rem; color:var(--primary); margin-top:10px; display:block;">🏆 Тренажёр завершён! Итоговый счёт: ${score} из ${tasks.length}</span>`;
+  }
+}
+
+function resetCurrentTask() {
+  renderTask(currentTaskIndex);
+}
+
+function nextTask() {
+  currentTaskIndex++;
+  document.querySelectorAll('.task-container').forEach((div, i) => {
+    div.classList.toggle('active', i === currentTaskIndex);
+  });
+  renderTask(currentTaskIndex);
+}
+
+function updateProgress() {
+  const pct = ((currentTaskIndex + (document.getElementById('checkBtn').style.display === 'none' ? 1 : 0)) / tasks.length) * 100;
+  document.getElementById('progressFill').style.width = `${pct}%`;
+  document.querySelectorAll('.score-display').forEach(el => el.textContent = `Баллы: ${score}`);
+}
+
+init();
+</script>
+</body>
+</html>

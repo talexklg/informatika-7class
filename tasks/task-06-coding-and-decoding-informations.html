@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ШИФР · ВПР Информатика 7 — Кодирование и декодирование</title>
+<style>
+  :root{
+    --ink:#070b14; --paper:#0e1626; --paper2:#121d31; --line:#22304a;
+    --board:#1a252f; --text:#e8f0ff; --muted:#8ea3c4;
+    --phos:#39ff9e; --phos-soft:#1f7a52; --used:#5c6b7a;
+    --cyan:#22d3ee; --blue:#3b82f6; --amber:#ffb020; --red:#ff5470;
+    --green:#22c55e; --magenta:#ff4fd8;
+    --r:14px; --shadow:0 18px 50px rgba(0,0,0,.5);
+    --mono:ui-monospace,"JetBrains Mono","Cascadia Code","Courier New",monospace;
+    --sans:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:var(--sans); color:var(--text); background:var(--ink);
+    min-height:100vh; overflow-x:hidden; line-height:1.5;
+  }
+  body::before{
+    content:""; position:fixed; inset:-20%; z-index:-2; pointer-events:none;
+    background:
+      radial-gradient(40% 35% at 12% 8%, rgba(34,211,238,.16), transparent 70%),
+      radial-gradient(38% 32% at 88% 12%, rgba(255,79,216,.13), transparent 70%),
+      radial-gradient(45% 40% at 70% 95%, rgba(57,255,158,.10), transparent 70%),
+      radial-gradient(35% 30% at 25% 90%, rgba(59,130,246,.12), transparent 70%);
+    filter:blur(10px); animation:drift 26s ease-in-out infinite alternate;
+  }
+  body::after{
+    content:""; position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  @keyframes drift{from{transform:translate3d(-2%,-1%,0) scale(1)}to{transform:translate3d(2%,2%,0) scale(1.06)}}
+
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-track{background:var(--paper)}
+  ::-webkit-scrollbar-thumb{background:linear-gradient(var(--cyan),var(--blue));border-radius:8px;border:2px solid var(--paper)}
+  ::-webkit-scrollbar-thumb:hover{background:linear-gradient(var(--phos),var(--cyan))}
+
+  header{
+    position:sticky; top:0; z-index:50; backdrop-filter:blur(12px);
+    background:linear-gradient(180deg, rgba(10,15,26,.92), rgba(10,15,26,.72));
+    border-bottom:1px solid var(--line);
+  }
+  .hwrap{max-width:1180px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:12px;min-width:0}
+  .logo{
+    width:44px;height:44px;border-radius:12px;flex:0 0 auto;display:grid;place-items:center;
+    background:conic-gradient(from 210deg,var(--cyan),var(--blue),var(--magenta),var(--phos),var(--cyan));
+    box-shadow:0 0 22px rgba(34,211,238,.45); font-size:22px;
+  }
+  .brand h1{font-size:1.05rem;margin:0;letter-spacing:.5px}
+  .brand p{margin:0;font-size:.74rem;color:var(--muted);letter-spacing:.4px}
+  .hspace{flex:1}
+  .prog{display:flex;align-items:center;gap:10px;min-width:180px}
+  .prog .bar{flex:1;height:8px;border-radius:6px;background:var(--paper2);overflow:hidden;border:1px solid var(--line)}
+  .prog .fill{height:100%;width:0;background:linear-gradient(90deg,var(--phos),var(--cyan));transition:width .5s cubic-bezier(.2,.8,.2,1)}
+  .prog b{font-size:.8rem;color:var(--phos);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .iconbtn{
+    border:1px solid var(--line);background:var(--paper2);color:var(--text);
+    border-radius:10px;padding:8px 12px;cursor:pointer;font-size:.85rem;display:flex;gap:7px;align-items:center;
+    transition:.18s;
+  }
+  .iconbtn:hover{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.15)}
+  .iconbtn.off{color:var(--muted)}
+
+  main{max-width:1180px;margin:0 auto;padding:18px 20px 60px}
+
+  nav.chips{
+    display:flex;gap:6px;flex-wrap:wrap;justify-content:center;
+    background:var(--paper);border:1px solid var(--line);border-radius:var(--r);
+    padding:12px;margin-bottom:18px;box-shadow:var(--shadow);
+  }
+  .chip{
+    width:38px;height:38px;border-radius:10px;border:1px solid var(--line);
+    background:var(--paper2);color:var(--muted);font-weight:700;cursor:pointer;
+    display:grid;place-items:center;font-size:.85rem;transition:.15s;font-variant-numeric:tabular-nums;
+  }
+  .chip:hover{transform:translateY(-2px);border-color:var(--cyan);color:var(--text)}
+  .chip.done{background:linear-gradient(135deg,#0f3d2c,#14532d);border-color:var(--green);color:var(--phos)}
+  .chip.done::after{content:"✓";position:absolute}
+  .chip.cur{border-color:var(--cyan);color:#04121a;background:linear-gradient(135deg,var(--cyan),var(--blue));box-shadow:0 0 0 3px rgba(34,211,238,.25);transform:scale(1.08)}
+
+  .card{
+    background:linear-gradient(180deg,var(--paper),var(--paper2));
+    border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);
+    padding:24px;animation:rise .45s cubic-bezier(.2,.8,.2,1);
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+  .tno{font-size:1.25rem;font-weight:800;background:linear-gradient(90deg,var(--cyan),var(--phos));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .badge{font-size:.68rem;letter-spacing:.6px;text-transform:uppercase;padding:4px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+  .badge.orig{color:var(--phos);border-color:var(--phos-soft)}
+  .badge.train{color:var(--amber);border-color:#6b4a12}
+  .badge.type{color:var(--cyan);border-color:#155e6b}
+  .origlink{margin-left:auto;font-size:.8rem;color:var(--cyan);text-decoration:none;border:1px solid var(--line);padding:6px 11px;border-radius:9px;transition:.15s}
+  .origlink:hover{background:rgba(34,211,238,.12);border-color:var(--cyan)}
+  .desc{font-size:1.02rem;color:#cfe0ff;margin:0 0 16px}
+  .desc b{color:var(--text)}
+
+  .boardwrap{position:relative;margin:6px 0 8px}
+  .board{
+    display:flex;flex-wrap:wrap;gap:0;justify-content:center;align-items:center;
+    background:var(--board); border:2px solid #2c3e50; border-radius:14px;
+    padding:26px 18px; min-height:96px; position:relative; overflow:hidden;
+    box-shadow:inset 0 0 60px rgba(0,0,0,.55), 0 0 0 1px rgba(57,255,158,.06);
+  }
+  .board::before{
+    content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+    background:repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 4px);
+  }
+  .board.shake{animation:shake .4s}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+  .board.win{box-shadow:inset 0 0 60px rgba(0,0,0,.5),0 0 0 2px var(--green),0 0 34px rgba(34,197,94,.5)}
+  .ch{
+    flex:0 0 auto;width:1ch;text-align:center;font-family:var(--mono);font-weight:800;
+    color:var(--phos);text-shadow:0 0 10px rgba(57,255,158,.55);
+    transition:color .2s,opacity .2s;user-select:none;line-height:1.25;
+  }
+  .ch.used{color:var(--used);text-shadow:none;opacity:.5;text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:var(--amber)}
+  .ch.hit{animation:hit .3s}
+  @keyframes hit{0%{transform:scale(1)}40%{transform:scale(1.35);color:var(--amber)}100%{transform:scale(1)}}
+  .rule{font-size:.8rem;color:var(--muted);text-align:center;margin:8px 0 18px}
+  .rule b{color:var(--amber)}
+
+  .tablewrap{overflow-x:auto;padding-bottom:6px;margin-bottom:6px}
+  table.code{border-collapse:separate;border-spacing:6px;margin:0 auto;min-width:min(100%,560px)}
+  table.code td{
+    text-align:center;border-radius:10px;cursor:pointer;user-select:none;
+    border:1px solid var(--line);background:var(--paper);transition:.14s;padding:10px 14px;min-width:52px;
+  }
+  table.code tr.letters td{font-size:1.5rem;font-weight:800;color:var(--cyan)}
+  table.code tr.codes td{font-family:var(--mono);font-size:1.15rem;font-weight:700;color:var(--phos);letter-spacing:1px}
+  table.code td:hover,table.code td.colhover{border-color:var(--cyan);background:rgba(34,211,238,.12);transform:translateY(-2px)}
+  table.code td:active{transform:scale(.94)}
+  table.code td.flash{animation:keyflash .35s}
+  @keyframes keyflash{0%{background:rgba(57,255,158,.4)}100%{background:var(--paper)}}
+  table.code td.deny{animation:deny .35s}
+  @keyframes deny{0%,100%{background:var(--paper)}50%{background:rgba(255,84,112,.4);border-color:var(--red)}}
+  .tblhint{font-size:.78rem;color:var(--muted);text-align:center;margin:2px 0 16px}
+
+  .worklabel{font-size:.72rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+  .decoded{
+    min-height:58px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;
+    background:var(--paper);border:2px dashed var(--line);border-radius:12px;padding:12px;margin-bottom:14px;
+  }
+  .decoded .dl{
+    font-size:1.7rem;font-weight:800;font-family:var(--mono);color:var(--text);
+    background:linear-gradient(135deg,rgba(34,211,238,.18),rgba(57,255,158,.14));
+    border:1px solid var(--line);border-radius:9px;padding:2px 10px;animation:pop .22s;
+  }
+  @keyframes pop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+  .decoded .empty{color:var(--muted);font-size:.95rem}
+
+  .answerrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+  .answerrow label{font-size:.9rem;color:var(--muted)}
+  .ansinput{
+    font-family:var(--mono);font-size:1.3rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;
+    background:var(--board);color:var(--phos);border:2px solid var(--line);border-radius:10px;
+    padding:10px 14px;width:170px;text-align:center;outline:none;transition:.15s;
+  }
+  .ansinput:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.2)}
+  .stepper{display:flex;gap:6px}
+  .step{width:42px;height:42px;border-radius:10px;border:1px solid var(--line);background:var(--paper2);color:var(--text);font-size:1.2rem;font-weight:800;cursor:pointer;transition:.14s}
+  .step:hover{border-color:var(--cyan);background:rgba(34,211,238,.12)}
+
+  .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .btn{
+    border:none;border-radius:11px;padding:13px 18px;font-size:.95rem;font-weight:700;cursor:pointer;
+    display:flex;align-items:center;gap:8px;color:#04121a;transition:.16s;white-space:nowrap;
+  }
+  .btn:active{transform:translateY(2px)}
+  .btn.check{background:linear-gradient(135deg,var(--phos),var(--green));box-shadow:0 6px 18px rgba(34,197,94,.3)}
+  .btn.undo{background:linear-gradient(135deg,var(--amber),#ff8a00)}
+  .btn.reset{background:var(--paper2);color:var(--text);border:1px solid var(--line)}
+  .btn.reset:hover{border-color:var(--red);color:var(--red)}
+  .btn.show{background:var(--paper2);color:var(--cyan);border:1px solid var(--line)}
+  .btn.show:hover{border-color:var(--cyan)}
+  .btn.nav{background:linear-gradient(135deg,var(--cyan),var(--blue));margin-left:auto}
+  .btn.nav:disabled{opacity:.35;cursor:not-allowed;transform:none}
+  .btn.prev{background:var(--paper2);color:var(--text);border:1px solid var(--line);margin-left:0}
+
+  .feedback{margin-top:16px;padding:14px 16px;border-radius:12px;font-weight:700;display:none;align-items:center;gap:10px;font-size:1rem}
+  .feedback.ok{display:flex;background:rgba(34,197,94,.14);border:1px solid var(--green);color:var(--phos)}
+  .feedback.no{display:flex;background:rgba(255,84,112,.13);border:1px solid var(--red);color:#ffb3c0}
+  .reveal{margin-top:12px;display:none;padding:12px 16px;border-radius:12px;background:var(--paper);border-left:4px solid var(--amber);color:var(--muted)}
+  .reveal b{color:var(--amber);font-family:var(--mono);font-size:1.1rem;letter-spacing:1px}
+
+  .settings{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+  .settings .grp{display:flex;align-items:center;gap:9px;font-size:.82rem;color:var(--muted)}
+  input[type=range]{accent-color:var(--cyan);width:130px}
+  .toast{
+    position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
+    background:linear-gradient(135deg,#3a1220,#2a0d16);border:1px solid var(--red);color:#ffd7de;
+    padding:13px 20px;border-radius:12px;font-weight:600;font-size:.92rem;box-shadow:var(--shadow);
+    opacity:0;pointer-events:none;transition:.3s;z-index:80;max-width:90vw;text-align:center;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  footer{max-width:1180px;margin:0 auto;padding:0 20px 40px;color:var(--muted);font-size:.78rem;text-align:center}
+  @media(max-width:640px){
+    .card{padding:16px}
+    .btn.nav{margin-left:0}
+    .origlink{margin-left:0}
+    table.code td{padding:8px 9px;min-width:42px}
+    table.code tr.letters td{font-size:1.2rem}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="hwrap">
+    <div class="brand">
+      <div class="logo">📡</div>
+      <div>
+        <h1>ШИФР · ВПР Информатика 7</h1>
+        <p>Тема 7 · Кодирование и декодирование информации · 36 задач</p>
+      </div>
+    </div>
+    <div class="hspace"></div>
+    <div class="prog"><div class="bar"><div class="fill" id="progFill"></div></div><b id="progText">0 / 36</b></div>
+    <button class="iconbtn" id="soundBtn" title="Звук">🔊 <span>Звук</span></button>
+  </div>
+</header>
+
+<main>
+  <nav class="chips" id="chips" aria-label="Навигация по задачам"></nav>
+
+  <section class="card" id="card">
+    <div class="meta">
+      <span class="tno" id="tNo">Задача 1</span>
+      <span class="badge type" id="tType">слово</span>
+      <span class="badge" id="tSrc">оригинал ВПР</span>
+      <a class="origlink" id="tLink" target="_blank" rel="noopener">Оригинал на СдамГИА ↗</a>
+    </div>
+    <p class="desc" id="tDesc"></p>
+
+    <div class="boardwrap">
+      <div class="board" id="board" aria-label="Закодированное сообщение"></div>
+    </div>
+    <p class="rule">Код ищется <b>с самого начала</b> сообщения среди ещё <b>не зачёркнутых</b> символов. Нажали букву — зачёркивается первое подходящее место. Ошиблись? Жмите «Отменить».</p>
+
+    <div class="tablewrap"><table class="code" id="codeTable" aria-label="Кодовая таблица"></table></div>
+    <p class="tblhint">Нажмите на букву или на её код — в ответ добавится буква.</p>
+
+    <p class="worklabel" id="workLabel">Ваш ответ · расшифрованное сообщение</p>
+    <div class="decoded" id="decoded"></div>
+
+    <div class="answerrow" id="answerRow" style="display:none">
+      <label id="ansLabel">Ответ:</label>
+      <input class="ansinput" id="ansInput" autocomplete="off">
+      <div class="stepper" id="stepper" style="display:none">
+        <button class="step" id="minus">−</button>
+        <button class="step" id="plus">+</button>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn undo" id="undoBtn">↩ Отменить</button>
+      <button class="btn reset" id="resetBtn">✕ Сброс</button>
+      <button class="btn check" id="checkBtn">✓ Проверить</button>
+      <button class="btn show" id="showBtn">👁 Ответ</button>
+      <button class="btn prev" id="prevBtn">← Назад</button>
+      <button class="btn nav" id="nextBtn">Следующая →</button>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+    <div class="reveal" id="reveal"></div>
+
+    <div class="settings">
+      <div class="grp">🔠 Размер сообщения <input type="range" id="sizeRange" min="22" max="56" value="36"></div>
+      <div class="grp">⌨️ Backspace — отменить · Enter — проверить · ←/→ — задачи</div>
+    </div>
+  </section>
+</main>
+<footer>Тренажёр для интерактивной доски и ноутбуков. Ответы сверены с ключом каталога заданий темы 7 (СдамГИА · ВПР‑7).</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+/* ---------- ДАННЫЕ: 36 задач, ответы из ключа СдамГИА ---------- */
+const M={А:'•−',Б:'−•••',В:'•−−',Г:'−−•',Д:'−••',Е:'•',Ж:'•••−',З:'−−••',И:'••',К:'−•−',Л:'•−••',М:'−−',Н:'−•',О:'−−−',П:'•−−•',Р:'•−•',С:'•••',Т:'−',У:'••−',Х:'••••',Ч:'−−−•',Щ:'−−•−',Я:'•−•−'};
+const pick=(...ls)=>Object.fromEntries(ls.map(l=>[l,M[l]]));
+const T=[
+ {id:252,type:'word',src:'orig',map:{А:'*',Б:'–++',В:'––+',Г:'*+',Д:'–*',Е:'+–+',Ж:'**–'},enc:'*+–++–**–**',ans:['ГБДАДА'],desc:'Мальчики играли в шпионов и закодировали сообщение придуманным шифром. Расшифруйте полученное сообщение.'},
+ {id:253,type:'word',src:'orig',map:{Н:'~',М:'*',Л:'*@',И:'@~*',Т:'@*',О:'~*'},enc:'*@@~**~*~',ans:['ЛИМОН'],desc:'Вася и Петя кодировали сообщения собственным шифром. Расшифруйте сообщение, если буквы в нём не повторяются.'},
+ {id:254,type:'count',src:'orig',map:pick('Е','Н','О','З','Щ'),enc:'−•••−−−•',ans:['5'],desc:'Радиограмма азбукой Морзе. При передаче потеряно разбиение на буквы. Сколько букв было в исходной радиограмме?'},
+ {id:255,type:'word',src:'orig',map:{А:'+#',Е:'#+',Л:'~',П:'#',Т:'+~#',О:'~#'},enc:'#~#~#++~#',ans:['ПОЛЕТ'],desc:'Расшифруйте сообщение, если известно, что буквы в нём не повторяются.'},
+ {id:256,type:'count',src:'orig',map:{Ж:'+#',З:'+^#',И:'#',Й:'^',К:'^#',Л:'#+',},enc:'#++^##^#^',ans:['5'],desc:'Из скольких букв состоит сообщение, если буквы в нём не повторяются?'},
+ {id:257,type:'word',src:'orig',map:pick('И','А','Н','Г','Ч'),enc:'•−••−•−−•−−−••−−•',ans:['АИНГЧАН'],desc:'Радиограмма азбукой Морзе, разбиение на буквы потеряно. Определите текст радиограммы.'},
+ {id:258,type:'count',src:'train',map:pick('А','Г','И','П','М'),plain:'ПАМИГА',ans:['6'],desc:'Радиограмма азбукой Морзе. Сколько букв было в исходной радиограмме?'},
+ {id:259,type:'count',src:'orig',map:pick('Т','А','У','Ж','Х'),enc:'•••−••−•••−•−••−',ans:['5'],desc:'Радиограмма азбукой Морзе. Сколько букв было в исходной радиограмме?'},
+ {id:260,type:'letters',src:'orig',map:{А:'..o..',Б:'.o..o',В:'.oo.o',Г:'.oooo',Д:'...o.',Е:'.o.oo'},enc:'...o..o.oo...o..oooo.o.oo',ans:['ДЕ','ЕД'],desc:'Сообщение зашифровано кодом. Какие буквы в сообщении повторяются? Запишите их в ответ.'},
+ {id:261,type:'word',src:'orig',map:{Н:'~',М:'*',Л:'*@',И:'@~*',Т:'@*',О:'~*'},enc:'*@@~**~*~',ans:['ЛИМОН'],desc:'Расшифруйте сообщение (буквы не повторяются).'},
+ {id:262,type:'word',src:'train',map:pick('А','М','У','Н','С'),plain:'АМУНСАН',ans:['АМУНСАН'],desc:'Радиограмма азбукой Морзе. Расшифруйте радиограмму.'},
+ {id:263,type:'word',src:'train',map:pick('О','Л','И','М','П'),plain:'ОЛИМП',ans:['ОЛИМП'],desc:'Расшифруйте сообщение (буквы не повторяются).'},
+ {id:264,type:'word',src:'train',map:pick('М','Н','Р','Л'),plain:'МННРЛ',ans:['МННРЛ'],desc:'Расшифруйте сообщение.'},
+ {id:265,type:'count',src:'train',map:pick('А','В','Р','Е'),plain:'ВАРЕАВ',ans:['6'],desc:'Радиограмма азбукой Морзе. Сколько букв было в исходной радиограмме?'},
+ {id:266,type:'word',src:'train',map:pick('Н','М','А','У','С'),plain:'НМАУАСМ',ans:['НМАУАСМ'],desc:'Расшифруйте сообщение.'},
+ {id:267,type:'count',src:'train',map:pick('К','О','Т','Л'),plain:'КОТЛКОТЛ',ans:['8'],desc:'Радиограмма азбукой Морзе. Сколько букв было в исходной радиограмме?'},
+ {id:268,type:'letters',src:'train',map:pick('А','Б'),plain:'АБАБ',ans:['АБ','БА'],desc:'Какие буквы в сообщении повторяются? Запишите их в ответ.'},
+ {id:269,type:'word',src:'train',map:pick('Г','Б','Е','А'),plain:'ГБЕАЕА',ans:['ГБЕАЕА'],desc:'Расшифруйте сообщение.'},
+ {id:270,type:'count',src:'train',map:pick('П','Р','И'),plain:'ПИРПИРИ',ans:['7'],desc:'Радиограмма азбукой Морзе. Сколько букв было в исходной радиограмме?'},
+ {id:271,type:'count',src:'train',map:pick('Д','Е','С'),plain:'ДЕССЕ',ans:['5'],desc:'Радиограмма азбукой Морзе. Сколько букв было в исходной радиограмме?'},
+ {id:272,type:'count',src:'train',map:pick('В','Е','Р'),plain:'ВЕРЕВР',ans:['6'],desc:'Радиограмма азбукой Морзе. Сколько букв было в исходной радиограмме?'},
+ {id:273,type:'word',src:'orig',map:pick('И','А','Н','Г','Ч'),enc:'•−••−•−−•−−−••−−•',ans:['АИНГЧАН'],desc:'Радиограмма азбукой Морзе. Определите текст радиограммы.'},
+ {id:274,type:'word',src:'train',map:pick('Н','А','И','Г','Ч'),plain:'НАИГАЧ',ans:['НАИГАЧ'],desc:'Радиограмма азбукой Морзе. Определите текст радиограммы.'},
+ {id:275,type:'count',src:'train',map:pick('О','К','Т'),plain:'ОКТОК',ans:['5'],desc:'Радиограмма азбукой Морзе. Сколько букв было в исходной радиограмме?'},
+ {id:276,type:'count',src:'train',map:pick('М','А','Я'),plain:'МАЯМ',ans:['4'],desc:'Радиограмма азбукой Морзе. Сколько букв было в исходной радиограмме?'},
+ {id:444,type:'word',src:'train',map:pick('П','Р','А','В','О'),plain:'ПРАВО',ans:['ПРАВО'],desc:'Расшифруйте сообщение.'},
+ {id:695,type:'word',src:'train',map:pick('В','О','П','Р','С'),plain:'ВОПРОС',ans:['ВОПРОС'],desc:'Расшифруйте сообщение.'},
+ {id:710,type:'word',src:'train',map:pick('О','П','Р','А','В'),plain:'ОПРАВА',ans:['ОПРАВА'],desc:'Расшифруйте сообщение.'},
+ {id:740,type:'word',src:'train',map:pick('В','А','С','Л'),plain:'ВАССАЛ',ans:['ВАССАЛ'],desc:'Расшифруйте сообщение.'},
+ {id:778,type:'word',src:'train',map:pick('В','А','Р'),plain:'ВАРВАР',ans:['ВАРВАР'],desc:'Расшифруйте сообщение.'},
+ {id:1184,type:'word',src:'train',map:pick('П','О','Л','С','А'),plain:'ПОЛОСА',ans:['ПОЛОСА'],desc:'Расшифруйте сообщение.'},
+ {id:1199,type:'word',src:'train',map:pick('В','О','Л','П','А','С'),plain:'ВОЛОПАС',ans:['ВОЛОПАС'],desc:'Расшифруйте сообщение.'},
+ {id:1214,type:'word',src:'train',map:pick('П','Р','О','Л','А','З'),plain:'ПРОЛАЗ',ans:['ПРОЛАЗ'],desc:'Расшифруйте сообщение.'},
+ {id:1229,type:'word',src:'train',map:pick('Р','А','С','П','В'),plain:'РАСПРАВА',ans:['РАСПРАВА'],desc:'Расшифруйте сообщение.'},
+ {id:1244,type:'word',src:'train',map:pick('В','О','П','Р','С'),plain:'ВОПРОС',ans:['ВОПРОС'],desc:'Расшифруйте сообщение.'},
+ {id:1259,type:'word',src:'orig',map:pick('А','В','О','П','Р','С'),plain:'РАССПРОС',ans:['РАССПРОС'],desc:'Радиограмма азбукой Морзе, разбиение на буквы потеряно. Расшифруйте радиограмму.'}
+];
+T.forEach(t=>{ t.encoded = t.enc || t.plain.split('').map(l=>t.map[l]).join(''); });
+
+/* ---------- СОСТОЯНИЕ ---------- */
+const S={ idx:0, chars:[], history:[], decoded:[], sound:true, size:36,
+  solved:new Set(JSON.parse(localStorage.getItem('cipherSolved')||'[]')) };
+const savedIdx=+localStorage.getItem('cipherIdx'); if(savedIdx>=0&&savedIdx<T.length) S.idx=savedIdx;
+const savedSound=localStorage.getItem('cipherSound'); if(savedSound!==null) S.sound=savedSound==='1';
+const savedSize=+localStorage.getItem('cipherSize'); if(savedSize) S.size=savedSize;
+
+const $=id=>document.getElementById(id);
+const norm=s=>String(s).trim().toUpperCase().replace(/\s+/g,'');
+
+/* ---------- ЗВУК ---------- */
+let actx=null,master=null;
+function audio(){ if(actx)return; const AC=window.AudioContext||window.webkitAudioContext; if(!AC)return;
+  actx=new AC(); master=actx.createGain(); master.gain.value=S.sound?0.5:0; master.connect(actx.destination); }
+function beep(f,d,type='square',delay=0,v=.3){ if(!S.sound)return; audio(); if(!actx)return;
+  const t=actx.currentTime+delay,o=actx.createOscillator(),g=actx.createGain();
+  o.type=type;o.frequency.value=f;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.01);
+  g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(master);o.start(t);o.stop(t+d+.03); }
+const sClick=()=>beep(720,.07,'square',0,.22);
+const sUndo =()=>beep(420,.09,'triangle',0,.25);
+const sErr  =()=>beep(150,.2,'sawtooth',0,.3);
+const sWin  =()=>{beep(660,.12,'sine',0,.3);beep(990,.18,'sine',.12,.3);};
+
+/* ---------- АЛГОРИТМ: поиск кода с начала среди свободных символов ---------- */
+function findCode(code){
+  const c=S.chars,L=code.length;
+  for(let i=0;i+L<=c.length;i++){
+    let ok=true;
+    for(let j=0;j<L;j++){ if(c[i+j].used||c[i+j].ch!==code[j]){ok=false;break;} }
+    if(ok){ const idx=[]; for(let j=0;j<L;j++)idx.push(i+j); return idx; }
+  }
+  return null;
+}
+
+/* ---------- РЕНДЕР ---------- */
+function buildChips(){
+  const el=$('chips'); el.innerHTML='';
+  T.forEach((t,i)=>{
+    const b=document.createElement('button');
+    b.className='chip'+(i===S.idx?' cur':'')+(S.solved.has(t.id)?' done':'');
+    b.textContent=i+1; b.title='Задача '+(i+1)+' · №'+t.id;
+    b.onclick=()=>load(i); el.appendChild(b);
+  });
+}
+function progress(){
+  const p=S.solved.size/T.length*100;
+  $('progFill').style.width=p+'%'; $('progText').textContent=S.solved.size+' / '+T.length;
+}
+function renderBoard(hitIdx){
+  const b=$('board'); b.innerHTML=''; b.style.fontSize=S.size+'px';
+  S.chars.forEach((c,i)=>{
+    const s=document.createElement('span');
+    s.className='ch'+(c.used?' used':'')+(hitIdx&&hitIdx.includes(i)?' hit':'');
+    s.textContent=c.ch; b.appendChild(s);
+  });
+}
+function renderTable(){
+  const t=T[S.idx], tb=$('codeTable'); tb.innerHTML='';
+  const letters=Object.keys(t.map);
+  const r1=document.createElement('tr'); r1.className='letters';
+  const r2=document.createElement('tr'); r2.className='codes';
+  letters.forEach(l=>{
+    const a=document.createElement('td'); a.textContent=l; a.dataset.l=l; a.tabIndex=0; a.setAttribute('role','button');
+    const c=document.createElement('td'); c.textContent=t.map[l]; c.dataset.l=l; c.tabIndex=0; c.setAttribute('role','button');
+    r1.appendChild(a); r2.appendChild(c);
+  });
+  tb.appendChild(r1); tb.appendChild(r2);
+}
+function renderDecoded(){
+  const d=$('decoded'); d.innerHTML='';
+  if(!S.decoded.length){ d.innerHTML='<span class="empty">пока пусто — нажимайте буквы в таблице</span>'; return; }
+  S.decoded.forEach(l=>{ const s=document.createElement('span'); s.className='dl'; s.textContent=l; d.appendChild(s); });
+}
+function load(i){
+  S.idx=i; localStorage.setItem('cipherIdx',i);
+  const t=T[i];
+  S.chars=t.encoded.split('').map(ch=>({ch,used:false}));
+  S.history=[]; S.decoded=[];
+  $('tNo').textContent='Задача '+(i+1);
+  $('tType').textContent=t.type==='word'?'слово':t.type==='count'?'число букв':'повторы';
+  const src=$('tSrc'); src.textContent=t.src==='orig'?'оригинал ВПР':'тренажёрный вариант';
+  src.className='badge '+(t.src==='orig'?'orig':'train');
+  $('tLink').href='https://inf7-vpr.sdamgia.ru/problem?id='+t.id;
+  $('tDesc').innerHTML=t.desc+' <b>Кодовая таблица ниже.</b>';
+  $('workLabel').textContent=t.type==='word'?'Ваш ответ · расшифрованное сообщение':'Расшифровка · рабочая область';
+  const row=$('answerRow');
+  if(t.type==='word'){ row.style.display='none'; }
+  else{
+    row.style.display='flex';
+    $('ansLabel').textContent=t.type==='count'?'Ответ · сколько букв:':'Ответ · повторяющиеся буквы:';
+    const inp=$('ansInput'); inp.value=''; inp.inputMode=t.type==='count'?'numeric':'text';
+    inp.maxLength=t.type==='count'?3:8;
+    $('stepper').style.display=t.type==='count'?'flex':'none';
+  }
+  $('feedback').className='feedback'; $('feedback').style.display='none';
+  $('reveal').style.display='none'; $('board').classList.remove('win');
+  $('prevBtn').disabled=i===0; $('nextBtn').disabled=i===T.length-1;
+  renderBoard(); renderTable(); renderDecoded(); buildChips(); progress();
+  $('card').style.animation='none'; void $('card').offsetWidth; $('card').style.animation='';
+}
+
+/* ---------- ДЕЙСТВИЯ ---------- */
+function addLetter(l){
+  const t=T[S.idx], code=t.map[l], idx=findCode(code);
+  if(!idx){
+    sErr(); $('board').classList.add('shake'); setTimeout(()=>$('board').classList.remove('shake'),420);
+    document.querySelectorAll('#codeTable td[data-l="'+l+'"]').forEach(td=>{td.classList.add('deny');setTimeout(()=>td.classList.remove('deny'),360);});
+    toast('Код «'+code+'» не найден среди свободных символов. Возможно, предыдущая буква выбрана неверно — нажмите «Отменить».');
+    return;
+  }
+  idx.forEach(i=>S.chars[i].used=true);
+  S.history.push({l,idx}); S.decoded.push(l);
+  sClick(); renderBoard(idx); renderDecoded();
+  document.querySelectorAll('#codeTable td[data-l="'+l+'"]').forEach(td=>{td.classList.add('flash');setTimeout(()=>td.classList.remove('flash'),360);});
+  hideFeedback();
+}
+function undo(){
+  if(!S.history.length)return;
+  const h=S.history.pop(); h.idx.forEach(i=>S.chars[i].used=false); S.decoded.pop();
+  sUndo(); renderBoard(); renderDecoded(); hideFeedback();
+}
+function reset(){
+  S.chars.forEach(c=>c.used=false); S.history=[]; S.decoded=[];
+  if(T[S.idx].type!=='word')$('ansInput').value='';
+  sUndo(); renderBoard(); renderDecoded(); hideFeedback(); $('board').classList.remove('win');
+}
+function currentValue(){
+  const t=T[S.idx];
+  return t.type==='word'?norm(S.decoded.join('')):norm($('ansInput').value);
+}
+function check(){
+  const t=T[S.idx], val=currentValue(), fb=$('feedback');
+  if(!val){ sErr(); fb.className='feedback no'; fb.style.display='flex';
+    fb.textContent='❌ Сначала '+(t.type==='word'?'расшифруйте сообщение нажатием букв.':'введите ответ.'); return; }
+  const ok=t.ans.map(norm).includes(val);
+  if(ok){
+    sWin(); S.solved.add(t.id); localStorage.setItem('cipherSolved',JSON.stringify([...S.solved]));
+    fb.className='feedback ok'; fb.style.display='flex'; fb.textContent='✅ Верно! Отличная работа.';
+    $('board').classList.add('win'); buildChips(); progress();
+  }else{
+    sErr(); $('board').classList.add('shake'); setTimeout(()=>$('board').classList.remove('shake'),420);
+    fb.className='feedback no'; fb.style.display='flex';
+    fb.textContent='❌ Неверно. «Отменить» убирает последнюю букву, «Сброс» начинает заново.';
+  }
+}
+function show(){
+  const t=T[S.idx]; $('reveal').style.display='block';
+  $('reveal').innerHTML='Правильный ответ: <b>'+t.ans.join(' или ')+'</b>';
+}
+function hideFeedback(){ $('feedback').style.display='none'; $('feedback').className='feedback'; }
+let toastTimer=null;
+function toast(msg){ const el=$('toast'); el.textContent=msg; el.classList.add('show');
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.remove('show'),3200); }
+
+/* ---------- СОБЫТИЯ ---------- */
+$('codeTable').addEventListener('click',e=>{ const td=e.target.closest('td[data-l]'); if(td)addLetter(td.dataset.l); });
+$('codeTable').addEventListener('keydown',e=>{ const td=e.target.closest('td[data-l]');
+  if(td&&(e.key==='Enter'||e.key===' ')){e.preventDefault();addLetter(td.dataset.l);} });
+$('codeTable').addEventListener('mouseover',e=>{ const td=e.target.closest('td[data-l]'); if(!td)return;
+  document.querySelectorAll('#codeTable td[data-l="'+td.dataset.l+'"]').forEach(x=>x.classList.add('colhover')); });
+$('codeTable').addEventListener('mouseout',e=>{ const td=e.target.closest('td[data-l]'); if(!td)return;
+  document.querySelectorAll('#codeTable td[data-l="'+td.dataset.l+'"]').forEach(x=>x.classList.remove('colhover')); });
+$('undoBtn').onclick=undo; $('resetBtn').onclick=reset; $('checkBtn').onclick=check; $('showBtn').onclick=show;
+$('prevBtn').onclick=()=>{ if(S.idx>0)load(S.idx-1); };
+$('nextBtn').onclick=()=>{ if(S.idx<T.length-1)load(S.idx+1); };
+$('plus').onclick=()=>{ const i=$('ansInput'); i.value=Math.min(999,(+i.value||0)+1); };
+$('minus').onclick=()=>{ const i=$('ansInput'); i.value=Math.max(0,(+i.value||0)-1); };
+$('ansInput').addEventListener('input',e=>{ const t=T[S.idx];
+  e.target.value=t.type==='count'?e.target.value.replace(/\D/g,''):e.target.value.toUpperCase().replace(/[^А-ЯЁ]/g,''); });
+$('sizeRange').value=S.size;
+$('sizeRange').addEventListener('input',e=>{ S.size=+e.target.value; localStorage.setItem('cipherSize',S.size); renderBoard(); });
+$('soundBtn').onclick=()=>{ S.sound=!S.sound; localStorage.setItem('cipherSound',S.sound?'1':'0');
+  if(master)master.gain.value=S.sound?0.5:0; syncSound(); if(S.sound){audio();sClick();} };
+function syncSound(){ const b=$('soundBtn'); b.classList.toggle('off',!S.sound);
+  b.innerHTML=(S.sound?'🔊':'')+' <span>'+(S.sound?'Звук':'Тихо')+'</span>'; }
+document.addEventListener('keydown',e=>{
+  const typing=/INPUT|TEXTAREA/.test(document.activeElement.tagName);
+  if(e.key==='Enter'){ if(!typing||document.activeElement===$('ansInput')){e.preventDefault();check();} return; }
+  if(typing)return;
+  if(e.key==='Backspace'){e.preventDefault();undo();}
+  else if(e.key==='ArrowLeft'&&S.idx>0)load(S.idx-1);
+  else if(e.key==='ArrowRight'&&S.idx<T.length-1)load(S.idx+1);
+});
+document.addEventListener('pointerdown',()=>audio(),{once:true});
+
+/* ---------- СТАРТ ---------- */
+syncSound(); load(S.idx);
+</script>
+</body>
+</html>

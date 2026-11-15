@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Задача 11. Кодирование цвета (RGB)</title>
+    <style>
+        /* === Базовые переменные для светлой темы === */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --container-bg: white;
+            --text-primary: #212529;
+            --text-secondary: #495057;
+            --text-muted: #6c757d;
+            --border-color: #dee2e6;
+            --card-bg: #f8f9fa;
+            --option-bg: white;
+            --option-text: #212529;
+            --accent-color: #667eea;
+            --success-color: #11998e;
+            --error-color: #dc3545;
+            --warning-bg: linear-gradient(135deg, #fff3cd, #ffe69c);
+            --warning-text: #5a4700;
+            --warning-border: #ffc107;
+            --shadow-color: rgba(0,0,0,0.3);
+            --task-card-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --header-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --sidebar-bg: white;
+            --info-bg: #f8f9fa;
+            --info-text: #495057;
+            --info-accent: #667eea;
+            --slider-track: #e9ecef;
+            --slider-thumb-border: white;
+            --mixer-btn-bg: #f8f9fa;
+            --mixer-btn-text: #495057;
+            --mixer-btn-border: #dee2e6;
+        }
+
+        /* === Тёмная тема === */
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            --container-bg: #0f1419;
+            --text-primary: #e4e6eb;
+            --text-secondary: #b0b3b8;
+            --text-muted: #8a8d91;
+            --border-color: #3a3f47;
+            --card-bg: #1c1f26;
+            --option-bg: #1c1f26;
+            --option-text: #e4e6eb;
+            --accent-color: #5865f2;
+            --success-color: #3ba55c;
+            --error-color: #ed4245;
+            --warning-bg: linear-gradient(135deg, #2d2a1f, #3a3520);
+            --warning-text: #ffd700;
+            --warning-border: #f0a500;
+            --shadow-color: rgba(0,0,0,0.6);
+            --task-card-gradient: linear-gradient(135deg, #5865f2 0%, #7c3aed 100%);
+            --header-gradient: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
+            --sidebar-bg: #1c1f26;
+            --info-bg: #1c1f26;
+            --info-text: #b0b3b8;
+            --info-accent: #5865f2;
+            --slider-track: #3a3f47;
+            --slider-thumb-border: #2a2d35;
+            --mixer-btn-bg: #2a2d35;
+            --mixer-btn-text: #b0b3b8;
+            --mixer-btn-border: #3a3f47;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh; padding: 20px;
+            transition: background 0.3s ease;
+        }
+        .main-layout {
+            max-width: 1500px; margin: 0 auto;
+            display: grid; grid-template-columns: 1fr 400px;
+            gap: 20px;
+        }
+        .container {
+            background: var(--container-bg); border-radius: 20px;
+            box-shadow: 0 20px 60px var(--shadow-color);
+            overflow: hidden;
+            transition: background 0.3s ease;
+        }
+        .header {
+            background: var(--header-gradient);
+            color: white; padding: 25px 70px 25px 25px;
+            text-align: center;
+            position: relative;
+        }
+        .header h1 { font-size: 2em; margin-bottom: 8px; }
+        .header p { font-size: 1.1em; opacity: 0.9; }
+        
+        /* === Компактная круглая кнопка темы === */
+        .theme-toggle {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            width: 44px;
+            height: 44px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            cursor: pointer;
+            color: white;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4em;
+            padding: 0;
+        }
+        .theme-toggle:hover {
+            background: rgba(255,255,255,0.35);
+            transform: rotate(20deg) scale(1.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .theme-toggle:active {
+            transform: rotate(0deg) scale(0.95);
+        }
+        .theme-toggle-icon {
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            line-height: 1;
+        }
+
+        .stats-bar {
+            background: var(--card-bg); padding: 12px 25px;
+            display: flex; justify-content: space-between;
+            border-bottom: 2px solid var(--border-color); flex-wrap: wrap; gap: 10px;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+        .stat { font-size: 1em; color: var(--text-secondary); }
+        .stat strong { color: var(--accent-color); }
+        .progress-container { background: var(--border-color); height: 6px; transition: background 0.3s ease; }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success-color), #38ef7d);
+            transition: width 0.5s ease;
+        }
+        .content { padding: 30px; }
+
+        /* Карточка задачи */
+        .task-card {
+            background: var(--task-card-gradient);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            color: white;
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .task-card::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -20%;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.2), transparent);
+            border-radius: 50%;
+        }
+        .task-label {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            backdrop-filter: blur(10px);
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 1;
+        }
+        .task-text {
+            font-size: 1.5em;
+            font-weight: 600;
+            line-height: 1.5;
+            position: relative;
+            z-index: 1;
+        }
+        .task-hint {
+            margin-top: 15px;
+            font-size: 0.95em;
+            opacity: 0.9;
+            font-style: italic;
+            position: relative;
+            z-index: 1;
+        }
+        .task-icon {
+            position: absolute;
+            top: 20px; right: 25px;
+            font-size: 3em;
+            opacity: 0.3;
+            z-index: 0;
+        }
+
+        /* Кнопки ответов */
+        .options {
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            gap: 14px; margin: 20px 0;
+        }
+        .option {
+            padding: 18px 20px;
+            border: 3px solid var(--border-color);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.15em;
+            font-weight: 600;
+            text-align: center;
+            background: var(--option-bg);
+            color: var(--option-text);
+            user-select: none;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        .option.colored { border-color: rgba(0,0,0,0.15); }
+        .option .option-number {
+            position: absolute;
+            top: 8px; left: 12px;
+            font-size: 0.8em;
+            opacity: 0.7;
+            font-weight: bold;
+        }
+        .option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        .option.selected {
+            border-color: var(--accent-color) !important;
+            border-width: 4px;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+        }
+        .option.correct {
+            border-color: var(--success-color) !important;
+            border-width: 4px;
+            animation: pulseCorrect 0.6s;
+            box-shadow: 0 0 0 4px rgba(17, 153, 142, 0.4);
+        }
+        .option.correct::after {
+            content: '✓';
+            position: absolute;
+            top: 10px; right: 15px;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        .option.incorrect {
+            border-color: var(--error-color) !important;
+            border-width: 4px;
+            animation: shake 0.5s;
+            box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.3);
+        }
+        .option.incorrect::after {
+            content: '✗';
+            position: absolute;
+            top: 10px; right: 15px;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        @keyframes pulseCorrect {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        .controls {
+            display: flex; justify-content: space-between;
+            margin-top: 20px; gap: 10px;
+        }
+        .btn {
+            padding: 12px 30px; border: none; border-radius: 10px;
+            font-size: 1em; cursor: pointer; font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .btn-prev, .btn-next { background: var(--accent-color); color: white; }
+        .btn-check { background: var(--success-color); color: white; }
+        .btn-reset { background: #6c757d; color: white; }
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .explanation {
+            background: var(--warning-bg);
+            border-left: 6px solid var(--warning-border);
+            padding: 18px 20px; border-radius: 12px;
+            margin-top: 20px; display: none;
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);
+            transition: all 0.3s ease;
+        }
+        .explanation.show { display: block; animation: slideIn 0.5s; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .explanation h3 { color: var(--warning-text); margin-bottom: 10px; }
+        .explanation p { color: var(--warning-text); line-height: 1.6; }
+        .result-screen { text-align: center; padding: 40px; display: none; }
+        .result-screen.show { display: block; }
+        .result-screen h2 { font-size: 2em; margin-bottom: 20px; color: var(--text-primary); }
+        .result-screen .score {
+            font-size: 3.5em; color: var(--success-color); font-weight: bold;
+            margin: 20px 0;
+        }
+        .result-screen p { color: var(--text-secondary); }
+        .navigation-dots {
+            display: flex; flex-wrap: wrap; gap: 6px;
+            justify-content: center; margin-top: 20px;
+            padding-top: 15px; border-top: 2px solid var(--border-color);
+        }
+        .dot {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: var(--border-color); display: flex; align-items: center;
+            justify-content: center; cursor: pointer;
+            font-size: 0.85em; font-weight: bold;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+        .dot:hover { background: var(--accent-color); color: white; }
+        .dot.active { background: var(--accent-color); color: white; transform: scale(1.15); }
+        .dot.answered { background: var(--success-color); color: white; }
+
+        /* Боковая панель */
+        .sidebar {
+            display: flex; flex-direction: column; gap: 20px;
+            position: sticky; top: 20px; align-self: start;
+        }
+        .palette-box {
+            background: var(--sidebar-bg); border-radius: 20px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            overflow: hidden;
+            transition: background 0.3s ease;
+        }
+        .palette-header {
+            background: linear-gradient(135deg, var(--accent-color), #764ba2);
+            color: white; padding: 14px;
+            text-align: center; font-weight: bold; font-size: 1.05em;
+        }
+        .palette-content { padding: 18px; }
+
+        /* === Изображение RGB-диаграммы === */
+        .rgb-image {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            display: block;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .model-info {
+            background: var(--info-bg);
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: 0.88em;
+            color: var(--info-text);
+            line-height: 1.5;
+            border-left: 3px solid var(--info-accent);
+            transition: all 0.3s ease;
+        }
+        .model-info strong { color: var(--info-accent); }
+
+        /* RGB-микшер */
+        .mixer-preview {
+            width: 100%; height: 90px; border-radius: 12px;
+            border: 3px solid var(--border-color); margin-bottom: 18px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1em; font-weight: bold;
+            font-family: 'Courier New', monospace;
+            transition: all 0.2s;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+            color: var(--text-primary);
+        }
+        .slider-group { margin-bottom: 14px; }
+        .slider-label {
+            display: flex; justify-content: space-between;
+            align-items: center; margin-bottom: 6px;
+            font-weight: bold; font-size: 0.95em;
+            color: var(--text-secondary);
+        }
+        .slider-value {
+            background: var(--card-bg); padding: 3px 10px;
+            border-radius: 6px; font-family: 'Courier New', monospace;
+            min-width: 45px; text-align: center;
+            border: 1px solid var(--border-color); font-size: 0.9em;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+        .slider-red .slider-label { color: #dc3545; }
+        .slider-green .slider-label { color: #28a745; }
+        .slider-blue .slider-label { color: #0d6efd; }
+        input[type="range"] {
+            width: 100%; height: 8px; border-radius: 5px;
+            background: var(--slider-track); outline: none;
+            -webkit-appearance: none;
+            transition: background 0.3s ease;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px; height: 20px; border-radius: 50%;
+            cursor: pointer; border: 3px solid var(--slider-thumb-border);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            transition: border-color 0.3s ease;
+        }
+        .slider-red input[type="range"]::-webkit-slider-thumb { background: #dc3545; }
+        .slider-green input[type="range"]::-webkit-slider-thumb { background: #28a745; }
+        .slider-blue input[type="range"]::-webkit-slider-thumb { background: #0d6efd; }
+        input[type="range"]::-moz-range-thumb {
+            width: 20px; height: 20px; border-radius: 50%;
+            cursor: pointer; border: 3px solid var(--slider-thumb-border);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            transition: border-color 0.3s ease;
+        }
+        .slider-red input[type="range"]::-moz-range-thumb { background: #dc3545; }
+        .slider-green input[type="range"]::-moz-range-thumb { background: #28a745; }
+        .slider-blue input[type="range"]::-moz-range-thumb { background: #0d6efd; }
+        .mixer-footer { display: flex; gap: 6px; margin-top: 12px; }
+        .mixer-btn {
+            flex: 1; padding: 10px; border: none; border-radius: 8px;
+            cursor: pointer; font-weight: bold; font-size: 0.85em;
+            transition: all 0.3s;
+        }
+        .mixer-btn-reset { background: var(--mixer-btn-bg); color: var(--mixer-btn-text); border: 2px solid var(--mixer-btn-border); }
+        .mixer-btn-black { background: #000; color: white; }
+        .mixer-btn-white { background: #fff; color: #000; border: 2px solid var(--mixer-btn-border); }
+        .mixer-btn:hover { transform: translateY(-2px); }
+
+        @media (max-width: 1100px) {
+            .main-layout { grid-template-columns: 1fr; }
+            .sidebar { position: static; }
+        }
+        @media (max-width: 768px) {
+            .options { grid-template-columns: 1fr; }
+            .task-text { font-size: 1.2em; }
+            .controls { flex-direction: column; }
+            .header { padding: 20px 60px 20px 20px; }
+            .header h1 { font-size: 1.5em; }
+            .theme-toggle { width: 40px; height: 40px; font-size: 1.2em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-layout">
+        <!-- Основная часть -->
+        <div class="container">
+            <div class="header">
+                <h1>🎨 Задача 11. Кодирование цвета</h1>
+                <p>Модель RGB — тренировка ВПР по информатике 7 класс</p>
+                <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle" title="Переключить тему">
+                    <span class="theme-toggle-icon" id="themeIcon">🌙</span>
+                </button>
+            </div>
+            <div class="stats-bar">
+                <div class="stat">Вопрос: <strong><span id="currentQ">1</span> / 36</strong></div>
+                <div class="stat">✓ Правильных: <strong><span id="correctCount">0</span></strong></div>
+                <div class="stat">✗ Ошибок: <strong><span id="wrongCount">0</span></strong></div>
+            </div>
+            <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+            <div class="content" id="questionContainer"></div>
+            <div class="result-screen" id="resultScreen">
+                <h2>🎉 Тест завершён!</h2>
+                <div class="score" id="finalScore">0 / 36</div>
+                <p style="font-size: 1.2em; margin: 20px 0;" id="resultMessage"></p>
+                <button class="btn btn-reset" onclick="resetQuiz()">🔄 Пройти заново</button>
+            </div>
+            <div class="navigation-dots" id="navigationDots"></div>
+        </div>
+
+        <!-- Боковая панель -->
+        <div class="sidebar">
+            <!-- RGB-диаграмма (изображение с сайта) -->
+            <div class="palette-box">
+                <div class="palette-header">💡 RGB — модель сложения света</div>
+                <div class="palette-content">
+                    <img 
+                        src="https://icolorit.ru/wp-content/uploads/RGB-color-model.jpg" 
+                        alt="Цветовая модель RGB — диаграмма Венна"
+                        class="rgb-image"
+                    >
+                    <div class="model-info">
+                        <strong>💡 Запомни:</strong> в RGB цвета <em>складываются</em> как лучи света. Чем больше цветов смешиваем — тем светлее получается. В центре всех трёх кругов — <strong>белый</strong> цвет.
+                    </div>
+                </div>
+            </div>
+
+            <!-- RGB-микшер -->
+            <div class="palette-box">
+                <div class="palette-header">🎛️ RGB-микшер</div>
+                <div class="palette-content">
+                    <div class="mixer-preview" id="mixerPreview">RGB(0, 0, 0)</div>
+                    <div class="slider-group slider-red">
+                        <div class="slider-label">
+                            <span>🔴 R — Красный</span>
+                            <span class="slider-value" id="redValue">0</span>
+                        </div>
+                        <input type="range" id="redSlider" min="0" max="255" value="0" oninput="updateMixer()">
+                    </div>
+                    <div class="slider-group slider-green">
+                        <div class="slider-label">
+                            <span>🟢 G — Зелёный</span>
+                            <span class="slider-value" id="greenValue">0</span>
+                        </div>
+                        <input type="range" id="greenSlider" min="0" max="255" value="0" oninput="updateMixer()">
+                    </div>
+                    <div class="slider-group slider-blue">
+                        <div class="slider-label">
+                            <span>🔵 B — Синий</span>
+                            <span class="slider-value" id="blueValue">0</span>
+                        </div>
+                        <input type="range" id="blueSlider" min="0" max="255" value="0" oninput="updateMixer()">
+                    </div>
+                    <div class="mixer-footer">
+                        <button class="mixer-btn mixer-btn-black" onclick="setMixer(0,0,0)">⚫ Чёрный</button>
+                        <button class="mixer-btn mixer-btn-reset" onclick="setMixer(128,128,128)">⚪ Серый</button>
+                        <button class="mixer-btn mixer-btn-white" onclick="setMixer(255,255,255)">⚪ Белый</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // === Переключение темы ===
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('themeIcon');
+            // Плавная анимация смены иконки
+            icon.style.transform = 'scale(0) rotate(180deg)';
+            setTimeout(() => {
+                icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+                icon.style.transform = 'scale(1) rotate(0deg)';
+            }, 200);
+        }
+
+        // Загрузка сохранённой темы
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('themeIcon').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        const questions = [
+            {id:1,num:407,text:"Какой цвет в цветовой модели RGB кодируется как 255 255 0?",options:["Белый","Жёлтый","Красный","Зелёный"],optionColors:[[255,255,255],[255,255,0],[255,0,0],[0,255,0]],correct:1,explanation:"Красный (255) + Зелёный (255) + Синий (0) = <strong>ЖЁЛТЫЙ</strong>."},
+            {id:2,num:408,text:"Какой цвет в цветовой модели RGB кодируется как 0 255 255?",options:["Синий","Зелёный","Голубой","Чёрный"],optionColors:[[0,0,255],[0,255,0],[0,255,255],[0,0,0]],correct:2,explanation:"Зелёный (255) + Синий (255) = <strong>ГОЛУБОЙ</strong> (Cyan)."},
+            {id:3,num:409,text:"Какой цвет в цветовой модели RGB кодируется как 255 255 255?",options:["Чёрный","Белый","Серый","Красный"],optionColors:[[0,0,0],[255,255,255],[128,128,128],[255,0,0]],correct:1,explanation:"Все три компоненты на максимуме (255) = <strong>БЕЛЫЙ</strong>."},
+            {id:4,num:410,text:"Какой цвет в цветовой модели RGB кодируется как 0 0 0?",options:["Чёрный","Белый","Серый","Зелёный"],optionColors:[[0,0,0],[255,255,255],[128,128,128],[0,255,0]],correct:0,explanation:"Все компоненты равны 0 — это отсутствие света = <strong>ЧЁРНЫЙ</strong>."},
+            {id:5,num:411,text:"Какой цвет в цветовой модели RGB кодируется как 255 0 0?",options:["Зелёный","Синий","Красный","Жёлтый"],optionColors:[[0,255,0],[0,0,255],[255,0,0],[255,255,0]],correct:2,explanation:"Только красный компонент максимален = <strong>КРАСНЫЙ</strong>."},
+            {id:6,num:412,text:"Какой цвет в цветовой модели RGB кодируется как 0 255 0?",options:["Зелёный","Красный","Синий","Фиолетовый"],optionColors:[[0,255,0],[255,0,0],[0,0,255],[127,0,255]],correct:0,explanation:"Только зелёный компонент максимален = <strong>ЗЕЛЁНЫЙ</strong>."},
+            {id:7,num:413,text:"Какой цвет в цветовой модели RGB кодируется как 0 0 255?",options:["Синий","Красный","Жёлтый","Зелёный"],optionColors:[[0,0,255],[255,0,0],[255,255,0],[0,255,0]],correct:0,explanation:"Только синий компонент максимален = <strong>СИНИЙ</strong>."},
+            {id:8,num:414,text:"Какой цвет в цветовой модели RGB кодируется как 255 0 0?",options:["Зелёный","Красный","Синий","Чёрный"],optionColors:[[0,255,0],[255,0,0],[0,0,255],[0,0,0]],correct:1,explanation:"Чистый красный = <strong>КРАСНЫЙ</strong>."},
+            {id:9,num:415,text:"Какой цвет в цветовой модели RGB кодируется как 0 255 0?",options:["Жёлтый","Красный","Синий","Зелёный"],optionColors:[[255,255,0],[255,0,0],[0,0,255],[0,255,0]],correct:3,explanation:"Чистый зелёный = <strong>ЗЕЛЁНЫЙ</strong>."},
+            {id:10,num:416,text:"Какой цвет в цветовой модели RGB кодируется как 0 0 255?",options:["Красный","Фиолетовый","Синий","Серый"],optionColors:[[255,0,0],[127,0,255],[0,0,255],[128,128,128]],correct:2,explanation:"Чистый синий = <strong>СИНИЙ</strong>."},
+            {id:11,num:417,text:"Какой цвет в цветовой модели RGB кодируется как 255 255 0?",options:["Жёлтый","Оранжевый","Пурпурный","Голубой"],optionColors:[[255,255,0],[255,165,0],[255,0,255],[0,255,255]],correct:0,explanation:"Красный + Зелёный = <strong>ЖЁЛТЫЙ</strong>."},
+            {id:12,num:418,text:"Какой цвет в цветовой модели RGB кодируется как 255 0 255?",options:["Зелёный","Пурпурный","Коричневый","Голубой"],optionColors:[[0,255,0],[255,0,255],[139,69,19],[0,255,255]],correct:1,explanation:"Красный + Синий = <strong>ПУРПУРНЫЙ</strong> (Magenta)."},
+            {id:13,num:419,text:"Какой цвет в цветовой модели RGB кодируется как 0 255 255?",options:["Голубой","Жёлтый","Белый","Серый"],optionColors:[[0,255,255],[255,255,0],[255,255,255],[128,128,128]],correct:0,explanation:"Зелёный + Синий = <strong>ГОЛУБОЙ</strong> (Cyan)."},
+            {id:14,num:420,text:"Какой цвет в цветовой модели RGB кодируется как 255 255 255?",options:["Чёрный","Серый","Белый","Коричневый"],optionColors:[[0,0,0],[128,128,128],[255,255,255],[139,69,19]],correct:2,explanation:"Все компоненты максимум = <strong>БЕЛЫЙ</strong>."},
+            {id:15,num:421,text:"Какой цвет в цветовой модели RGB кодируется как 0 0 0?",options:["Белый","Чёрный","Красный","Синий"],optionColors:[[255,255,255],[0,0,0],[255,0,0],[0,0,255]],correct:1,explanation:"Все компоненты ноль = <strong>ЧЁРНЫЙ</strong>."},
+            {id:16,num:422,text:"Как в цветовой модели RGB кодируется жёлтый цвет?",options:["(255, 255, 0)","(0, 255, 255)","(255, 0, 255)","(255, 0, 0)"],correct:0,explanation:"Жёлтый = максимум красного и зелёного = <strong>(255, 255, 0)</strong>."},
+            {id:17,num:423,text:"Как в цветовой модели RGB кодируется голубой цвет?",options:["(0, 255, 0)","(255, 0, 255)","(0, 255, 255)","(255, 255, 0)"],correct:2,explanation:"Голубой = зелёный + синий = <strong>(0, 255, 255)</strong>."},
+            {id:18,num:424,text:"Как в цветовой модели RGB кодируется пурпурный цвет?",options:["(255, 0, 255)","(0, 255, 255)","(255, 255, 0)","(255, 0, 0)"],correct:0,explanation:"Пурпурный = красный + синий = <strong>(255, 0, 255)</strong>."},
+            {id:19,num:425,text:"Какой цвет в цветовой модели RGB кодируется как 255 69 0?",options:["Красный","Оранжево-красный","Жёлтый","Розовый"],optionColors:[[255,0,0],[255,69,0],[255,255,0],[255,192,203]],correct:1,explanation:"Максимум красного + немного зелёного (69) = <strong>ОРАНЖЕВО-КРАСНЫЙ</strong>."},
+            {id:20,num:426,text:"Как в цветовой модели RGB кодируется красный цвет?",options:["(0, 255, 0)","(255, 0, 0)","(0, 0, 255)","(255, 255, 0)"],correct:1,explanation:"Красный = максимум красного = <strong>(255, 0, 0)</strong>."},
+            {id:21,num:427,text:"Как в цветовой модели RGB кодируется зелёный цвет?",options:["(255, 0, 0)","(0, 0, 255)","(0, 255, 0)","(255, 255, 0)"],correct:2,explanation:"Зелёный = максимум зелёного = <strong>(0, 255, 0)</strong>."},
+            {id:22,num:428,text:"Как в цветовой модели RGB кодируется синий цвет?",options:["(255, 0, 0)","(0, 255, 0)","(0, 0, 255)","(255, 255, 255)"],correct:2,explanation:"Синий = максимум синего = <strong>(0, 0, 255)</strong>."},
+            {id:23,num:429,text:"Как в цветовой модели RGB кодируется белый цвет?",options:["(0, 0, 0)","(100, 100, 100)","(255, 255, 255)","(255, 0, 255)"],correct:2,explanation:"Белый = все максимум = <strong>(255, 255, 255)</strong>."},
+            {id:24,num:430,text:"Как в цветовой модели RGB кодируется чёрный цвет?",options:["(255, 255, 255)","(128, 128, 128)","(0, 0, 0)","(255, 0, 0)"],correct:2,explanation:"Чёрный = все нули = <strong>(0, 0, 0)</strong>."},
+            {id:25,num:431,text:"Какой цвет получится, если все три числа в коде RGB будут одинаковые?",options:["Радужный","Серый","Зелёный","Синий"],optionColors:[[200,100,150],[128,128,128],[0,255,0],[0,0,255]],correct:1,explanation:"Когда R=G=B, получаются оттенки <strong>СЕРОГО</strong>."},
+            {id:26,num:449,text:"Какой цвет в цветовой модели RGB кодируется как 255 0 255?",options:["Белый","Жёлтый","Пурпурный","Голубой"],optionColors:[[255,255,255],[255,255,0],[255,0,255],[0,255,255]],correct:2,explanation:"Красный + Синий = <strong>ПУРПУРНЫЙ</strong>."},
+            {id:27,num:651,text:"Какой цвет в цветовой модели RGB кодируется как 255 255 255?",options:["Белый","Жёлтый","Пурпурный","Чёрный"],optionColors:[[255,255,255],[255,255,0],[255,0,255],[0,0,0]],correct:0,explanation:"Все компоненты максимум = <strong>БЕЛЫЙ</strong>."},
+            {id:28,num:700,text:"Как в цветовой модели RGB кодируется красный цвет?",options:["(255, 255, 255)","(255, 0, 0)","(0, 255, 0)","(0, 0, 0)"],correct:1,explanation:"<strong>(255, 0, 0)</strong>."},
+            {id:29,num:715,text:"Как в цветовой модели RGB кодируется синий цвет?",options:["(0, 0, 0)","(255, 255, 255)","(0, 0, 255)","(0, 255, 0)"],correct:2,explanation:"<strong>(0, 0, 255)</strong>."},
+            {id:30,num:768,text:"Как в цветовой модели RGB кодируется белый цвет?",options:["(0, 0, 0)","(255, 0, 255)","(255, 255, 0)","(255, 255, 255)"],correct:3,explanation:"<strong>(255, 255, 255)</strong>."},
+            {id:31,num:783,text:"Как в цветовой модели RGB кодируется чёрный цвет?",options:["(0, 255, 255)","(255, 255, 0)","(0, 0, 0)","(255, 255, 255)"],correct:2,explanation:"<strong>(0, 0, 0)</strong>."},
+            {id:32,num:1189,text:"Как в цветовой модели RGB кодируется тёмно-фиолетовый цвет?",options:["(0, 0, 0)","(64, 0, 64)","(255, 255, 255)","(255, 0, 0)"],correct:1,explanation:"Малые равные значения красного и синего = <strong>(64, 0, 64)</strong>."},
+            {id:33,num:1204,text:"Как в цветовой модели RGB кодируется серый цвет?",options:["(0, 255, 0)","(255, 255, 255)","(127, 127, 127)","(0, 0, 0)"],correct:2,explanation:"Одинаковые средние значения = <strong>(127, 127, 127)</strong>."},
+            {id:34,num:1234,text:"Как в цветовой модели RGB кодируется тёмно-красный цвет?",options:["(0, 127, 0)","(0, 0, 0)","(127, 0, 0)","(0, 0, 127)"],correct:2,explanation:"Уменьшенный красный = <strong>(127, 0, 0)</strong>."},
+            {id:35,num:1264,text:"Какой цвет в цветовой модели RGB кодируется как (255, 0, 255)?",options:["Малиновый","Белый","Синий","Чёрный"],optionColors:[[255,0,255],[255,255,255],[0,0,255],[0,0,0]],correct:0,explanation:"Красный + Синий = <strong>МАЛИНОВЫЙ</strong> (пурпурный)."},
+            {id:36,num:1294,text:"Как в цветовой модели RGB кодируется фиолетовый цвет?",options:["(127, 0, 255)","(255, 255, 255)","(0, 0, 255)","(255, 0, 0)"],correct:0,explanation:"Половина красного + максимум синего = <strong>(127, 0, 255)</strong>."}
+        ];
+
+        let currentQuestion = 0, correctAnswers = 0, wrongAnswers = 0;
+        let answered = new Array(36).fill(false);
+        let selectedAnswer = -1, answeredCurrent = false;
+
+        function getTextColor(r,g,b){
+            const brightness = (r*299+g*587+b*114)/1000;
+            return brightness > 160 ? '#1a1a1a' : '#ffffff';
+        }
+
+        function updateMixer() {
+            const r = parseInt(document.getElementById('redSlider').value);
+            const g = parseInt(document.getElementById('greenSlider').value);
+            const b = parseInt(document.getElementById('blueSlider').value);
+            document.getElementById('redValue').textContent = r;
+            document.getElementById('greenValue').textContent = g;
+            document.getElementById('blueValue').textContent = b;
+            const preview = document.getElementById('mixerPreview');
+            preview.style.background = `rgb(${r},${g},${b})`;
+            preview.textContent = `RGB(${r}, ${g}, ${b})`;
+            preview.style.color = getTextColor(r, g, b);
+        }
+
+        function setMixer(r, g, b) {
+            document.getElementById('redSlider').value = r;
+            document.getElementById('greenSlider').value = g;
+            document.getElementById('blueSlider').value = b;
+            updateMixer();
+        }
+
+        function renderQuestion() {
+            const q = questions[currentQuestion];
+            const hasColors = q.optionColors && q.optionColors.length > 0;
+            
+            let html = `
+                <div class="task-card">
+                    <div class="task-icon">🎯</div>
+                    <div class="task-label">📝 ЗАДАЧА ${q.id} из 36 · №${q.num}</div>
+                    <div class="task-text">${q.text}</div>
+                    <div class="task-hint">💭 Выберите правильный вариант ответа ниже</div>
+                </div>
+                <div class="options">`;
+            
+            q.options.forEach((opt,i)=>{
+                let style = '';
+                let coloredClass = '';
+                if (hasColors && q.optionColors[i]) {
+                    const [r,g,b] = q.optionColors[i];
+                    const text = getTextColor(r,g,b);
+                    style = `background: rgb(${r},${g},${b}); color: ${text};`;
+                    coloredClass = ' colored';
+                }
+                html += `<div class="option${coloredClass}" id="option${i}" style="${style}" onclick="selectOption(${i})">
+                    <span class="option-number">${i+1}</span>
+                    ${opt}
+                </div>`;
+            });
+            
+            html += `</div>
+                <div class="controls">
+                    <button class="btn btn-prev" onclick="prevQuestion()" ${currentQuestion===0?'disabled':''}>← Назад</button>
+                    <button class="btn btn-check" onclick="checkAnswer()">✓ Проверить</button>
+                    <button class="btn btn-next" onclick="nextQuestion()">${currentQuestion===35?'Результаты →':'Далее →'}</button>
+                </div>
+                <div class="explanation" id="explanation">
+                    <h3>💡 Объяснение:</h3>
+                    <p>${q.explanation}</p>
+                </div>`;
+            document.getElementById('questionContainer').innerHTML = html;
+            updateProgress(); updateStats(); renderNavigationDots();
+            if(answered[currentQuestion]) showPreviousResult();
+            else { selectedAnswer=-1; answeredCurrent=false; }
+        }
+
+        function showPreviousResult(){
+            const q=questions[currentQuestion];
+            document.getElementById('explanation').classList.add('show');
+            document.getElementById(`option${q.correct}`).classList.add('correct');
+        }
+
+        function selectOption(i){
+            if(answeredCurrent) return;
+            selectedAnswer=i;
+            document.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
+            document.getElementById(`option${i}`).classList.add('selected');
+        }
+
+        function checkAnswer(){
+            if(selectedAnswer===-1){alert('Выберите вариант ответа!');return;}
+            if(answeredCurrent) return;
+            answeredCurrent=true; answered[currentQuestion]=true;
+            const q=questions[currentQuestion], correct=q.correct;
+            if(selectedAnswer===correct){
+                document.getElementById(`option${selectedAnswer}`).classList.add('correct');
+                correctAnswers++;
+            } else {
+                document.getElementById(`option${selectedAnswer}`).classList.add('incorrect');
+                document.getElementById(`option${correct}`).classList.add('correct');
+                wrongAnswers++;
+            }
+            document.getElementById('explanation').classList.add('show');
+            renderNavigationDots(); updateStats();
+        }
+
+        function nextQuestion(){
+            if(currentQuestion<35){currentQuestion++;renderQuestion();}
+            else showResults();
+        }
+        function prevQuestion(){if(currentQuestion>0){currentQuestion--;renderQuestion();}}
+        function updateProgress(){
+            document.getElementById('progressBar').style.width=((currentQuestion+1)/36)*100+'%';
+        }
+        function updateStats(){
+            document.getElementById('currentQ').textContent=currentQuestion+1;
+            document.getElementById('correctCount').textContent=correctAnswers;
+            document.getElementById('wrongCount').textContent=wrongAnswers;
+        }
+        function renderNavigationDots(){
+            const c=document.getElementById('navigationDots');
+            let html='';
+            for(let i=0;i<36;i++){
+                let cls='dot';
+                if(i===currentQuestion)cls+=' active';
+                if(answered[i])cls+=' answered';
+                html+=`<div class="${cls}" onclick="goToQuestion(${i})">${i+1}</div>`;
+            }
+            c.innerHTML=html;
+        }
+        function goToQuestion(i){currentQuestion=i;renderQuestion();}
+        function showResults(){
+            document.getElementById('questionContainer').style.display='none';
+            document.getElementById('resultScreen').classList.add('show');
+            document.getElementById('finalScore').textContent=`${correctAnswers} / 36`;
+            const p=(correctAnswers/36)*100;
+            let msg='';
+            if(p>=90)msg='🌟 Превосходно! Вы отлично разбираетесь в кодировании цвета!';
+            else if(p>=75)msg='👍 Очень хороший результат!';
+            else if(p>=50)msg='😊 Неплохо, но стоит повторить тему.';
+            else msg='📚 Повторите теорию и используйте RGB-микшер справа!';
+            document.getElementById('resultMessage').textContent=msg;
+        }
+        function resetQuiz(){
+            currentQuestion=0;correctAnswers=0;wrongAnswers=0;
+            answered=new Array(36).fill(false);selectedAnswer=-1;answeredCurrent=false;
+            document.getElementById('questionContainer').style.display='block';
+            document.getElementById('resultScreen').classList.remove('show');
+            renderQuestion();
+        }
+
+        // Инициализация
+        loadTheme();
+        updateMixer();
+        renderQuestion();
+    </script>
+</body>
+</html>

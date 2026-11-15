@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta id="metaTheme" name="theme-color" content="#667eea">
+<title>ВПР 7 · Файловая система · 106 заданий</title>
+<script>
+try{var th=localStorage.getItem('theme')||'light';document.documentElement.setAttribute('data-theme',th);}catch(e){document.documentElement.setAttribute('data-theme','light');}
+window.onerror=function(msg,src,line){var d=document.getElementById('err');if(d){d.style.display='block';d.innerHTML='⚠️ Ошибка: '+msg+' (строка '+line+'). Откройте файл в Chrome / Edge / Яндекс.Браузере.';}return false;};
+</script>
+<style>
+:root{
+ --bg-gradient:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+ --container-bg:#ffffff;
+ --header-gradient:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);
+ --task-card-gradient:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+ --text-primary:#212529;--text-secondary:#495057;--text-muted:#6c757d;
+ --border-color:#dee2e6;--card-bg:#f8f9fa;--option-bg:#ffffff;--option-text:#212529;
+ --accent-color:#667eea;--success-color:#11998e;--error-color:#dc3545;
+ --warning-bg:linear-gradient(135deg,#fff3cd 0%,#ffe69c 100%);--warning-text:#5a4700;--warning-border:#ffc107;
+ --shadow-color:rgba(0,0,0,0.3);--sidebar-bg:#ffffff;--info-bg:#f8f9fa;--info-accent:#667eea;
+ --slider-track:#e9ecef;--slider-thumb-border:#ffffff;--mixer-btn-bg:#f8f9fa;
+ --accent-soft:rgba(102,126,234,.13);--success-soft:rgba(17,153,142,.13);--error-soft:rgba(220,53,69,.10);--on-accent:#ffffff;
+ --current-color:#7542ee;--current-soft:rgba(117,66,238,.30);
+ --blink-half:.325s;--fade-dur:.75s;
+}
+[data-theme="dark"]{
+ --bg-gradient:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);
+ --container-bg:#0f1419;
+ --header-gradient:linear-gradient(135deg,#7c3aed 0%,#ec4899 100%);
+ --task-card-gradient:linear-gradient(135deg,#5865f2 0%,#7c3aed 100%);
+ --text-primary:#e4e6eb;--text-secondary:#b0b3b8;--text-muted:#8a8d91;
+ --border-color:#3a3f47;--card-bg:#1c1f26;--option-bg:#1c1f26;--option-text:#e4e6eb;
+ --accent-color:#5865f2;--success-color:#3ba55c;--error-color:#ed4245;
+ --warning-bg:linear-gradient(135deg,#2d2a1f 0%,#3a3520 100%);--warning-text:#ffd700;--warning-border:#f0a500;
+ --shadow-color:rgba(0,0,0,0.6);--sidebar-bg:#1c1f26;--info-bg:#1c1f26;--info-accent:#5865f2;
+ --slider-track:#3a3f47;--slider-thumb-border:#2a2d35;--mixer-btn-bg:#2a2d35;
+ --accent-soft:rgba(88,101,242,.20);--success-soft:rgba(59,165,92,.17);--error-soft:rgba(237,66,69,.16);--on-accent:#ffffff;
+}
+*{box-sizing:border-box}
+html{scrollbar-color:var(--accent-color) var(--slider-track);scrollbar-width:thin}
+::-webkit-scrollbar{width:12px;height:12px}
+::-webkit-scrollbar-track{background:var(--slider-track)}
+::-webkit-scrollbar-thumb{background:var(--accent-color);border-radius:8px;border:2px solid var(--slider-thumb-border)}
+::-webkit-scrollbar-thumb:hover{filter:brightness(1.15)}
+body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;font-size:17px;color:var(--text-primary);background:var(--bg-gradient);background-attachment:fixed;min-height:100vh}
+body,.card,#side,.opt,.act,.hbtn,.toolbar button,.toolbar select,.tasknav button,.actionbar button,#grid button,.nd,.chips,.rule,#explain,#done,input,select,.badge,.taskhead,#log,.depB,#ladder td,#ladder th{transition:background .3s ease,border-color .3s ease,color .3s ease,box-shadow .3s ease}
+header{position:sticky;top:0;z-index:50;background:var(--header-gradient);color:#fff;padding:12px 18px;box-shadow:0 4px 18px var(--shadow-color)}
+.hrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;max-width:1400px;margin:0 auto}
+h1{font-size:1.18em;margin:0;flex:1 1 300px;letter-spacing:.2px;text-shadow:0 1px 3px rgba(0,0,0,.25)}
+.crumb{font-family:Consolas,monospace;color:rgba(255,255,255,.92);font-size:.85em;display:block;margin-top:2px;font-weight:700}
+.hbtn{background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.45);border-radius:9px;padding:8px 14px;cursor:pointer;font-size:.88em;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.2)}
+.hbtn:hover{background:rgba(255,255,255,.30)}
+.hbtn.on{background:rgba(255,255,255,.34);box-shadow:0 0 0 2px rgba(255,255,255,.35)}
+#themeBtn{width:44px;padding:8px 0;font-size:1.15em;line-height:1;text-align:center}
+#progWrap{max-width:1400px;margin:8px auto 0;height:7px;background:rgba(0,0,0,.28);border-radius:6px;overflow:hidden}
+#progBar{height:100%;width:0;background:linear-gradient(90deg,var(--success-color),var(--accent-color));transition:width .5s}
+#layout{display:flex;gap:16px;max-width:1400px;margin:0 auto;padding:16px}
+#side{width:264px;min-width:264px;background:var(--sidebar-bg);border:1px solid var(--border-color);border-radius:16px;padding:14px;color:var(--text-primary);position:sticky;top:92px;max-height:calc(100vh - 110px);overflow-y:auto;box-shadow:0 6px 22px var(--shadow-color)}
+#side h3{margin:0 0 8px;font-size:1em}
+#side .lbl{font-size:.75em;color:var(--text-muted);margin:10px 0 4px;display:block;font-weight:800;text-transform:uppercase;letter-spacing:.6px}
+#search,#filter,#jump{width:100%;padding:8px;border-radius:8px;border:1px solid var(--border-color);background:var(--mixer-btn-bg);color:var(--text-primary);font-size:.9em}
+#search:focus,#filter:focus,#jump:focus{outline:2px solid var(--accent-color);outline-offset:1px}
+#grid{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:10px}
+#grid button{border:1px solid var(--border-color);background:var(--mixer-btn-bg);color:var(--text-secondary);border-radius:7px;padding:6px 0;cursor:pointer;font-size:.8em;font-weight:800}
+#grid button:hover{background:var(--accent-soft);border-color:var(--accent-color);color:var(--text-primary)}
+#grid button.cur{background:var(--current-color);color:#fff;border-color:var(--current-color);box-shadow:0 0 0 2px var(--current-soft)}
+#grid button.ok{background:var(--success-soft);color:var(--success-color);border-color:var(--success-color)}
+#grid button.bad{background:var(--error-soft);color:var(--error-color);border-color:var(--error-color)}
+.legend{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;font-size:.8em;color:var(--text-muted);margin:10px 0 0}
+.legend span.li{display:inline-flex;align-items:center;gap:5px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:4px;flex:none}
+.sw-ok{background:var(--success-color)}
+.sw-bad{background:var(--error-color)}
+.sw-cur{background:var(--current-color)}
+.settings{margin-top:14px;padding-top:12px;border-top:1px solid var(--border-color)}
+.rangeRow{display:flex;align-items:center;gap:10px}
+input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:8px;border-radius:6px;background:var(--slider-track);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:var(--accent-color);border:3px solid var(--slider-thumb-border);box-shadow:0 1px 5px var(--shadow-color);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--accent-color);border:3px solid var(--slider-thumb-border);box-shadow:0 1px 5px var(--shadow-color);cursor:pointer}
+input[type=range]::-moz-range-track{height:8px;border-radius:6px;background:var(--slider-track)}
+#fontVal,#paceVal{font-weight:800;color:var(--accent-color);min-width:52px;text-align:right;font-size:.9em}
+#sideToggle{display:none}
+#main{flex:1;min-width:0}
+.rule{border-radius:14px;padding:12px 16px;margin-bottom:14px;line-height:1.5;border:2px solid var(--warning-border);background:var(--warning-bg);color:var(--warning-text);box-shadow:0 2px 10px var(--shadow-color)}
+.rule.fwd,.rule.dep{border-color:var(--info-accent);background:var(--info-bg);color:var(--text-primary)}
+.card{background:var(--container-bg);border:1px solid var(--border-color);border-radius:16px;padding:16px 18px;margin-bottom:14px;box-shadow:0 3px 14px var(--shadow-color);animation:up .35s ease}
+@keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.taskcard{padding:0;overflow:hidden}
+.taskhead{background:var(--task-card-gradient);padding:12px 18px;color:#fff}
+.taskbody{padding:16px 18px}
+.badge{display:inline-block;border-radius:20px;padding:3px 13px;font-size:.78em;font-weight:800;margin:0 6px 4px 0;background:rgba(255,255,255,.22);color:#fff;border:1px solid rgba(255,255,255,.4);text-shadow:0 1px 2px rgba(0,0,0,.2)}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;align-items:center}
+.toolbar button{border:1px solid var(--border-color);background:var(--mixer-btn-bg);border-radius:10px;padding:9px 13px;cursor:pointer;font-size:.92em;font-weight:700;color:var(--text-primary)}
+.toolbar button:hover{background:var(--accent-soft);border-color:var(--accent-color)}
+.tasknav,.actionbar{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
+.tasknav button,.actionbar button{flex:1 1 150px;border:1px solid var(--border-color);background:var(--mixer-btn-bg);color:var(--text-primary);border-radius:11px;padding:11px 14px;cursor:pointer;font-size:.95em;font-weight:800;box-shadow:0 2px 8px var(--shadow-color)}
+.tasknav button:hover,.actionbar button:hover{filter:brightness(1.08)}
+.tasknav #nextBtn{background:var(--accent-color);border-color:var(--accent-color);color:var(--on-accent)}
+.actionbar{margin-bottom:14px}
+.actionbar #checkBtn{background:var(--success-color);border-color:var(--success-color);color:#fff}
+.actionbar #solveBtn{background:var(--accent-color);border-color:var(--accent-color);color:var(--on-accent)}
+.actionbar #answerBtn{background:var(--warning-bg);border:2px solid var(--warning-border);color:var(--warning-text)}
+.actionbar #resetBtn{background:var(--mixer-btn-bg);border-color:var(--border-color);color:var(--text-primary)}
+body.busy #checkBtn,body.busy #solveBtn,body.busy #answerBtn{opacity:.55;pointer-events:none}
+body.busy #actions .act{pointer-events:none}
+#cond{line-height:1.6;margin:4px 0 10px;color:var(--text-primary)}
+.p{font-family:Consolas,monospace;background:var(--accent-soft);border:1px solid var(--accent-color);border-radius:6px;padding:1px 7px;white-space:nowrap;color:var(--text-primary)}
+.opts{display:grid;gap:8px;margin:10px 0}
+.opt{display:flex;gap:10px;align-items:center;text-align:left;border:2px solid var(--border-color);background:var(--option-bg);color:var(--option-text);border-radius:11px;padding:11px 13px;cursor:pointer;font-size:.98em;font-family:Consolas,monospace;width:100%}
+.opt:hover{border-color:var(--accent-color);background:var(--accent-soft)}
+.opt.sel{border-color:var(--accent-color);background:var(--accent-soft)}
+.opt.ok,.opt.rev{border-color:var(--success-color);background:var(--success-soft)}
+.opt.bad{border-color:var(--error-color);background:var(--error-soft)}
+.opt .num{font-family:"Segoe UI",Arial;font-weight:800;background:var(--accent-color);color:var(--on-accent);border-radius:50%;min-width:30px;height:30px;display:flex;align-items:center;justify-content:center;flex:none}
+.opt.ok .num,.opt.rev .num{background:var(--success-color)}
+.opt.bad .num{background:var(--error-color)}
+#fb{font-weight:800;min-height:1.4em;margin:6px 0}
+#fb.ok{color:var(--success-color)}#fb.bad{color:var(--error-color)}#fb.info{color:var(--accent-color)}
+#explain{display:none;background:var(--warning-bg);border:2px solid var(--warning-border);color:var(--warning-text);border-radius:11px;padding:12px 15px;line-height:1.55;margin-top:8px}
+#explain .p{background:rgba(255,255,255,.35);border-color:var(--warning-border);color:var(--warning-text)}
+[data-theme="dark"] #explain .p{background:rgba(255,255,255,.08)}
+.viz{display:flex;gap:16px;flex-wrap:wrap}
+#treeBox{flex:1 1 290px;background:var(--info-bg);border:1px solid var(--border-color);border-radius:13px;padding:14px;min-height:180px}
+#right{flex:1 1 360px;min-width:0}
+.tree,.tree ul{list-style:none;margin:0;padding-left:0}
+.tree ul{padding-left:23px;border-left:1px dashed var(--border-color);margin-left:10px}
+.tree li{margin:4px 0}
+.nd{display:inline-flex;align-items:center;gap:7px;padding:4px 11px;border-radius:9px;border:2px solid transparent;color:var(--text-primary)}
+.nd.cur{background:var(--accent-soft);border-color:var(--accent-color);font-weight:800}
+.nd.fcur{background:var(--warning-bg);border-color:var(--warning-border);color:var(--warning-text);font-weight:800}
+.nd.new{background:var(--success-soft);border-color:var(--success-color)}
+.nd.mark{background:var(--warning-bg);border-color:var(--warning-border);color:var(--warning-text);font-weight:800}
+.nd.unk{border:2px dashed var(--text-muted);color:var(--text-muted);font-style:italic}
+.nd.enter{animation:ndEnter var(--fade-dur) cubic-bezier(.2,.8,.25,1) both}
+.nd.leaving{animation:ndLeave var(--fade-dur) ease both;border-color:var(--error-color);color:var(--error-color);text-decoration:line-through}
+@keyframes ndEnter{0%{opacity:0;transform:translateX(-14px) scale(.9)}60%{opacity:1}100%{opacity:1;transform:none}}
+@keyframes ndLeave{0%{opacity:1;transform:none}100%{opacity:0;transform:translateX(16px) scale(.88);filter:blur(2px)}}
+.depB{font-size:.68em;background:var(--mixer-btn-bg);color:var(--text-secondary);border:1px solid var(--border-color);border-radius:8px;padding:0 6px;margin-left:4px}
+.plabel{font-size:.78em;color:var(--text-muted);font-weight:800;margin:6px 0 4px;text-transform:uppercase;letter-spacing:.5px}
+.chips{display:flex;flex-wrap:wrap;align-items:center;gap:2px;font-family:Consolas,monospace;font-size:1.1em;background:var(--info-bg);color:var(--text-primary);border:2px solid var(--info-accent);border-radius:11px;padding:11px 13px;min-height:48px}
+.chip{padding:2px 8px;border-radius:6px}
+.chip.add{background:var(--success-color);color:#fff;animation:ndEnter var(--fade-dur) ease both}
+.chip.del{background:var(--error-soft);color:var(--error-color);text-decoration:line-through;animation:chipDel var(--fade-dur) ease both}
+.chip.unk{background:var(--mixer-btn-bg);color:var(--text-muted);font-style:italic}
+@keyframes chipDel{0%{opacity:1}100%{opacity:0;transform:translateY(-6px)}}
+.sep{color:var(--text-muted)}
+#hint{margin:10px 0;font-weight:700;color:var(--accent-color);min-height:1.4em}
+#actions{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.act{border:2px solid var(--border-color);background:var(--mixer-btn-bg);color:var(--text-primary);border-radius:12px;padding:9px 13px;cursor:pointer;font-size:.95em;min-width:104px;text-align:center}
+.act .a{font-weight:800;display:block}
+.act .inv{font-size:.72em;color:var(--text-muted);display:block;margin-top:2px}
+.act.next{border-color:var(--accent-color);background:var(--accent-soft);box-shadow:0 0 0 3px var(--accent-soft)}
+.act.done{opacity:.5;text-decoration:line-through;cursor:default}
+.act.wrong{border-color:var(--error-color);background:var(--error-soft)}
+.act.blink{animation:actBlink var(--blink-half) ease-in-out 2;border-color:var(--accent-color)}
+@keyframes actBlink{0%,100%{background:var(--mixer-btn-bg);border-color:var(--border-color);box-shadow:0 0 0 0 rgba(0,0,0,0);transform:scale(1)}50%{background:var(--accent-soft);border-color:var(--accent-color);box-shadow:0 0 0 7px var(--accent-soft);transform:scale(1.05)}}
+#log{margin-top:10px;font-size:.88em;color:var(--text-secondary);line-height:1.55;max-height:150px;overflow-y:auto}
+#log b{color:var(--text-primary)}
+#done{display:none;background:var(--success-soft);border:2px solid var(--success-color);border-radius:11px;padding:10px 14px;margin-top:10px;font-weight:800;color:var(--success-color)}
+#ladder{margin-top:10px;overflow-x:auto}
+#ladder table{border-collapse:collapse;font-family:Consolas,monospace;font-size:.9em;color:var(--text-primary)}
+#ladder td,#ladder th{border:1px solid var(--border-color);padding:5px 11px;white-space:nowrap}
+#ladder th{background:var(--accent-soft)}
+#ladder .hl{background:var(--success-soft);font-weight:800}
+#ladder .selCol{background:var(--accent-soft)}
+#err{display:none;background:var(--error-soft);border:2px solid var(--error-color);color:var(--error-color);border-radius:12px;padding:12px 16px;margin-bottom:14px;font-weight:800}
+#loading{background:var(--warning-bg);border:2px solid var(--warning-border);color:var(--warning-text);border-radius:12px;padding:12px 16px;margin-bottom:14px}
+.small{font-size:.85em;color:var(--text-muted)}
+@media(max-width:1000px){#layout{flex-direction:column}#side{width:100%;min-width:0;position:static;max-height:none;display:none}body.sideOpen #side{display:block}#sideToggle{display:inline-block}}
+</style>
+</head>
+<body>
+<header>
+<div class="hrow">
+<h1>📁 ВПР 7 класс · Файловая система<span class="crumb" id="crumb"></span></h1>
+<span id="prog" style="color:#fff;font-weight:800;text-shadow:0 1px 2px rgba(0,0,0,.25)"></span>
+<button class="hbtn" id="themeBtn" aria-pressed="false" title="Включить тёмную тему" aria-label="Переключить тему">🌙</button>
+<button class="hbtn on" id="soundBtn">🔊 Звук</button>
+<button class="hbtn" id="resetProg">↺ Сброс</button>
+</div>
+<div id="progWrap"><div id="progBar"></div></div>
+</header>
+<div id="layout">
+<div id="side">
+<h3>🗂 Выбор задания</h3>
+<span class="lbl">Поиск по номеру</span><input id="search" type="text" placeholder="например: 17">
+<span class="lbl">Тип задания</span>
+<select id="filter">
+<option value="all">Все 106</option>
+<option value="wb">Найди начало (обратный ход)</option>
+<option value="wf">Прогулки по каталогам</option>
+<option value="mv">Перемещение файла</option>
+<option value="ucm">Поднялся, создал, переместил</option>
+<option value="fm">Перенос папки</option>
+<option value="dep">Глубина вложенности</option>
+<option value="misc">Прочее</option>
+</select>
+<span class="lbl">Быстрый переход</span><select id="jump"></select>
+<div id="grid"></div>
+<p class="legend">
+<span class="li"><span class="sw sw-ok"></span>решено</span>
+<span class="li"><span class="sw sw-bad"></span>была ошибка</span>
+<span class="li"><span class="sw sw-cur"></span>текущее</span>
+</p>
+<div class="settings">
+<span class="lbl">Размер шрифта</span>
+<div class="rangeRow"><input type="range" id="fontRange" min="15" max="24" step="1" value="17"><span id="fontVal">17px</span></div>
+<span class="lbl">Темп разбора (сек/шаг)</span>
+<div class="rangeRow"><input type="range" id="paceRange" min="1" max="4" step="0.5" value="2"><span id="paceVal">2.0 с</span></div>
+</div>
+</div>
+<div id="main">
+<div id="err"></div>
+<div id="loading">⏳ Загрузка… Если сообщение не исчезает — откройте файл в Chrome / Edge.</div>
+<noscript><div class="rule">⚠️ В браузере отключён JavaScript. Включите его или откройте файл в другом браузере.</div></noscript>
+<div class="toolbar">
+<button id="sideToggle">🗂 Выбор задания</button>
+<span class="small" id="countInfo"></span>
+</div>
+<div class="rule" id="rule"></div>
+<div class="card taskcard">
+<div class="taskhead"><span class="badge" id="tnum"></span><span class="badge" id="ttype"></span><span class="badge" id="tid"></span></div>
+<div class="taskbody">
+<div id="cond"></div>
+<div class="opts" id="opts"></div>
+<div id="fb"></div>
+<div id="explain"></div>
+</div>
+</div>
+<div class="tasknav">
+<button id="prevBtn">← Предыдущее</button>
+<button id="nextBtn">Следующее →</button>
+<button id="randBtn">🎲 Случайное</button>
+</div>
+<div class="actionbar">
+<button id="checkBtn">✅ Проверить</button>
+<button id="solveBtn">🧩 Разобрать</button>
+<button id="answerBtn">👁 Показать ответ</button>
+<button id="resetBtn">↺ Заново</button>
+</div>
+<div class="card">
+<b>🔎 Интерактивная модель</b> <span class="small" id="modeHint"></span>
+<div class="viz">
+<div id="treeBox"><ul class="tree" id="tree"></ul></div>
+<div id="right">
+<div id="posRow"><div class="plabel">📍 Текущий каталог</div><div class="chips" id="posChips"></div></div>
+<div id="fileRow"><div class="plabel">📄 Полное имя файла</div><div class="chips" id="fileChips"></div></div>
+<div id="hint"></div>
+<div class="plabel" id="actLabel">🔄 Действия</div>
+<div id="actions"></div>
+<div id="done"></div>
+<div id="log"></div>
+<div id="ladder"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+var BS=String.fromCharCode(92);
+var T=[
+{n:1,id:1,t:'wb',s:'Расписание',st:'UDD',e:'C:/учеба/математика/ГИА',o:['C:/учеба/2013/Расписание','C:/учеба/Расписание','C:/Расписание','C:/учеба/математика/Расписание'],a:2},
+{n:2,id:2,t:'wb',s:'Расписание',st:'UUD',e:'C:/учеба/математика/ГИА',o:['C:/учеба/Расписание','C:/учеба/математика/Расписание','C:/учеба/2013/Расписание','C:/учеба/математика/2013/Расписание'],a:4},
+{n:3,id:3,t:'wb',s:'Расписание',st:'UDD',e:'C:/учеба/химия/ГИА',o:['C:/учеба/химия/Расписание','C:/учеба/2013/Расписание','C:/учеба/Расписание','C:/Расписание'],a:3},
+{n:4,id:4,t:'wb',s:'Расписание',st:'UDDD',e:'C:/учеба/химия/ГИА',o:['C:/учеба/химия/Расписание','C:/Расписание','C:/учеба/2013/Расписание','C:/учеба/Расписание'],a:2},
+{n:5,id:5,t:'wb',s:'Расписание',st:'UDD',e:'C:/учеба/информатика/ГИА',o:['C:/учеба/2013/Расписание','C:/учеба/информатика/Расписание','C:/Расписание','C:/учеба/Расписание'],a:4},
+{n:6,id:6,t:'wb',s:'Расписание',st:'UUD',e:'C:/учеба/информатика/ГИА',o:['C:/учеба/информатика/2013/Расписание','C:/учеба/Расписание','C:/учеба/2013/Расписание','C:/учеба/информатика/Расписание'],a:1},
+{n:7,id:7,t:'wb',s:'Расписание',st:'UDDD',e:'C:/учеба/информатика/ГИА',o:['C:/учеба/Расписание','C:/Расписание','C:/учеба/информатика/Расписание','C:/учеба/2013/Расписание'],a:2},
+{n:8,id:8,t:'mn',old:'D:/2013/Зима/Вьюга.doc',sub:'Январь',o:['D:/Январь/Вьюга.doc','D:/2013/Зима/Вьюга.doc','D:/2013/Январь/Вьюга.doc','D:/2013/Зима/Январь/Вьюга.doc'],a:4},
+{n:9,id:9,t:'mo',sub:'Январь',nw:'D:/2013/Зима/Январь/Вьюга.doc',o:['D:/2013/Зима/Январь/Вьюга.doc','D:/2013/Вьюга.doc','D:/2013/Январь/Вьюга.doc','D:/2013/Зима/Вьюга.doc'],a:4},
+{n:10,id:10,t:'mn',old:'D:/2013/Весна/Ландыш.doc',sub:'Май',o:['D:/2013/Весна/Май/Ландыш.doc','D:/2013/Весна/Ландыш.doc','D:/2013/Май/Ландыш.doc','D:/Май/Ландыш.doc'],a:1},
+{n:11,id:11,t:'mo',sub:'Май',nw:'D:/2013/Весна/Май/Ландыш.doc',o:['D:/2013/Май/Ландыш.doc','D:/2013/Весна/Май/Ландыш.doc','D:/2013/Весна/Ландыш.doc','D:/2013/Ландыш.doc'],a:3},
+{n:12,id:12,t:'mn',old:'D:/2013/Лето/Сирень.doc',sub:'Июнь',o:['D:/2013/Лето/Сирень.doc','D:/2013/Лето/Июнь/Сирень.doc','D:/2013/Июнь/Сирень.doc','D:/Июнь/Сирень.doc'],a:2},
+{n:13,id:13,t:'mo',sub:'Июнь',nw:'D:/2013/Лето/Июнь/Сирень.doc',o:['D:/2013/Лето/Сирень.doc','D:/2013/Сирень.doc','D:/2013/Лето/Июнь/Сирень.doc','D:/2013/Июнь/Сирень.doc'],a:1},
+{n:14,id:14,t:'mn',old:'D:/2013/Осень/Хризантема.doc',sub:'Ноябрь',o:['D:/2013/Осень/Ноябрь/Хризантема.doc','D:/Ноябрь/Хризантема.doc','D:/2013/Осень/Хризантема.doc','D:/2013/Ноябрь/Хризантема.doc'],a:1},
+{n:15,id:15,t:'fm1',dir:'Июнь',file:'Отчет.doc',tg:'Сданные',dr:'C',o:['C:/Сданные/Июнь/Отчет.doc','C:/Июнь/Отчет.doc','C:/Отчет.doc','C:/Сданные/Отчет.doc'],a:1},
+{n:16,id:16,t:'fm1',dir:'Май',file:'Сценарий.doc',tg:'Готово',dr:'C',o:['C:/Готово/Май/Сценарий.doc','C:/Готово/Сценарий.doc','C:/Май/Сценарий.doc','C:/Сценарий.doc'],a:1},
+{n:17,id:17,t:'ucm',old:'C:/Сентябрь/Выпуск1/Газета.doc',ups:1,cr:['Верстка'],o:['C:/Сентябрь/Верстка/Газета.doc','C:/Верстка/Сентябрь/Выпуск1/Газета.doc','C:/Верстка/Газета.doc','C:/Сентябрь/Выпуск1/Верстка/Газета.doc'],a:1},
+{n:18,id:18,t:'wb',s:'Автомобили',st:'UDD',e:'C:/Транспорт/Сухопутный/Почтовый/Железнодорожный',o:['C:/Транспорт/Сухопутный/Автомобили','C:/Транспорт/Сухопутный/Почтовый/Автомобили','C:/Автомобили','C:/Автомобили/Транспорт'],a:1},
+{n:19,id:19,t:'wb',s:'Поэты',st:'UDD',e:'C:/Школа/Литература/Сочинения',o:['C:/Школа/Поэты/Литература/Сочинения','C:/Школа/Поэты','C:/Школа/Литература/Поэты/Сочинения','C:/Поэты'],a:2},
+{n:20,id:20,t:'wb',s:'Школа',st:'UUD',e:'C:/Катя/Информатика',o:['C:/Школа/Катя/Информатика','C:/Школа','C:/Программирование/Школа','C:/Катя/Информатика/Школа'],a:4},
+{n:21,id:21,t:'wb',s:'Последовательности',st:'UUD',e:'C:/Кружок/Естественнонаучный',o:['C:/Кружок/Математика/Последовательности','C:/Математика/Кружок/Последовательности','C:/Последовательности','C:/Естественнонаучный/Кружок/Последовательности'],a:1},
+{n:22,id:22,t:'wb',s:'Девочки',st:'UDD',e:'C:/Школа/Ученики/9класс',o:['C:/Школа/Ученики/9класс/Девочки','C:/Школа/Девочки/9класс','C:/Школа/9класс/Девочки','C:/Школа/Девочки'],a:4},
+{n:23,id:23,t:'dep',who:'Петя',s:'C:/Питомцы/Попугайчики',cmp:'>',o:['C:/Питомцы','C:/Попугайчики','C:/Питомцы/Попугайчики','C:/Питомцы/Ара/Корм'],a:4},
+{n:24,id:24,t:'dep',who:'Игорь',s:'C:/Собаки/Охота',cmp:'>',o:['C:/Собаки','C:/Охота','C:/Охота/Собаки/Гончие','C:/Собаки/Охота'],a:3},
+{n:25,id:25,t:'dep',who:'Вова',s:'C:/Игры/Настольные/Домино',cmp:'>',o:['C:/Игры','C:/Игры/Настольные','C:/Игры/Настольные/Лото','C:/Игры/Настольные/Домино/Детское'],a:4},
+{n:26,id:26,t:'dep',who:'Саша',s:'C:/Контрольные/Рубежные/Информатика',cmp:'<',o:['C:/Контрольные','C:/Контрольные/Рубежные/Информатика','C:/Контрольные/Рубежные/Информатика/Вариант1','C:/Контрольные/Рубежные/Физика/Черновик'],a:1},
+{n:27,id:27,t:'dep',who:'Витя',s:'C:/Учебный/Информатика/Кодирование',cmp:'=',o:['C:/Учебный','C:/Учебный/Информатика/Программирование/Паскаль','C:/Учебный/Математика/Дроби','C:/Учебный/Информатика'],a:3},
+{n:28,id:28,t:'del',who:'Ваня Сидоров',subj:'геометрии',files:['D:/Геометрия/Проект/Графики.bmp','D:/Учеба/Работа/Основа.doc','D:/Учеба/Работа/Замечания.doc','D:/Геометрия/Проект/Диаграммы.bmp','D:/Геометрия/Проект/Функции.doc'],o:['Проект','D:/Учеба','D:/Учеба/Работа','D:/Геометрия/Проект'],a:3},
+{n:29,id:29,t:'del',who:'Марина Иванова',subj:'литературе',files:['D:/Литература/Проект/Есенин.bmp','D:/Учеба/Работа/Писатели.doc','D:/Учеба/Работа/Поэты.doc','D:/Литература/Проект/Пушкин.bmp','D:/Литература/Проект/Стихотворения.doc'],o:['Литература','D:/Учеба/Работа','D:/Учеба','D:/Литература/Проект'],a:2},
+{n:30,id:30,t:'sn',nw:'C:/Дом/Рецепты/Напитки/Компот.doc',full:0,o:['Дом','Рецепты','Напитки','C:/Дом/Рецепты'],a:3},
+{n:31,id:31,t:'sn',nw:'C:/Школа/Классы/9Б/Оценки.doc',full:1,o:['Классы','C:/Школа/Классы/9Б','C:/Школа/Классы','9Б'],a:2},
+{n:32,id:32,t:'fm2',subj:'биологии',old:'D:/Учеба/Биология/Млекопитающие',file:'Виды_слонов.txt',leaf:'Млекопитающие',o:['Сданные/Млекопитающие/Виды_слонов.txt','C:/Сданные/Виды_слонов.txt','C:/Учеба/Биология/Млекопитающие/Виды_слонов.txt','C:/Сданные/Млекопитающие/Виды_слонов.txt'],a:4},
+{n:33,id:33,t:'fm2',subj:'истории',old:'D:/Учеба/История/1917',file:'Гражданская_война.txt',leaf:'1917',o:['C:/Сданные/Гражданская_война.txt','Сданные/1917/Гражданская_война.txt','C:/Сданные/1917/Гражданская_война.txt','C:/Учеба/История/1917/Гражданская_война.txt'],a:3},
+{n:34,id:34,t:'fm3',file:'Растения_степей.doc',s:'C:/Красная_книга/Евразия/Россия',ups:2,cr:'Ботаника',mv:'Евразия',o:['C:/Ботаника/Евразия/Россия/Растения_степей.doc','C:/Красная_книга/Ботаника/Евразия/Россия/Растения_степей.doc','C:/Ботаника/Красная_книга/Евразия/Россия/Растения_степей.doc','C:/Красная_книга/Ботаника/Россия/Растения_степей.doc'],a:2},
+{n:35,id:35,t:'fm3',file:'Растения_степей.doc',s:'C:/Красная_книга/Россия',ups:1,cr:'Евразия',mv:'Россия',o:['C:/Красная_книга/Евразия/Россия','C:/Евразия/Россия/Растения_степей.doc','C:/Красная_книга/Растения_степей.doc','C:/Красная_книга/Евразия/Россия/Растения_степей.doc'],a:4},
+{n:36,id:36,t:'mn',old:'D:/2013/Осень/Хризантема.doc',sub:'Ноябрь',o:['D:/2013/Осень/Ноябрь/Хризантема.doc','D:/Ноябрь/Хризантема.doc','D:/2013/Осень/Хризантема.doc','D:/2013/Ноябрь/Хризантема.doc'],a:1},
+{n:37,id:37,t:'wf',who:'Ученик',s:'C:/Осень/Деревья/Клен',st:['U','Полив','U','Уход'],o:['C:/Осень/Деревья/Полив','C:/Осень/Уход','C:/Осень/Деревья/Уход','C:/Полив'],a:3},
+{n:38,id:38,t:'wf',who:'Ученик',s:'C:/Лето/Растения/Ежевика',st:['U','Полив','U','Уход'],o:['C:/Лето/Растения/Полив','C:/Лето/Растения/Уход','C:/Лето/Уход','C:/Полив'],a:2},
+{n:39,id:39,t:'wf',who:'Риэлтор',s:'D:/Квартиры/Цены/Дорогие',st:['U','Премиум','Центральный'],o:['D:/Цены/Квартиры','D:/Квартиры/Цены/Центральный','D:/Квартиры/Цены/Премиум/Центральный','D:/Центральный'],a:3},
+{n:40,id:40,t:'wf',who:'Риэлтор',s:'D:/Квартиры/Цены/Дорогие',st:['U','Премиум','Центральный','U'],o:['D:/Квартиры/Цены/Центральный','D:/Центральный','D:/Цены/Квартиры','D:/Квартиры/Цены/Премиум'],a:4},
+{n:41,id:41,t:'wb',s:'Декабрь',st:'UDD',e:'C:/Календарь/Зима/Январь/17',o:['C:/Календарь/Декабрь/','C:/Календарь/Зима/','C:/Календарь/Зима/Декабрь/','C:/Календарь/Декабрь/17/'],a:3},
+{n:42,id:42,t:'wb',s:'15',st:'UUDD',e:'C:/Календарь/Лето/Июнь/23',o:['C:/Календарь/Август/15/','C:/Календарь/Лето/15/','C:/Календарь/15/','C:/Календарь/Лето/Август/15/'],a:4},
+{n:43,id:43,t:'wf',who:'Директор',s:'D:/Школа/Ученики/Адреса',st:['U','Успеваемость','U','Нарушения'],o:['D:/Школа/Ученики/Успеваемость','D:/Школа/Ученики/Нарушения','D:/Школа/Нарушения','D:/Школа/Ученики/Успеваемость/Нарушения'],a:2},
+{n:44,id:44,t:'wf',who:'Директор',s:'D:/Школа/Ученики/Адреса',st:['U','Успеваемость','Отличники'],o:['D:/Школа/Ученики/Успеваемость','D:/Школа/Успеваемость/Отличники','D:/Школа/Ученики/Успеваемость/Отличники','D:/Отличники'],a:3},
+{n:45,id:45,t:'wf',who:'Папа Андрея',s:'H:/Школа/Андрей',st:['U','Задания','Математика'],o:['H:/Школа/Задания/Математика','H:/Школа/Математика','H:/Школа/Андрей/Задания/Математика','H:/Задания'],a:1},
+{n:46,id:46,t:'wf',who:'Папа Андрея',s:'H:/Школа/Андрей',st:['Оценки','Обновление','U'],o:['H:/Оценки','H:/Школа/Андрей','H:/Школа/Андрей/Оценки','H:/Школа/Андрей/Оценки/Обновление'],a:3},
+{n:47,id:47,t:'wf',who:'Дима',s:'C:/Музыка/Хиты',st:['Ретро','U','Лучшие'],file:'Белые_розы.mp3',intro:'Дима хотел послушать музыку — ему нужен файл <b>Белые_розы.mp3</b>.',o:['C:/Музыка/Хиты/Лучшие/Белые_розы.mp3','C:/Музыка/Белые_розы.mp3','C:/Белые_розы.mp3','C:/Музыка/Хиты/Ретро/Белые_розы.mp3'],a:1},
+{n:48,id:48,t:'wf',who:'Дима',s:'C:/Музыка/Хиты',st:['Ретро','U','Лучшие','Про_цветы'],file:'Белые_розы.mp3',intro:'Дима хотел послушать музыку — ему нужен файл <b>Белые_розы.mp3</b>.',o:['C:/Белые_розы.mp3','C:/Музыка/Хиты/Ретро/Про_цветы/Белые_розы.mp3','C:/Музыка/Хиты/Лучшие/Про_цветы/Белые_розы.mp3','C:/Про_цветы/Белые_розы.mp3'],a:3},
+{n:49,id:49,t:'wf',who:'Пользователь',s:'C:/2011/Избранное/Видео',st:['U','U','Фото'],o:['C:/2011/Избранное/Фото','C:/2011/Фото','C:/Фото','C:/2011/Байкал/Фото'],a:2},
+{n:50,id:50,t:'ucm',old:'C:/Document/Seminar/Math/lesson.htm',ups:1,cr:['Info','Form'],o:['C:/Document/Math/Form/lesson.htm','C:/Seminar/Math/Form/lesson.htm','C:/Document/Info/Form/lesson.htm','C:/Document/Seminar/Info/Form/lesson.htm'],a:4},
+{n:51,id:51,t:'wf',who:'Пользователь',s:'C:/Документы/Договоры/Продажа',st:['U','Срочные','Покупка'],o:['C:/Документы/Срочные/Покупка/Продажа','C:/Документы/Договоры/Срочные/Покупка','C:/Срочные/Покупка','C:/Документы/Срочные/Покупка'],a:2},
+{n:52,id:52,t:'wf',who:'Пользователь',s:'C:/Физика/Задачи/Кинематика',st:['U','U','Экзамен'],o:['C:/Физика/Задачи/Экзамен','C:/Физика','C:/Экзамен','C:/Физика/Экзамен'],a:4},
+{n:53,id:53,t:'mn',old:'D:/Литература/20 век/Том 1',sub:'Шолохов',o:['D:/Литература/20 век/Шолохов/Том 1','D:/Литература/Шолохов/Том 1','D:/Шолохов/Том 1','D:/Шолохов/Литература/20 век/Том 1'],a:1},
+{n:54,id:54,t:'mo',sub:'Pascal',nw:'C:/Olimp/Ivanov/Pascal/ex.pas',o:['C:/Ivanov/Pascal/ex.pas','C:/Olimp/Pascal/ex.pas','C:/Olimp/Ivanov/Pascal/ex.pas','C:/Olimp/Ivanov/ex.pas'],a:4},
+{n:55,id:55,t:'wb',s:'Логика',st:'UUD',e:'C:/Школа/Уроки/Химия',o:['C:/Школа/Уроки/Информатика/Логика','C:/Школа/Уроки/Логика','C:/Школа/Логика','C:/Школа/Информатика/Логика'],a:1},
+{n:56,id:56,t:'wb',s:'Лето',st:'UDD',e:'C:/Фото/Экскурсии/Псков',o:['C:/Лето','C:/Фото/Лето','C:/Фото/Тула/Лето','C:/Фото/Экскурсии/Лето'],a:2},
+{n:57,id:57,t:'wf',who:'Пользователь',s:'C:/Компьютеры/Память',st:['Винчестеры','U','U','Процессоры'],o:['C:/Компьютеры/Процессоры','C:/Винчестеры/Процессоры','C:/Компьютеры/Память/Винчестеры','C:/Компьютеры/Память/Процессоры'],a:1},
+{n:58,id:58,t:'mn',old:'D:/Фото/2012/Общая',sub:'9 класс',o:['D:/Фото/9 класс/Общая','D:/9 класс/Общая','D:/Фото/2012/9 класс/Общая','D:/9 класс/Фото/2012/Общая'],a:3},
+{n:59,id:59,t:'wb',s:'Работа1',st:'UDDD',e:'C:/2012/9 класс/Таблицы',o:['C:/2012/Текст/Редактирование/Работа1','C:/2012/Работа1','C:/2012/Текст/Работа1','C:/Работа1'],a:4},
+{n:60,id:60,t:'lvl',o:['Музыка, Медиа','Лучшее, Избранное','Фото, Медиа','Музыка, Избранное'],a:2},
+{n:61,id:61,t:'wb',s:'Участники',st:'UUDD',e:'C:/Конференция/Секции/Информатика',o:['C:/Конференция/Регионы/Списки/Участники','C:/Конференция/Участники','C:/Конференция/Регионы/Участники','C:/Участники'],a:3},
+{n:62,id:62,t:'wb',s:'Химия',st:'UDD',e:'C:/Школа/Уроки/Информатика',o:['C:/Школа/Уроки/1 четверть/Химия','C:/Химия','C:/Школа/Уроки/Химия','C:/Школа/Химия'],a:4},
+{n:63,id:63,t:'wb',s:'Отчет',st:'UUDD',e:'C:/Школа/Дежурство/График',o:['C:/Школа/Документы/Редактирование/Отчет','C:/Школа/Отчет','C:/Школа/Документы/Отчет','C:/Отчет'],a:3},
+{n:64,id:64,t:'ucm',old:'D:/Литература/20 век/Том 1',ups:2,cr:['Шолохов'],o:['D:/Литература/Шолохов/Том 1','D:/20 век/Шолохов/Том 1','D:/Литература/20 век/Шолохов/Том 1','D:/Шолохов/Том 1'],a:4},
+{n:65,id:65,t:'mo',sub:'Kit10',nw:'C:/Doc/Russia/Konkurs/Kit10/kit.doc',o:['C:/Doc/Russia/Kit10/kit.doc','C:/Doc/Konkurs/Kit10/kit.doc','C:/Doc/Russia/Konkurs/kit.doc','C:/Doc/Russia/kit.doc'],a:3},
+{n:66,id:66,t:'wb',s:'Подготовка',st:'UDDD',e:'C:/ГИА/Excel/Таблицы',o:['C:/ГИА/Текст/Редактирование/Подготовка','C:/Подготовка','C:/ГИА/Текст/Подготовка','C:/ГИА/Подготовка'],a:2},
+{n:67,id:67,t:'wb',s:'Задачи',st:'UUD',e:'C:/Документы/Физика',o:['C:/Документы/Задачи','C:/Документы/Математика/Задачи','C:/Документы/Математика/Алгебра/Задачи','C:/Физика/Задачи'],a:2},
+{n:68,id:68,t:'ucm',old:'C:/www/img/weather/sun.bmp',ups:2,cr:['docs'],o:['C:/www/img/docs/sun.bmp','C:/docs/sun.bmp','C:/www/img/weather/docs/sun.bmp','C:/www/docs/sun.bmp'],a:4},
+{n:69,id:69,t:'wf',who:'Пользователь',s:'C:/Документы/Реферат/География',st:['U','U','Фотографии'],file:'Фауна.jpg',o:['C:/Документы/Фотографии/География/Фауна.jpg','C:/Документы/Реферат/Фотографии/Фауна.jpg','C:/Документы/Фотографии/Природа/Фауна.jpg','C:/Документы/Фотографии/Фауна.jpg'],a:4},
+{n:70,id:70,t:'ucm',old:'C:/www/img/weather/rain.png',ups:1,cr:['pic','wallpaper'],o:['C:/www/pic/wallpaper/rain.png','C:/www/img/pic/rain.png','C:/www/img/pic/wallpaper/rain.png','C:/www/img/weather/pic/wallpaper/rain.png'],a:3},
+{n:71,id:71,t:'wf',who:'Пользователь',s:'C:/Лето/Рисунки/Пейзаж',st:['U','U','Фотографии'],o:['C:/Лето/Рисунки/Фотографии','C:/Лето/Фотографии','C:/Фотографии/Лето','C:/Фотографии'],a:2},
+{n:72,id:72,t:'wb',s:'Архив',st:'UDD',e:'C:/Данные/Документы/2009',o:['C:/Данные/Документы/Архив','C:/Архив/Документы/2009','C:/Данные/Архив','C:/Архив'],a:3},
+{n:73,id:73,t:'wb',s:'Отчет',st:'UUD',e:'C:/Школа/Документы/График',o:['C:/Школа/Документы/Новые/Отчет','C:/Школа/Отчет','C:/Школа/Документы/Отчет','C:/Отчет'],a:1},
+{n:74,id:74,t:'wf',who:'Пользователь',s:'C:/Программы/Стандартные/Редактор',st:['U','U','История'],file:'Реферат.txt',o:['C:/Реферат.txt','C:/Программы/Стандартные/История/Реферат.txt','C:/История/Реферат.txt','C:/Программы/История/Реферат.txt'],a:4},
+{n:75,id:75,t:'wf',who:'Пользователь',s:'C:/Учеба/Математика/Задания',st:['U','U','Биология','Оценки'],o:['C:/Биология/Оценки','C:/Оценки/Биология','C:/Учеба/Математика/Биология/Оценки','C:/Учеба/Биология/Оценки'],a:4},
+{n:76,id:76,t:'wb',s:'Отчет',st:'UDDD',e:'C:/Школа/Дежурство/График',o:['C:/Школа/Документы/Редактирование/Отчет','C:/Школа/Отчет','C:/Школа/Документы/Отчет','C:/Отчет'],a:4},
+{n:77,id:77,t:'mo',sub:'math',nw:'C:/document/9class/math/work1.doc',o:['C:/document/9class/work1.doc','work1.doc','C:/document/work1.doc','document/9class/work1.doc'],a:1},
+{n:78,id:78,t:'wf',who:'Пользователь',s:'D:/Информатика/Таблицы',st:['U','Алгоритмы','Программы'],file:'sort.pas',o:['D:/Таблицы/Программы/sort.pas','D:/Информатика/Программы/sort.pas','D:/Алгоритмы/Программы/sort.pas','D:/Информатика/Алгоритмы/Программы/sort.pas'],a:4},
+{n:79,id:79,t:'wb',s:'Лирика',st:'UD',e:'C:/Библиотека/Проза',o:['C:/Лирика','C:/Библиотека/Лирика','C:/Библиотека/Лирика/Проза','C:/Проза/Лирика'],a:2},
+{n:80,id:80,t:'mo',sub:'Цветы',nw:'D:/Марина/Рисунки/Цветы/сирень.jpg',o:['D:/Рисунки/Цветы/сирень.jpg','D:/Марина/Цветы/сирень.jpg','D:/Марина/Рисунки/','D:/Марина/Рисунки/сирень.jpg'],a:4},
+{n:81,id:81,t:'wf',who:'Пользователь',s:'D:/Фотографии/Дом/Кошка',st:['U','U','Экзамен','Сочинение'],o:['D:/Сочинение/Экзамен','D:/Экзамен/Сочинение','D:/Фотографии/Экзамен/Сочинение','D:/Фотографии/Сочинение/Экзамен'],a:3},
+{n:82,id:82,t:'wf',who:'Пользователь',s:'C:/Проект/Задание',st:['U','Практика','U','Теория'],o:['C:/Проект/Теория','C:/Проект/Задание/Теория','C:/Теория','C:/Теория/Практика'],a:1},
+{n:83,id:83,t:'wf',who:'Пользователь',s:'C:/Учеба/Физика/Задания',st:['U','U','География','Оценки'],o:['C:/География/Оценки','C:/Оценки/География','C:/Учеба/Физика/География/Оценки','C:/Учеба/География/Оценки'],a:4},
+{n:84,id:84,t:'mo',sub:'Mars',nw:'C:/User/School/Mars/vedom.xls',o:['C:/User/vedom.xls','C:/School/Mars/vedom.xls','C:/User/Mars/vedom.xls','C:/User/School/vedom.xls'],a:4},
+{n:85,id:85,t:'wb',s:'Отчет',st:'UDD',e:'C:/Школа/Дежурство/График',o:['C:/Школа/Документы/Редактирование/Отчет','C:/Школа/Отчет','C:/Школа/Документы/Отчет','C:/Отчет'],a:2},
+{n:86,id:86,t:'wb',s:'Участники',st:'UDD',e:'C:/Конференция/Секции/Информатика',o:['C:/Конференция/Регионы/Списки/Участники','C:/Конференция/Участники','C:/Конференция/Регионы/Участники','C:/Участники'],a:2},
+{n:87,id:87,t:'wb',s:'Пушкин',st:'UDD',e:'D:/Учеба/Литература/Лермонтов/Стихи',o:['D:/Учеба/Литература/Пушкин','D:/Учеба/Литература/Пушкин/Стихи','D:/Учеба/Литература/Стихи/Пушкин','D:/Учеба/Пушкин'],a:1},
+{n:88,id:88,t:'ucm',old:'C:/Work/9klass/Math/Geom/part1.doc',ups:2,cr:['Form','lessons'],o:['C:/Work/9klass/Math/Form/lessons/part1.doc','C:/Work/9klass/Form/lessons/part1.doc','C:/Work/Form/lessons/part1.doc','C:/Work/9klass/Math/Geom/Form/lessons/part1.doc'],a:2},
+{n:89,id:89,t:'wf',who:'Пользователь',s:'C:/Физика/Задачи/Кинематика',st:['U','Экзамен','Кинематика'],o:['C:/Физика/Кинематика/Экзамен','C:/Физика/Задачи/Экзамен/Кинематика','C:/Физика/Экзамен/Кинематика','C:/Физика/Задачи/Кинематика'],a:2},
+{n:90,id:90,t:'ucm',old:'C:/Doc/Class9v/Lesson/math.doc',ups:1,cr:['Topic','Algebra'],o:['C:/Doc/Class/Lesson/Algebra/math.doc','C:/Doc/9v/Topic/Algebra/math.doc','C:/Doc/Class9v/Topic/Algebra/math.doc','C:/Doc/Class/Algebra/math.doc'],a:3},
+{n:91,id:91,t:'ucm',old:'C:/информатика/рисунки/часть1/урок2.doc',ups:1,cr:['часть2'],o:['C:/информатика/рисунки/урок2.doc','C:/информатика/часть2/урок2.doc','C:/информатика/рисунки/часть2/урок2.doc','C:/информатика/рисунки/часть1/часть2/урок2.doc'],a:3},
+{n:92,id:92,t:'mo',sub:'School',nw:'C:/Document/Syte/School/vizit.htm',o:['C:/Document/School/Syte/vizit.htm','C:/Syte/School/vizit.htm','C:/Document/School/vizit.htm','C:/Document/Syte/vizit.htm'],a:4},
+{n:93,id:93,t:'ucm',old:'C:/Class9b/Pascal/task.pas',ups:1,cr:['Homework','Program'],o:['C:/Class/Homework/Program/task.pas','C:/Class9b/Homework/Program/task.pas','C:/9b/Homework/Program/task.pas','C:/Class/Pascal/Homework/Program/task.pas'],a:2},
+{n:94,id:94,t:'wb',s:'Подготовка',st:'UDD',e:'C:/ГИА/Задания/График',o:['C:/ГИА/Документы/Редактирование/Подготовка','C:/Подготовка','C:/ГИА/Документы/Подготовка','C:/ГИА/Подготовка'],a:4},
+{n:95,id:95,t:'mo',sub:'рисунки',nw:'C:/информатика/графика/рисунки/урок1.doc',o:['C:/информатика/рисунки/урок1.doc','C:/информатика/урок1.doc','C:/информатика/графика/рисунки/часть1/урок1.doc','C:/информатика/графика/урок1.doc'],a:4},
+{n:96,id:96,t:'ucm',old:'C:/Work/9class/documents/anketa.doc',ups:1,cr:['otchet'],o:['C:/Work/9class/documents/otchet/anketa.doc','C:/Work/9class/otchet/anketa.doc','Work/9class/otchet/anketa.doc','C:/Work/otchet/anketa.doc'],a:2},
+{n:97,id:439,t:'mo',sub:'Лето',nw:'C:/Документы/Фотографии/Лето/Фото.jpg',o:['C:/Документы/Фотографии/','C:/Документы/Фотографии/Фото.jpg','C:/Фотографии/Документы/Фото.jpg','C:/Фотографии/Лето/Фото.jpg'],a:2},
+{n:98,id:691,t:'mo',sub:'Реферат',nw:'D:/Биология/7_класс/Реферат/Таблица.jpg',o:['D:/Биология/Реферат/Таблица.jpg','D:/Биология/7_класс/Реферат/Таблица.jpg','D:/Биология/7_класс/2 четверть/Таблица.jpg','D:/Биология/7_класс/Таблица.jpg'],a:4},
+{n:99,id:706,t:'mo',sub:'Литература',nw:'D:/Моя_папка/7_класс/Литература/Доклад.pdf',o:['D:/Моя_папка/Литература/Доклад.pdf','D:/Моя_папка/7_класс/Доклад.pdf','D:/Моя_папка/7_класс/Литература/Доклад.pdf','D:/Моя_папка/7_класс/3 четверть/Доклад.pdf'],a:2},
+{n:100,id:736,t:'fm1',dir:'Физика',file:'Лабораторная.docx',tg:'Работы',dr:'D',contents:1,o:['D:/Физика/Работы/Лабораторная.docx','D:/Физика/Лабораторная.docx','D:/Работы/Физика/Лабораторная.docx','D:/Работы/Лабораторная.docx'],a:3},
+{n:101,id:774,t:'fm1',dir:'Химия',file:'Тест.docx',tg:'Работы',dr:'C',contents:1,before:1,o:['C:/Работы/Тест.docx','C:/Работы/Химия/Тест.docx','C:/Химия/Тест.docx','C:/Химия/Работы/Тест.docx'],a:3},
+{n:102,id:1195,t:'ucm',old:'C:/Мои_фото/Весна/С_мамой/на_прогулке.jpg',ups:1,cr:['Семья','Печать'],o:['C:/Мои_фото/Весна/Печать/Семья/на_прогулке.jpg','C:/Семья/Печать/на_прогулке.jpg','C:/Мои_фото/Весна/Семья/Печать/на_прогулке.jpg','C:/Мои_фото/Семья/Печать/на_прогулке.jpg'],a:3},
+{n:103,id:1210,t:'mo',sub:'История',nw:'D:/Документы/Учёба/Домашнее_задание/История/Анализ.docx',o:['D:/Документы/Учёба/Домашнее_задание/Анализ.docx','D:/Документы/Учёба/Анализ.docx','D:/Документы/Учёба/История/Анализ.docx','D:/Документы/Домашнее_задание/Анализ.docx'],a:1},
+{n:104,id:1240,t:'wb',s:'Фото',st:'UUD',e:'C:/Мои_занятия',o:['C:/Мои_занятия/Спорт/Фото','C:/Мои_занятия/Фото','C:/Мои_занятия/Спорт/Фото/Сентябрь','C:/Фото'],a:2},
+{n:105,id:1255,t:'mo',sub:'Звёзды',nw:'C:/Интересное/Созвездия/Орион/Звёзды/Беллатрикс.jpg',o:['C:/Интересное/Созвездия/Орион/Беллатрикс.jpg','C:/Интересное/Созвездия/Звёзды/Беллатрикс.jpg','C:/Интересное/Созвездия/Орион/Звёзды/Беллатрикс.jpg','C:/Интересное/Звёзды/Беллатрикс.jpg'],a:1},
+{n:106,id:1270,t:'mo',sub:'Звёзды',nw:'C:/Интересное/Созвездия/Кассиопея/Звёзды/Гамма.jpg',o:['C:/Интересное/Созвездия/Звёзды/Гамма.jpg','C:/Интересное/Созвездия/Кассиопея/Гамма.jpg','C:/Интересное/Созвездия/Гамма.jpg','C:/Интересное/Звёзды/Гамма.jpg'],a:2}
+];
+var TYPE={wb:'Найди начальный каталог',wf:'Прогулка по каталогам',mn:'Новое имя файла',mo:'Имя файла до перемещения',ucm:'Поднялся, создал, переместил',fm1:'Перенос папки',fm2:'Перенос папки',fm3:'Перенос папки',dep:'Глубина вложенности',sn:'Созданный подкаталог',del:'Удаление файлов',lvl:'Каталоги одного уровня'};
+var GROUP={wb:'wb',wf:'wf',mn:'mv',mo:'mv',ucm:'ucm',fm1:'fm',fm2:'fm',fm3:'fm',dep:'dep',sn:'misc',del:'misc',lvl:'misc'};
+function $(id){return document.getElementById(id);}
+function lastCh(s){return s.charAt(s.length-1);}
+function pp(s){s=String(s);while(lastCh(s)==='/'){s=s.slice(0,-1);}return s.split('/');}
+function ps(a){if(!a||!a.length)return '';var r=a.join(BS);if(a.length===1&&lastCh(a[0])===':')r+=BS;return r;}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+function P(s){return '<span class="p">'+esc(ps(pp(s)))+'</span>';}
+function fname(s){var a=pp(s);return a[a.length-1];}
+function clone(s){var p=[],i;for(i=0;i<s.paths.length;i++)p.push({p:s.paths[i].p,f:s.paths[i].f});
+ return {pos:s.pos?s.pos.slice():null,file:s.file?s.file.slice():null,paths:p,created:s.created.slice(),gone:s.gone.slice(),mark:s.mark.slice(),note:s.note};}
+function inArr(a,x){for(var i=0;i<a.length;i++)if(a[i]===x)return true;return false;}
+function diff(a,b){var r=[],i;for(i=0;i<a.length;i++)if(!inArr(b,a[i]))r.push(a[i]);return r;}
+function derive(t){var rev=t.st.split('').reverse(),p=pp(t.e),i;for(i=0;i<rev.length;i++){if(rev[i]==='D')p=p.slice(0,-1);else p.push(i===rev.length-1?t.s:'?');}return p;}
+function match(pat,o){var a=pp(o);if(a.length!==pat.length)return false;for(var i=0;i<pat.length;i++)if(pat[i]!=='?'&&pat[i]!==a[i])return false;return true;}
+var store={ans:{},wrong:{},cur:0};
+try{var raw=window.localStorage?localStorage.getItem('vpr7t2full'):null;if(raw){var o=JSON.parse(raw);if(o&&o.ans)store=o;}}catch(e){}
+function save(){try{localStorage.setItem('vpr7t2full',JSON.stringify(store));}catch(e){}}
+var cur=0,sc=null,stepI=0,sel=-1,busy=false,autoTimer=null,settleTimer=null,logs=[],soundOn=true,stepDur=2000;
+function applyTheme(th){document.documentElement.setAttribute('data-theme',th);try{localStorage.setItem('theme',th);}catch(e){}var b=$('themeBtn');if(b){var dark=th==='dark';b.innerHTML=dark?'☀️':'🌙';b.setAttribute('aria-pressed',dark?'true':'false');var tip=dark?'Включить светлую тему':'Включить тёмную тему';b.setAttribute('title',tip);b.setAttribute('aria-label',tip);}var m=$('metaTheme');if(m)m.setAttribute('content',th==='dark'?'#16213e':'#667eea');}
+function currentTheme(){return document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light';}
+function beep(f,d,type){if(!soundOn)return;try{var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;var ctx=beep.ctx||(beep.ctx=new AC());var o=ctx.createOscillator(),g=ctx.createGain();o.type=type||'sine';o.frequency.value=f;g.gain.value=.06;o.connect(g);g.connect(ctx.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+(d||.12));o.stop(ctx.currentTime+(d||.12));}catch(e){}}
+function buildSc(t){
+ var btns=[],muts=[],order=[],init={pos:null,file:null,paths:[],created:[],gone:[],mark:[],note:''},depth=false,i;
+ function B(label,sub,mut){btns.push({label:label,sub:sub||''});muts.push(mut);return btns.length-1;}
+ function pathOf(a){return a.join('/');}
+ if(t.t==='wb'){
+  init.pos=pp(t.e);init.paths=[{p:t.e,f:0}];init.note='Начинаем с конца: здесь пользователь оказался в результате.';
+  for(i=0;i<t.st.length;i++){(function(i){var ch=t.st.charAt(i);
+   B(ch==='U'?'⬆ Вверх':'⬇ Вниз',ch==='U'?'отмена: ⬇ вниз':'отмена: ⬆ вверх',function(st){
+    if(ch==='D'){var rem=st.pos[st.pos.length-1];st.pos.pop();st.note='Отменили «Вниз» → поднялись вверх, убрали «'+rem+'».';}
+    else{var seg=(i===0)?t.s:'?';st.pos.push(seg);st.paths.push({p:pathOf(st.pos),f:0});st.note='Отменили «Вверх» → спустились в '+(seg==='?'?'неизвестный каталог «?»':'начальный каталог «'+seg+'»')+'.';}
+   });})(i);}
+  for(i=t.st.length-1;i>=0;i--)order.push(i);
+ }else if(t.t==='wf'){
+  init.pos=pp(t.s);init.paths=[{p:t.s,f:0}];init.note='Старт: '+ps(pp(t.s));
+  for(i=0;i<t.st.length;i++){(function(i){var s=t.st[i];
+   if(s==='U')B('⬆ Вверх','убрать последний каталог',function(st){st.pos.pop();st.note='Поднялись на уровень вверх.';});
+   else B('⬇ Вниз → '+s,'добавить каталог «'+s+'»',function(st){st.pos.push(s);st.paths.push({p:pathOf(st.pos),f:0});st.note='Спустились в каталог «'+s+'».';});
+  })(i);}
+  if(t.file)B('📄 Открыть '+t.file,'показать полное имя',function(st){st.file=st.pos.concat([t.file]);st.paths.push({p:pathOf(st.file),f:1});st.created.push(pathOf(st.file));st.note='Открыли файл. Полное имя: '+ps(st.file);});
+  for(i=0;i<btns.length;i++)order.push(i);
+ }else if(t.t==='mn'){
+  var old=pp(t.old),dir=old.slice(0,-1),fn=old[old.length-1],subP=dir.concat([t.sub]),nw=dir.concat([t.sub,fn]);
+  init.file=old;init.pos=dir;init.paths=[{p:t.old,f:1}];init.note='Файл лежит в каталоге '+ps(dir);
+  B('📁 Создать '+t.sub,'новый подкаталог',function(st){st.paths.push({p:pathOf(subP),f:0});st.created.push(pathOf(subP));st.note='Создали подкаталог «'+t.sub+'».';});
+  B('📄 Переместить файл','в созданный подкаталог',function(st){st.file=nw.slice();st.paths.push({p:pathOf(nw),f:1});st.gone.push(t.old);st.created.push(pathOf(nw));st.note='Переместили файл. Новое имя: '+ps(nw);});
+  order=[0,1];
+ }else if(t.t==='mo'||t.t==='sn'){
+  var nw2=pp(t.nw),sub2=nw2.slice(0,-1),old2=nw2.slice(0,-2).concat(nw2.slice(-1));
+  init.file=nw2;init.pos=sub2;init.paths=[{p:t.nw,f:1}];init.mark=[pathOf(sub2)];init.note='Известно новое имя. Созданный подкаталог выделен.';
+  var subName=t.t==='sn'?(t.full?ps(sub2):sub2[sub2.length-1]):t.sub;
+  B('📁 Создать '+subName,'отмена: убрать папку',function(st){st.gone.push(pathOf(sub2));st.mark=[pathOf(sub2)];st.note='Отменили создание подкаталога «'+subName+'».';});
+  B('📄 Переместить файл','отмена: вернуть файл',function(st){st.file=old2.slice();st.paths.push({p:pathOf(old2),f:1});st.gone.push(t.nw);st.created.push(pathOf(old2));st.note='Отменили перемещение. Было: '+ps(old2);});
+  order=[1,0];
+ }else if(t.t==='ucm'){
+  var old3=pp(t.old),fn3=old3[old3.length-1],dir3=old3.slice(0,-1),base=dir3.slice(0,dir3.length-t.ups),chain=[];
+  init.pos=dir3.slice();init.file=old3.slice();init.paths=[{p:t.old,f:1}];init.note='Пользователь работает с файлом '+ps(old3);
+  for(i=0;i<t.ups;i++)B('⬆ Вверх','убрать последний каталог',function(st){st.pos.pop();st.note='Поднялись на уровень вверх → '+ps(st.pos);});
+  for(i=0;i<t.cr.length;i++){(function(i){B('📁 Создать '+t.cr[i],'новый каталог',function(st){chain.push(t.cr[i]);var cp=base.concat(chain);st.paths.push({p:pathOf(cp),f:0});st.created.push(pathOf(cp));st.note='Создали каталог «'+t.cr[i]+'».';});})(i);}
+  B('📄 Переместить файл','в созданные каталоги',function(st){var nf=base.concat(t.cr).concat([fn3]);st.file=nf;st.paths.push({p:pathOf(nf),f:1});st.gone.push(t.old);st.created.push(pathOf(nf));st.note='Переместили файл. Новое имя: '+ps(nf);});
+  for(i=0;i<btns.length;i++)order.push(i);
+ }else if(t.t==='fm1'){
+  var dr=t.dr+':',ghost=['…',t.dir,t.file],nw3=[dr,t.tg,t.dir,t.file],old4=[dr,t.dir,t.file];
+  if(t.before){init.file=nw3.slice();init.paths=[{p:pathOf(nw3),f:1}];init.note='После переноса файл здесь: '+ps(nw3);
+   B('↩ Отменить перенос','вернуть папку в корень',function(st){st.file=old4.slice();st.paths.push({p:pathOf(old4),f:1});st.gone.push(pathOf(nw3));st.gone.push(dr+'/'+t.tg+'/'+t.dir);st.created.push(pathOf(old4));st.note='До переноса: '+ps(old4);});order=[0];
+  }else{init.file=ghost.slice();init.paths=[{p:pathOf(ghost),f:1},{p:dr+'/'+t.tg,f:0}];init.note='Каталог «'+t.dir+'» находился где-то на диске.';
+   B('📦 Перенести '+t.dir,'в «'+t.tg+'» (корень '+dr+')',function(st){st.file=nw3.slice();st.paths.push({p:pathOf(nw3),f:1});st.gone.push(pathOf(ghost));st.gone.push('…/'+t.dir);st.gone.push('…');st.created.push(pathOf(nw3));st.note='Перенесли папку. Стало: '+ps(nw3);});order=[0];}
+ }else if(t.t==='fm2'){
+  var oldF=pp(t.old).concat([t.file]),nw4=['C:','Сданные',t.leaf,t.file];
+  init.file=oldF.slice();init.paths=[{p:pathOf(oldF),f:1},{p:'C:/Сданные',f:0}];init.note='Файл в папке «'+t.leaf+'» на диске D.';
+  B('📦 Перенести '+t.leaf,'в C:'+BS+'Сданные',function(st){st.file=nw4.slice();st.paths.push({p:pathOf(nw4),f:1});st.gone.push(pathOf(oldF));st.gone.push(t.old);st.created.push(pathOf(nw4));st.note='Перенесли папку «'+t.leaf+'». Стало: '+ps(nw4);});order=[0];
+ }else if(t.t==='fm3'){
+  var start=pp(t.s),oldF2=start.concat([t.file]),base2=start.slice(0,start.length-t.ups),crP=base2.concat([t.cr]),mvDst=crP.concat([t.mv]),rest=start.slice(base2.length+1),nf2=mvDst.concat(rest).concat([t.file]);
+  init.pos=start.slice();init.file=oldF2.slice();init.paths=[{p:pathOf(oldF2),f:1}];init.note='Файл хранится в '+ps(start);
+  for(i=0;i<t.ups;i++)B('⬆ Вверх','убрать последний каталог',function(st){st.pos.pop();st.note='Поднялись вверх → '+ps(st.pos);});
+  B('📁 Создать '+t.cr,'новый каталог',function(st){st.paths.push({p:pathOf(crP),f:0});st.created.push(pathOf(crP));st.note='Создали папку «'+t.cr+'».';});
+  B('📦 Перенести '+t.mv,'в «'+t.cr+'» со всем содержимым',function(st){var src=start.slice(0,base2.length+1),g=[pathOf(src)],q=src.slice(),j;for(j=base2.length+1;j<start.length;j++){q=q.concat([start[j]]);g.push(pathOf(q));}g.push(pathOf(oldF2));st.gone=g;st.file=nf2.slice();st.paths.push({p:pathOf(nf2),f:1});st.created.push(pathOf(nf2));st.note='Перенесли папку «'+t.mv+'». Стало: '+ps(nf2);});
+  for(i=0;i<btns.length;i++)order.push(i);
+ }else if(t.t==='del'){
+  init.paths=[];for(i=0;i<t.files.length;i++)init.paths.push({p:t.files[i],f:1});init.note='Все созданные файлы. Найдите папку, где только .doc.';
+  var empty={},ed={},empties=[];for(i=0;i<t.files.length;i++){var d=pp(t.files[i]).slice(0,-1).join('/');empty[d]=(empty[d]||0)+1;if(t.files[i].slice(-4)==='.doc')ed[d]=(ed[d]||0)+1;}
+  for(var k in ed)if(ed.hasOwnProperty(k)&&ed[k]===empty[k])empties.push(k);
+  B('🗑 Удалить все .doc','оставить только не-.doc',function(st){var g=[];for(var j=0;j<t.files.length;j++)if(t.files[j].slice(-4)==='.doc')g.push(t.files[j]);st.gone=g;st.mark=empties;st.note='Удалили .doc. Пустой осталась папка: '+ps(pp(empties[0]));});order=[0];
+ }else if(t.t==='lvl'){
+  depth=true;init.pos=['Медиа','Музыка','Лучшее'];init.paths=[{p:'Медиа/Музыка/Лучшее',f:0},{p:'Медиа/Фото/Избранное',f:0}];init.note='Старт: «Лучшее» внутри «Музыка».';
+  B('⬆ Вверх','',function(st){st.pos.pop();st.note='Поднялись в «Музыка».';});
+  B('⬆ Вверх','',function(st){st.pos.pop();st.note='Поднялись в «Медиа».';});
+  B('⬇ Вниз → Фото','',function(st){st.pos.push('Фото');st.note='Спустились в «Фото».';});
+  B('⬇ Вниз → Избранное','',function(st){st.pos.push('Избранное');st.mark=['Медиа/Музыка/Лучшее','Медиа/Фото/Избранное'];st.note='«Лучшее» и «Избранное» — на одном уровне!';});
+  order=[0,1,2,3];
+ }else if(t.t==='dep'){
+  depth=true;init.pos=pp(t.s);init.paths=[{p:t.s,f:0}];init.mark=[t.s];for(i=0;i<t.o.length;i++)init.paths.push({p:t.o[i],f:0});init.note='Сравниваем уровни вложенности старта и вариантов.';
+ }
+ var snaps=[clone(init)];
+ for(i=0;i<order.length;i++){var st=clone(snaps[i]);muts[order[i]](st);snaps.push(st);}
+ if(snaps.length>1&&!snaps[snaps.length-1].mark.length){var ls=snaps[snaps.length-1];if(ls.pos)ls.mark=[pathOf(ls.pos)];}
+ return {btns:btns,order:order,snaps:snaps,depth:depth,mode:t.t};
+}
+function buildTree(list){var root={kids:{},order:[]},j,i;for(j=0;j<list.length;j++){var segs=pp(list[j].p),nd=root;for(i=0;i<segs.length;i++){var seg=segs[i];if(!nd.kids[seg]){nd.kids[seg]={name:seg,kids:{},order:[],file:false};nd.order.push(seg);}nd=nd.kids[seg];if(list[j].f&&i===segs.length-1)nd.file=true;}}return root;}
+function has(a,x){return inArr(a,x);}
+function renderTree(opts){opts=opts||{};var snap=opts.snap||sc.snaps[stepI],leaving=opts.leaving||[],entering=opts.entering||[];
+ var root=buildTree(snap.paths),posK=snap.pos?snap.pos.join('/'):null,fileK=snap.file?snap.file.join('/'):null;
+ function walk(nd,path,depth){var h='',j;for(j=0;j<nd.order.length;j++){var k=nd.kids[nd.order[j]],kp=path?path+'/'+k.name:k.name;
+  var isLeaving=has(leaving,kp),isGone=has(snap.gone,kp);
+  if(isGone&&!isLeaving)continue;
+  var cls='nd';
+  if(isLeaving){cls+=' leaving';}
+  else{if(kp===posK)cls+=' cur';if(kp===fileK)cls+=' fcur';if(has(snap.created,kp))cls+=' new';if(has(snap.mark,kp))cls+=' mark';}
+  if(has(entering,kp))cls+=' enter';
+  if(k.name==='?')cls+=' unk';
+  var icon=k.file?'📄':(lastCh(k.name)===':'?'💾':(k.name==='?'?'❓':''));
+  var label=k.name==='?'?'какой-то каталог':esc(k.name);
+  var db=sc.depth?'<span class="depB">ур. '+depth+'</span>':'';
+  h+='<li><span class="'+cls+'">'+icon+' '+label+db+'</span>';var kids=walk(k,kp,depth+1);if(kids)h+='<ul>'+kids+'</ul>';h+='</li>';}return h;}
+ $('tree').innerHTML=walk(root,'',0);}
+function tailRemoved(prev,cur){if(!prev||!cur||prev.length<=cur.length)return null;for(var i=0;i<cur.length;i++)if(prev[i]!==cur[i])return null;return prev.slice(cur.length);}
+function chips(el,arr,prev,del){if(!arr){el.innerHTML='<span class="sep">—</span>';return;}var h='',i;
+ for(i=0;i<arr.length;i++){var s=arr[i],unk=s==='?',cls='chip';if(prev&&i>=prev.length)cls+=' add';if(unk)cls+=' unk';h+='<span class="'+cls+'">'+(unk?'❓':esc(s))+'</span>';if(i<arr.length-1||(del&&del.length))h+='<span class="sep">'+BS+'</span>';}
+ if(arr.length===1&&lastCh(arr[0])===':'&&!(del&&del.length))h+='<span class="sep">'+BS+'</span>';
+ if(del&&del.length){for(i=0;i<del.length;i++){h+='<span class="chip del">'+esc(del[i])+'</span>';if(i<del.length-1)h+='<span class="sep">'+BS+'</span>';}}
+ el.innerHTML=h;}
+function renderPath(){var snap=sc.snaps[stepI],prev=stepI>0?sc.snaps[stepI-1]:null;$('posRow').style.display=snap.pos?'':'none';$('fileRow').style.display=snap.file?'':'none';chips($('posChips'),snap.pos,prev?prev.pos:null,null);chips($('fileChips'),snap.file,prev?prev.file:null,null);}
+function stepsTxt(st){var parts=[],d=0,u=0,i;for(i=0;i<st.length;i++){var s=st.charAt(i);if(i===0){parts.push('Сначала он поднялся на один уровень вверх');continue;}if(s==='U'){u++;parts.push((u===1?'затем еще раз поднялся':'потом еще раз поднялся')+' на один уровень вверх');}else{d++;parts.push((d===1?'затем спустился':'потом еще раз спустился')+' на один уровень вниз');}}return parts.join(', ');}
+function wfStepsTxt(st){var parts=[],u=0,i;for(i=0;i<st.length;i++){var s=st[i],conn=i===0?'Сначала он ':(i===1?'затем ':(i===2?'потом ':'после этого '));if(s==='U'){u++;parts.push(conn+(u>1?'еще раз поднялся':'поднялся')+' на один уровень вверх');}else parts.push(conn+'спустился в каталог <b>'+esc(s)+'</b>');}return parts.join(', ');}
+function condHTML(t){
+ if(t.t==='wb')return 'Пользователь находился в каталоге <b>'+esc(t.s)+'</b>. '+stepsTxt(t.st)+'. В результате он оказался в каталоге '+P(t.e)+'. Укажите полный путь каталога, с которым пользователь начинал работу.';
+ if(t.t==='dep'){var cmp={'>':'больше','<':'меньше','=':'столько же'}[t.cmp];return 'В поисках нужного файла '+t.who+' несколько раз поднимался и опускался по каталогам. Начинал он с '+P(t.s)+'. Каким может быть конечный каталог, если спусков было <b>'+cmp+'</b>, чем подъёмов?';}
+ if(t.t==='mn')return 'В некотором каталоге хранился файл <b>'+esc(fname(t.old))+'</b>, имевший полное имя '+P(t.old)+'. Создали подкаталог <b>'+esc(t.sub)+'</b> и переместили туда файл. Укажите полное имя файла после перемещения.';
+ if(t.t==='mo')return 'В некотором каталоге хранился файл <b>'+esc(fname(t.nw))+'</b>. Создали подкаталог <b>'+esc(t.sub)+'</b> и переместили туда файл. Полное имя стало '+P(t.nw)+'. Укажите полное имя файла до перемещения.';
+ if(t.t==='ucm')return 'Пользователь работал с файлом '+P(t.old)+'. Он поднялся на '+(t.ups===1?'один уровень':'два уровня')+' вверх, создал каталог <b>'+esc(t.cr[0])+'</b>'+(t.cr[1]?', затем в нём ещё <b>'+esc(t.cr[1])+'</b>':'')+' и переместил туда файл <b>'+esc(fname(t.old))+'</b>. Каким стало полное имя файла?';
+ if(t.t==='wf')return (t.intro?t.intro+' ':'')+t.who+' работал с каталогом '+P(t.s)+'. '+wfStepsTxt(t.st)+'. '+(t.file?'Здесь он открыл файл <b>'+esc(t.file)+'</b>. Укажите полное имя открытого файла.':'Укажите полный путь каталога, в котором оказался пользователь.');
+ if(t.t==='fm1')return 'В каталоге <b>'+esc(t.dir)+'</b> хранился файл <b>'+esc(t.file)+'</b>. Этот каталог'+(t.contents?' вместе с содержимым':'')+' перенесли в каталог <b>'+esc(t.tg)+'</b>, расположенный в корне диска <b>'+t.dr+'</b>. Укажите полное имя файла '+(t.before?'до':'после')+' перемещения.';
+ if(t.t==='fm2')return 'Ученик перенёс папку '+P(t.old)+' в папку <b>Сданные</b> в корне диска <b>C</b>. Укажите полный путь к файлу <b>'+esc(t.file)+'</b>, расположенному в папке <b>'+esc(t.leaf)+'</b>.';
+ if(t.t==='fm3')return 'Файл <b>'+esc(t.file)+'</b> хранился в '+P(t.s)+'. Пользователь поднялся на '+(t.ups===1?'один уровень':'два уровня')+' вверх, создал папку <b>'+esc(t.cr)+'</b> и перенёс туда папку <b>'+esc(t.mv)+'</b> со всем содержимым. Каково стало полное имя файла?';
+ if(t.t==='sn')return 'Файл <b>'+esc(fname(t.nw))+'</b> переместили в созданный подкаталог. Полное имя стало '+P(t.nw)+'. Каково '+(t.full?'полное имя':'имя')+' созданного подкаталога?';
+ if(t.t==='del')return t.who+', работая над проектом по '+t.subj+', создал(а) файлы:<br>'+t.files.map(function(f){return P(f);}).join('<br>')+'<br>Какая папка останется пустой после удаления всех файлов <b>.doc</b>? Других файлов и папок на диске D нет.';
+ if(t.t==='lvl')return 'Пользователь был в подкаталоге <b>Лучшее</b> каталога <b>Музыка</b>. Он поднялся два уровня вверх и оказался в <b>Медиа</b>, затем спустился в <b>Фото</b> и в <b>Избранное</b>. Какие каталоги находятся на одном уровне?';
+ return '';
+}
+function ruleFor(t){
+ if(t.t==='wb')return {c:'',h:'💡 <b>Золотое правило обратного хода:</b> идём <b>от конца</b> и отменяем действия <b>справа налево</b>. «Вниз» отменяем «Вверх», «Вверх» отменяем «Вниз». Последнее отменённое действие — известный начальный каталог.'};
+ if(t.t==='mo'||t.t==='sn'||(t.t==='fm1'&&t.before))return {c:'',h:'💡 <b>Обратный ход:</b> известно, что получилось <b>после</b> действия. Отменяем действия с конца, чтобы узнать, что было <b>до</b>.'};
+ if(t.t==='dep')return {c:'dep',h:'💡 <b>Правило глубины:</b> каждый спуск увеличивает уровень вложенности на 1, каждый подъём уменьшает. Сравниваем уровень старта и варианта.'};
+ if(t.t==='del')return {c:'fwd',h:'💡 Удаляем все файлы с расширением <b>.doc</b> и смотрим, какая папка полностью опустела.'};
+ return {c:'fwd',h:'💡 <b>Действуем с начала:</b> нажимай действия <b>слева направо</b> и смотри, как меняется путь. Подъём убирает последний каталог, спуск добавляет новый.'};
+}
+function explainHTML(t){var opt=t.o[t.a-1];
+ if(t.t==='wb'){var pat=derive(t),q=-1,i;for(i=0;i<pat.length;i++)if(pat[i]==='?'){q=i;break;}return 'Обратным ходом получили шаблон <b>'+esc(ps(pat))+'</b>'+(q>=0?' («?» — неизвестный каталог, в верном варианте это «'+esc(pp(opt)[q])+'»)':'')+'. Ему соответствует вариант <b>'+t.a+'</b>: '+P(opt)+'.';}
+ if(t.t==='dep'){var d0=pp(t.s).length-1,d1=pp(opt).length-1;return 'Старт на уровне '+d0+'. Верный вариант — уровень '+d1+'. При условии «спусков '+({'>':'больше','<':'меньше','=':'столько же'}[t.cmp])+', чем подъёмов» подходит только вариант <b>'+t.a+'</b>: '+P(opt)+'.';}
+ if(t.t==='mn')return 'К пути добавился созданный подкаталог «'+esc(t.sub)+'»: '+P(opt)+'. Ответ <b>'+t.a+'</b>.';
+ if(t.t==='mo')return 'Убираем из пути созданный подкаталог «'+esc(t.sub)+'» и получаем имя до перемещения: '+P(opt)+'. Ответ <b>'+t.a+'</b>.';
+ if(t.t==='ucm')return 'Поднялись на '+(t.ups===1?'1 уровень':'2 уровня')+', создали '+t.cr.map(function(c){return '«'+esc(c)+'»';}).join(' → ')+' и переместили файл: '+P(opt)+'. Ответ <b>'+t.a+'</b>.';
+ if(t.t==='wf')return 'Выполнили все переходы по порядку: '+P(opt)+'. Ответ <b>'+t.a+'</b>.';
+ if(t.t==='fm1')return t.before?'До переноса папка была в корне диска '+t.dr+': '+P(opt)+'. Ответ <b>'+t.a+'</b>.':'Папку «'+esc(t.dir)+'» перенесли в «'+esc(t.tg)+'» в корне диска '+t.dr+': '+P(opt)+'. Ответ <b>'+t.a+'</b>.';
+ if(t.t==='fm2')return 'Перенесли только папку «'+esc(t.leaf)+'» в C:'+BS+'Сданные: '+P(opt)+'. Ответ <b>'+t.a+'</b>.';
+ if(t.t==='fm3')return 'Поднялись, создали «'+esc(t.cr)+'» и перенесли «'+esc(t.mv)+'» со всем содержимым: '+P(opt)+'. Ответ <b>'+t.a+'</b>.';
+ if(t.t==='sn')return 'Созданный подкаталог — последний перед именем файла: <b>'+esc(opt.indexOf('/')>=0?ps(pp(opt)):opt)+'</b>. Ответ <b>'+t.a+'</b>.';
+ if(t.t==='del')return 'В папке «Работа» были только .doc — после удаления она опустела: '+P(opt)+'. Ответ <b>'+t.a+'</b>.';
+ if(t.t==='lvl')return '«Лучшее» и «Избранное» находятся на одном уровне вложенности. Ответ <b>'+t.a+'</b>.';
+ return '';
+}
+function actBtn(idx){var bs=$('actions').getElementsByTagName('button'),i;for(i=0;i<bs.length;i++)if(parseInt(bs[i].getAttribute('data-i'),10)===idx)return bs[i];return null;}
+function renderActions(){var h='',i,next=stepI<sc.order.length?sc.order[stepI]:-1,done=sc.order.slice(0,stepI);
+ for(i=0;i<sc.btns.length;i++){var b=sc.btns[i],cls='act';if(inArr(done,i))cls+=' done';if(i===next)cls+=' next';h+='<button class="'+cls+'" data-i="'+i+'"><span class="a">'+esc(b.label)+'</span><span class="inv">'+(inArr(done,i)?'✓ выполнено':esc(b.sub))+'</span></button>';}
+ $('actions').innerHTML=h;var bs=$('actions').getElementsByTagName('button');for(i=0;i<bs.length;i++)bs[i].onclick=function(){clickAct(parseInt(this.getAttribute('data-i'),10),this);};
+ $('actLabel').style.display=sc.btns.length?'':'none';
+ if(!busy){if(sc.btns.length){if(next>=0)$('hint').innerHTML='Сейчас нажми: <b>'+esc(sc.btns[next].label)+'</b> '+(sc.mode==='wb'?'(отменяем последнее действие)':'(следующее действие)');else $('hint').innerHTML='🎉 Модель построена! Выбери вариант ответа и нажми «Проверить».';}
+ else{$('hint').innerHTML='Выбери вариант — в таблице уровней он подсветится.';}}
+}
+function renderLog(){$('log').innerHTML=logs.map(function(l){return '<div>'+esc(l)+'</div>';}).join('');}
+function renderLadder(){var t=T[cur];if(t.t!=='dep'){$('ladder').innerHTML='';return;}var d0=pp(t.s).length-1,max=d0,i,j;for(i=0;i<t.o.length;i++)max=Math.max(max,pp(t.o[i]).length-1);
+ var h='<div class="plabel">Лестница уровней</div><table><tr><th>Уровень</th><th>Старт</th>';for(i=0;i<t.o.length;i++)h+='<th'+(sel===i?' class="selCol"':'')+'>Вар. '+(i+1)+'</th>';h+='</tr>';
+ for(j=0;j<=max;j++){h+='<tr><td>'+j+'</td><td'+(j===d0?' class="hl"':'')+'>'+esc(pp(t.s)[j]||'')+'</td>';for(i=0;i<t.o.length;i++){var a=pp(t.o[i]),last=j===a.length-1,cls=(last?'hl':'')+(sel===i?' selCol':'');h+='<td'+(cls?' class="'+cls+'"':'')+'>'+esc(a[j]||'')+'</td>';}h+='</tr>';}
+ h+='</table>';if(sel>=0){var d1=pp(t.o[sel]).length-1,ok=t.cmp==='>'?d1>d0:t.cmp==='<'?d1<d0:d1===d0;h+='<p class="small">Старт: уровень '+d0+', вариант '+(sel+1)+': уровень '+d1+' → '+(ok?'✅ условие выполняется':'❌ условие не выполняется')+'</p>';}
+ $('ladder').innerHTML=h;}
+function render(){renderTree();renderPath();renderActions();renderLog();renderLadder();var snap=sc.snaps[stepI];if(stepI===sc.order.length&&sc.order.length){$('done').style.display='block';$('done').innerHTML='🎯 Модель готова. '+esc(snap.note||'');}else $('done').style.display='none';}
+function optButtons(){return $('opts').getElementsByTagName('button');}
+function setBusy(v){busy=v;document.body.className=document.body.className.replace(/\s*\bbusy\b/g,'');if(v)document.body.className+=' busy';}
+function stopAuto(){if(autoTimer){clearTimeout(autoTimer);autoTimer=null;}if(settleTimer){clearTimeout(settleTimer);settleTimer=null;}setBusy(false);}
+function loadTask(i){stopAuto();cur=i;store.cur=i;save();var t=T[cur];sc=buildSc(t);stepI=0;sel=-1;logs=[sc.snaps[0].note];
+ $('tnum').textContent='Задание '+t.n+' из 106';$('ttype').textContent=TYPE[t.t];$('tid').textContent='№ '+t.id+' (каталог)';$('crumb').innerHTML='Задание '+t.n;
+ var r=ruleFor(t);$('rule').className='rule'+(r.c?' '+r.c:'');$('rule').innerHTML=r.h;
+ $('cond').innerHTML=condHTML(t);var h='',k;for(k=0;k<t.o.length;k++){var o=t.o[k],txt=(o.indexOf('/')>=0?ps(pp(o)):o)+(lastCh(o)==='/'?BS:'');h+='<button class="opt" data-k="'+k+'"><span class="num">'+(k+1)+'</span><span>'+esc(txt)+'</span></button>';}
+ $('opts').innerHTML=h;var bs=optButtons();for(k=0;k<bs.length;k++)bs[k].onclick=function(){if(busy)return;sel=parseInt(this.getAttribute('data-k'),10);var all=optButtons(),j;for(j=0;j<all.length;j++)all[j].className='opt';this.className='opt sel';beep(520,.06);renderLadder();};
+ $('fb').textContent='';$('fb').className='';$('explain').style.display='none';$('modeHint').textContent=sc.mode==='wb'?'— обратный ход':(sc.mode==='dep'?'— уровни вложенности':'— пошаговая модель');
+ render();buildGrid();updateProg();window.scrollTo(0,0);}
+function applyStep(){if(stepI>=sc.order.length)return;var prev=sc.snaps[stepI];stepI++;var next=sc.snaps[stepI];logs.push(next.note);beep(660,.07);
+ var leaving=diff(next.gone,prev.gone),entering=diff(next.created,prev.created);
+ renderTree({snap:next,leaving:leaving,entering:entering});
+ $('posRow').style.display=next.pos?'':'none';$('fileRow').style.display=next.file?'':'none';
+ chips($('posChips'),next.pos,prev.pos,tailRemoved(prev.pos,next.pos));
+ chips($('fileChips'),next.file,prev.file,tailRemoved(prev.file,next.file));
+ renderActions();renderLog();renderLadder();$('done').style.display='none';}
+function clickAct(i,btn){if(busy||stepI>=sc.order.length)return;var next=sc.order[stepI];if(i!==next){btn.className+=' wrong';setTimeout(function(){btn.className=btn.className.replace(' wrong','');},350);beep(180,.12,'square');$('hint').innerHTML='⚠️ Нажми подсвеченную кнопку: <b>'+esc(sc.btns[next].label)+'</b>';return;}
+ applyStep();if(settleTimer)clearTimeout(settleTimer);settleTimer=setTimeout(function(){settleTimer=null;render();},760);}
+function check(){if(busy)return;var t=T[cur];if(sel<0){$('fb').textContent='Сначала выбери вариант ответа (1–4).';$('fb').className='bad';beep(180,.12,'square');return;}
+ var ok=false,why='';
+ if(t.t==='wb'){var pat=derive(t);ok=match(pat,t.o[sel]);if(!ok){var oo=pp(t.o[sel]);why=oo.length!==pat.length?'не совпадает длина пути':'каталоги стоят не в том порядке';}}
+ else if(t.t==='dep'){var d0=pp(t.s).length-1,d1=pp(t.o[sel]).length-1;ok=t.cmp==='>'?d1>d0:t.cmp==='<'?d1<d0:d1===d0;if(!ok)why='уровень вложенности не подходит под условие';}
+ else ok=(sel+1===t.a);
+ var btn=optButtons()[sel];
+ if(ok){btn.className='opt ok';store.ans[t.n]=1;save();$('fb').textContent='✅ Верно! Ответ: '+(sel+1);$('fb').className='ok';beep(740,.1);setTimeout(function(){beep(980,.14);},110);}
+ else{btn.className='opt bad';store.wrong[t.n]=1;save();$('fb').textContent='❌ Неверно'+(why?': '+why:'')+'. Нажми «Разобрать» — модель покажет решение по шагам.';$('fb').className='bad';beep(160,.18,'square');}
+ buildGrid();updateProg();}
+function solve(){if(busy)return;var t=T[cur];stopAuto();sc=buildSc(t);stepI=0;logs=[sc.snaps[0].note];render();setBusy(true);
+ $('fb').textContent='🧩 Разбор по шагам — следи за кнопкой и путём.';$('fb').className='info';$('explain').style.display='none';
+ var blink=Math.round(stepDur*.325),fade=Math.round(stepDur*.375),hold=stepDur-blink-fade;
+ function finish(){autoTimer=null;setBusy(false);
+  if(t.t==='wb'){var snap=sc.snaps[stepI];snap.pos=pp(t.o[t.a-1]);snap.paths=[{p:t.e,f:0},{p:t.o[t.a-1],f:0}];snap.mark=[t.o[t.a-1]];snap.created=[];snap.gone=[];snap.note='Начальный каталог найден: '+ps(snap.pos);render();}
+  var bs=optButtons(),i;for(i=0;i<bs.length;i++){if(i+1===t.a)bs[i].className='opt rev';}
+  $('explain').innerHTML='<b>Разбор.</b> '+explainHTML(t);$('explain').style.display='block';
+  $('fb').textContent='🧩 Разбор завершён — верный вариант подсвечен.';$('fb').className='info';
+  $('hint').innerHTML='✅ Разбор завершён. Нажми «Заново», чтобы пройти самостоятельно.';
+  beep(740,.1);setTimeout(function(){beep(980,.14);},110);}
+ function nextStep(){
+  if(stepI>=sc.order.length){finish();return;}
+  var idx=sc.order[stepI],btn=actBtn(idx);
+  if(btn)btn.className+=' blink';
+  $('hint').innerHTML='👀 Шаг '+(stepI+1)+' из '+sc.order.length+': '+(sc.mode==='wb'?'отменяем':'выполняем')+' <b>'+esc(sc.btns[idx].label)+'</b>…';
+  autoTimer=setTimeout(function(){
+   if(btn)btn.className=btn.className.replace(/\s*\bblink\b/g,'');
+   applyStep();
+   $('hint').innerHTML=esc(sc.snaps[stepI].note);
+   autoTimer=setTimeout(function(){render();$('hint').innerHTML=esc(sc.snaps[stepI].note);autoTimer=setTimeout(nextStep,hold);},fade);
+  },blink);
+ }
+ nextStep();}
+function buildGrid(){var f=$('filter').value,q=$('search').value.replace(/\D/g,''),h='',i;for(i=0;i<T.length;i++){var t=T[i];if(f!=='all'&&GROUP[t.t]!==f)continue;if(q&&String(t.n).indexOf(q)<0&&String(t.id).indexOf(q)<0)continue;var cls='';if(i===cur)cls='cur';else if(store.ans[t.n])cls='ok';else if(store.wrong[t.n])cls='bad';h+='<button class="'+cls+'" data-i="'+i+'">'+t.n+'</button>';}
+ $('grid').innerHTML=h||'<span class="small">Ничего не найдено</span>';var bs=$('grid').getElementsByTagName('button');for(i=0;i<bs.length;i++)bs[i].onclick=function(){loadTask(parseInt(this.getAttribute('data-i'),10));};
+ var jh='';for(i=0;i<T.length;i++)jh+='<option value="'+i+'"'+(i===cur?' selected':'')+'>'+T[i].n+'. '+TYPE[T[i].t]+'</option>';$('jump').innerHTML=jh;$('countInfo').textContent='Показано: '+bs.length+' из 106';}
+function updateProg(){var c=0,k;for(k in store.ans)if(store.ans.hasOwnProperty(k))c++;$('prog').textContent='Решено: '+c+' / 106';$('progBar').style.width=(c/T.length*100)+'%';}
+$('themeBtn').onclick=function(){applyTheme(currentTheme()==='dark'?'light':'dark');beep(600,.07);};
+$('checkBtn').onclick=check;
+$('solveBtn').onclick=solve;
+$('answerBtn').onclick=function(){if(busy)return;stopAuto();var t=T[cur],bs=optButtons(),i;for(i=0;i<bs.length;i++)bs[i].className='opt'+(i+1===t.a?' rev':'');sel=-1;$('explain').innerHTML='<b>Ответ: '+t.a+'.</b> '+explainHTML(t);$('explain').style.display='block';$('fb').textContent='👁 Ответ: '+t.a+'.';$('fb').className='info';};
+$('resetBtn').onclick=function(){loadTask(cur);};
+$('prevBtn').onclick=function(){loadTask((cur-1+T.length)%T.length);};
+$('nextBtn').onclick=function(){loadTask((cur+1)%T.length);};
+$('randBtn').onclick=function(){loadTask(Math.floor(Math.random()*T.length));};
+$('filter').onchange=buildGrid;$('search').oninput=buildGrid;$('jump').onchange=function(){loadTask(parseInt(this.value,10));};
+$('sideToggle').onclick=function(){document.body.className=document.body.className.indexOf('sideOpen')>=0?document.body.className.replace('sideOpen',''):document.body.className+' sideOpen';};
+$('soundBtn').onclick=function(){soundOn=!soundOn;$('soundBtn').className='hbtn'+(soundOn?' on':'');$('soundBtn').innerHTML=soundOn?'🔊 Звук':'🔇 Без звука';};
+$('resetProg').onclick=function(){if(confirm('Сбросить весь прогресс?')){store={ans:{},wrong:{},cur:cur};save();loadTask(cur);}};
+function setFont(v){document.body.style.fontSize=v+'px';$('fontVal').innerHTML=v+'px';try{localStorage.setItem('vpr7font',String(v));}catch(e){}}
+function setPace(v){stepDur=Math.round(parseFloat(v)*1000);$('paceVal').innerHTML=parseFloat(v).toFixed(1)+' с';
+ var blink=Math.round(stepDur*.325),fade=Math.round(stepDur*.375);
+ document.documentElement.style.setProperty('--blink-half',(blink/2000)+'s');
+ document.documentElement.style.setProperty('--fade-dur',(fade/1000)+'s');
+ try{localStorage.setItem('vpr7pace',String(stepDur));}catch(e){}}
+$('fontRange').oninput=function(){setFont(this.value);};
+$('paceRange').oninput=function(){setPace(this.value);};
+try{
+ applyTheme(currentTheme());
+ var fv='17';try{fv=localStorage.getItem('vpr7font')||'17';}catch(e){}$('fontRange').value=fv;setFont(fv);
+ var pv=2000;try{pv=parseInt(localStorage.getItem('vpr7pace'),10)||2000;}catch(e){}
+ if(pv<1000)pv=1000;if(pv>4000)pv=4000;$('paceRange').value=String(pv/1000);setPace(pv/1000);
+ var jh='',i;for(i=0;i<T.length;i++)jh+='<option value="'+i+'">'+T[i].n+'. '+TYPE[T[i].t]+'</option>';$('jump').innerHTML=jh;
+ loadTask(Math.min(store.cur||0,T.length-1));$('loading').style.display='none';
+}catch(e){window.onerror(e.message,'',0);}
+</script>
+</body>
+</html>
