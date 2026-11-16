@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  Тренажёр «Информатика, 7 класс. Оценка информационного объёма графических
+  данных для растрового изображения». Режим: Тренировка. Таймер отключён
+  (учитывается только суммарное затраченное время для итогового экрана).
+
+  МЕХАНИКА ЗАДАНИЯ (по описанию учителя):
+  — Сверху условие задачи; блок «Дано» с пояснением каждой величины
+    (k — количество пикселей, i — глубина цвета (бит), N — количество цветов
+    в палитре, I — информационный объём (бит)); строка «Найти».
+  — Скрытая подсказка с формулами (I = k·i, N = 2^i), открывается по клику.
+  — Нужно расставить шаги алгоритма решения в правильном порядке и собрать
+    ответ из частей-фрагментов в поле ответа; среди шагов есть ДВА лишних
+    правдоподобных шага (генерируются под тип задачи), среди фрагментов
+    ответа есть лишние правдоподобные (близкие числа: ×2, :2, ±1, степени
+    двойки рядом с эталоном; похожие единицы измерения).
+  — Перетаскивание на Pointer Events (мышь/палец/перо) + альтернатива
+    «нажать источник → нажать цель»; бросок мимо цели возвращает элемент.
+  — Проверка кнопкой «Проверить» и клавишей Enter; мгновенная подсветка
+    верно/неверно; после ответа — пошаговый разбор. Esc закрывает подсказку.
+  — В нижней панели между «Проверить» и «Итоги» — вторая кнопка «Дальше».
+
+  ПРОВЕРЯЕМЫЕ УМЕНИЯ: связь N = 2^i; вычисление I = k·i; перевод бит/байт/
+  Кбайт/Мбайт; обратные задачи (по I и k найти i и N; по I и i найти k);
+  сравнение объёмов; изменение объёма при смене палитры; страницы видеопамяти;
+  сканирование (dpi).
+
+  ИСТОЧНИКИ И РЕЖИМ ИХ ИСПОЛЬЗОВАНИЯ («максимально точно по задаче»):
+  1) https://gym498.ru/d/443202/d/kodirovaniye_grafinf_zadachi.pdf — открыт,
+     собраны все задачи №1–18, 20–25 (задача №19 в PDF отсутствует) — 24 шт.
+  2) https://studfile.net/preview/14813166/page:3/ — открыт, собраны все
+     задачи: примеры 1–3 и задания для самостоятельного решения 1–9 — 12 шт.
+  3) https://chel-gymnasia23.narod.ru/Informatika/Page_1.htm — открыт;
+     пример А включён (8 страниц); пример Б, пример В и задания 1–4
+     семантически совпадают с задачами источника 2 (те же числа, тип и
+     формулировка) — отброшены дедупликацией, оставлены версии studfile.
+  4) http://lebedevann.tesigoh29.ru/p44aa1.html — открыт; включены задачи
+     теоретической части 1–3 и практической части 1–7 (10 шт.). Задачи 4–5
+     теории не включены: эталон в источнике не указан и требует неоднозначного
+     округления/выбора единиц — чтобы не искажать «точный» режим.
+  5) https://www.yaklass.ru/.../re-e4481b26-6edf-4870-afe1-f4a92182e234 —
+     открыт; включены оба разобранных примера по графике (Полина — 512 цветов;
+     сканирование — 3 Мбайт) с исходными числами и эталонами.
+  Формулировки, числа и уровень сложности «точных» задач НЕ изменяются;
+  эталоны пересчитаны и перепроверены. Единицы ответа, лишние шаги и
+  дистракторы (элементы механики предъявления) адаптированы под механику
+  учителя, сами условия сохранены.
+  Итого точных уникальных задач: 49 (< 50). Недостающие задания генерируются
+  процедурно из 6 шаблонов (T1–T6) с формулой эталона; параметры
+  рандомизируются так, чтобы ответы были целыми. Каждый запуск и кнопка
+  «Новый вариант» дают новый порядок и свежую генерацию собственных заданий.
+
+  ПРАВИЛО СИГНАТУРЫ И ДЕДУПЛИКАЦИИ:
+  makeSignature(task) = нормализованный текст условия (нижний регистр, без
+  разметки, пунктуационного шума и лишних пробелов) + все числа условия,
+  отсортированные по возрастанию + каноническая строка эталонного ответа.
+  buildVariant() ведёт Set сигнатур: повторяющаяся сигнатура отбрасывается,
+  берётся/генерируется следующее задание, пока не наберётся ровно 50
+  уникальных. Дедупликация работает между ссылочными, между сгенерированными
+  и между ссылочными и сгенерированными, при первом запуске, при «Новом
+  варианте» и при доборе. Лимит попыток на слот — 20; при исчерпании
+  диапазоны параметров расширяются/меняется шаблон, повтор не добавляется.
+
+  ПАЛИТРА ТЕМ (CSS-переменные, один атрибут data-theme на <html>):
+  светлая: фон #eef4ff, акцент #7c3aed; тёмная: фон #0b1020, акцент #a3e635.
+  Выбор темы и звук сохраняются в localStorage; при первом открытии
+  учитывается prefers-color-scheme. Прогресс сохраняется в localStorage.
+  Полностью офлайн: без CDN, fetch, внешних шрифтов и картинок.
+  ============================================================================
+-->
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Информатика 7 класс · Объём растрового изображения</title>
+<script>
+(function(){try{var t=localStorage.getItem("rasterTrainer.theme");
+if(!t){t=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}
+document.documentElement.setAttribute("data-theme",t);}catch(e){document.documentElement.setAttribute("data-theme","light");}})();
+</script>
+<style>
+:root{
+  --bg:#eef4ff; --surface:#ffffff; --surface2:#e2ebfd; --border:#c3d2f0;
+  --text:#1a2340; --muted:#4a5578; --accent:#7c3aed; --accent-text:#ffffff;
+  --accent-soft:#ede4ff; --ok:#15803d; --ok-bg:#dcfce7; --bad:#b91c1c; --bad-bg:#fee2e2;
+  --focus:#7c3aed; --shadow:0 4px 16px rgba(26,35,64,.10); --chip:#f3f7ff;
+}
+html[data-theme="dark"]{
+  --bg:#0b1020; --surface:#141b33; --surface2:#1c2547; --border:#33406e;
+  --text:#e8edfb; --muted:#aab6da; --accent:#a3e635; --accent-text:#12200a;
+  --accent-soft:#24340f; --ok:#4ade80; --ok-bg:#12331c; --bad:#f87171; --bad-bg:#3a1414;
+  --focus:#a3e635; --shadow:0 4px 16px rgba(0,0,0,.45); --chip:#1a2340;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:"Segoe UI",system-ui,Arial,sans-serif;
+  font-size:20px; line-height:1.45;
+  transition:background-color .3s,color .3s;
+}
+header{
+  position:sticky;top:0;z-index:40;background:var(--surface);
+  border-bottom:2px solid var(--border); box-shadow:var(--shadow);
+  display:flex;align-items:center;gap:10px;padding:10px 14px;flex-wrap:wrap;
+  transition:background-color .3s;
+}
+header h1{font-size:1.05em;margin:0;flex:1 1 260px;min-width:0}
+header h1 small{display:block;font-size:.62em;color:var(--muted);font-weight:600}
+.iconbtn{
+  min-width:52px;min-height:52px;border-radius:14px;border:2px solid var(--border);
+  background:var(--surface2);color:var(--text);cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;padding:6px;
+  transition:background-color .2s,border-color .2s;text-decoration:none;
+}
+.iconbtn svg{width:28px;height:28px;display:block}
+.iconbtn:hover{border-color:var(--accent)}
+button{font-family:inherit;font-size:inherit}
+.btn{
+  min-height:52px;padding:10px 20px;border-radius:14px;border:2px solid var(--accent);
+  background:var(--accent);color:var(--accent-text);font-weight:700;cursor:pointer;
+  transition:filter .15s,background-color .2s;
+}
+.btn.secondary{background:var(--surface2);color:var(--text);border-color:var(--border)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn:not(:disabled):active{filter:brightness(.9)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+main{max-width:1180px;margin:0 auto;padding:16px 14px 140px}
+.navbar{
+  background:var(--surface);border:2px solid var(--border);border-radius:16px;
+  padding:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;box-shadow:var(--shadow);
+}
+.navbar select{
+  flex:1 1 320px;min-height:52px;font-size:.95em;border-radius:12px;
+  border:2px solid var(--border);background:var(--surface2);color:var(--text);padding:6px 10px;
+}
+.counter{font-weight:800;white-space:nowrap}
+.progresswrap{flex:1 1 100%;height:14px;background:var(--surface2);border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+.progressbar{height:100%;width:0;background:var(--accent);transition:width .3s}
+.card{
+  background:var(--surface);border:2px solid var(--border);border-radius:18px;
+  padding:18px;margin-top:16px;box-shadow:var(--shadow);transition:background-color .3s;
+}
+.taskhead{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.tasknum{font-weight:800;color:var(--accent);font-size:1.1em}
+.badge{font-size:.68em;font-weight:700;border-radius:999px;padding:4px 12px;background:var(--accent-soft);color:var(--text);border:1px solid var(--border)}
+.condition{font-size:1.06em;margin:10px 0 14px}
+.given{
+  background:var(--surface2);border:2px dashed var(--border);border-radius:14px;
+  padding:12px 14px;margin-bottom:12px;
+}
+.given h3,.findline b{margin:0 0 6px;font-size:.9em;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.given ul{margin:6px 0 0;padding-left:22px}
+.given li{margin:4px 0}
+.legend{font-size:.8em;color:var(--muted);margin-top:10px;border-top:1px solid var(--border);padding-top:8px}
+.findline{margin:8px 0 0;font-size:1.02em}
+.hintbox{margin-top:12px}
+.hintbtn{width:100%;text-align:left;background:var(--accent-soft);border:2px solid var(--accent);color:var(--text);border-radius:14px;min-height:52px;padding:10px 16px;font-weight:700;cursor:pointer}
+.hintcontent{display:none;background:var(--chip);border:2px solid var(--border);border-radius:14px;padding:12px 16px;margin-top:8px}
+.hintcontent.open{display:block}
+.hintcontent .f{font-weight:800;font-size:1.1em}
+.sectitle{font-weight:800;margin:18px 0 8px;font-size:1em}
+.stepszone,.fragpool,.answerslots{display:flex;flex-wrap:wrap;gap:10px}
+.tile{
+  min-height:52px;padding:10px 16px;border-radius:14px;border:2px solid var(--border);
+  background:var(--chip);color:var(--text);cursor:grab;font-size:.95em;font-weight:600;
+  touch-action:none;user-select:none;-webkit-user-select:none;text-align:left;
+  display:inline-flex;align-items:center;gap:8px;max-width:100%;
+}
+.tile .ord{
+  min-width:32px;height:32px;border-radius:50%;background:var(--accent);color:var(--accent-text);
+  display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:.85em;flex:0 0 auto;
+}
+.tile.selected{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 3px var(--accent-soft)}
+.tile.dragging{opacity:.35}
+.tile.locked{cursor:default}
+.dropzone{
+  min-height:64px;border:2px dashed var(--border);border-radius:14px;background:var(--surface2);
+  padding:10px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;transition:border-color .15s,background-color .15s;
+}
+.dropzone.over{border-color:var(--accent);background:var(--accent-soft)}
+.dropzone .placeholder{color:var(--muted);font-size:.85em;pointer-events:none}
+.slotrow{display:flex;flex-direction:column;gap:10px}
+.stepslot{display:flex;align-items:center;gap:10px}
+.stepslot .n{font-weight:800;min-width:34px;text-align:center;color:var(--muted)}
+.stepslot .dropzone{flex:1}
+.verdict{display:none;margin-top:16px;border-radius:14px;padding:14px 16px;font-weight:800;font-size:1.05em;border:2px solid}
+.verdict.ok{display:block;background:var(--ok-bg);color:var(--ok);border-color:var(--ok)}
+.verdict.bad{display:block;background:var(--bad-bg);color:var(--bad);border-color:var(--bad)}
+.solution{display:none;margin-top:12px;background:var(--chip);border:2px solid var(--border);border-radius:14px;padding:14px 16px}
+.solution.open{display:block}
+.solution ol{margin:8px 0 0;padding-left:24px}
+.solution li{margin:6px 0}
+.solution .etalon{margin-top:10px;font-weight:800}
+.actions{
+  position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--surface);
+  border-top:2px solid var(--border);padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+  display:flex;gap:10px;justify-content:center;flex-wrap:wrap;box-shadow:0 -4px 16px rgba(0,0,0,.12);
+}
+.actions .btn{flex:0 1 auto}
+.ghost{position:fixed;z-index:100;pointer-events:none;opacity:.9;transform:translate(-50%,-60%);box-shadow:var(--shadow)}
+.summary{display:none}
+.summary.open{display:block}
+.summary h2{margin-top:0}
+.bigscore{font-size:2em;font-weight:900;color:var(--accent)}
+.errlist{list-style:none;margin:12px 0;padding:0;display:flex;flex-direction:column;gap:10px}
+.errlist button{width:100%;text-align:left;min-height:52px;border-radius:12px;border:2px solid var(--border);background:var(--surface2);color:var(--text);padding:10px 14px;cursor:pointer;font-size:.9em}
+.errlist .sol{font-size:.85em;color:var(--muted);margin-top:6px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (max-width:640px){
+  body{font-size:16px}
+  main{padding:10px 8px 190px}
+  header h1{font-size:1em}
+  .navbar select{flex:1 1 100%}
+  .tile{width:100%;justify-content:flex-start}
+  .stepslot .dropzone .tile{width:auto;flex:1}
+  .actions .btn{flex:1 1 40%}
+  .card{padding:12px}
+}
+</style>
+</head>
+<body>
+<header>
+  <a class="iconbtn" href="index.html" aria-label="На главную" title="На главную">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M10 20v-5h4v5"/></svg>
+  </a>
+  <h1>Объём растрового изображения<small>Информатика · 7 класс · режим «Тренировка» · 50 заданий</small></h1>
+  <button class="iconbtn" id="soundBtn" aria-label="Выключить звук" title="Звук"></button>
+  <button class="iconbtn" id="themeBtn" aria-label="Переключить тему" title="Тема"></button>
+</header>
+
+<main>
+  <div class="navbar">
+    <span class="counter" id="counter">1 из 50</span>
+    <select id="taskSelect" aria-label="Выбор задания из списка пятидесяти заданий варианта"></select>
+    <button class="btn secondary" id="prevBtn">← Назад</button>
+    <button class="btn secondary" id="nextBtn">Дальше →</button>
+    <button class="btn" id="newVarBtn">Новый вариант</button>
+    <div class="progresswrap" aria-hidden="true"><div class="progressbar" id="progressBar"></div></div>
+  </div>
+
+  <section class="card" id="taskCard" aria-live="polite">
+    <div class="taskhead">
+      <span class="tasknum" id="taskNum"></span>
+      <span class="badge" id="taskBadge"></span>
+      <span class="badge" id="taskStatus"></span>
+    </div>
+    <p class="condition" id="condition"></p>
+    <div class="given">
+      <h3>Дано:</h3>
+      <ul id="givenList"></ul>
+      <p class="findline"><b>Найти:</b> <span id="findWhat"></span></p>
+      <div class="legend">k — количество пикселей (точек) в изображении; i — глубина цвета (бит на пиксель); N — количество цветов в палитре; I — информационный объём растрового изображения (бит).</div>
+    </div>
+    <div class="hintbox">
+      <button class="hintbtn" id="hintBtn" aria-expanded="false">💡 Подсказка (нажми, чтобы открыть формулы)</button>
+      <div class="hintcontent" id="hintContent"></div>
+    </div>
+
+    <div class="sectitle">1) Расставь шаги алгоритма в правильном порядке <span style="font-weight:400;color:var(--muted);font-size:.8em">(среди шагов есть лишние; перетащи или нажми шаг, затем нужную строку)</span></div>
+    <div class="fragpool" id="stepsPool"></div>
+    <div class="slotrow" id="stepsSlots" style="margin-top:10px"></div>
+
+    <div class="sectitle">2) Собери ответ из фрагментов <span style="font-weight:400;color:var(--muted);font-size:.8em">(среди фрагментов есть лишние)</span></div>
+    <div class="fragpool" id="answerPool"></div>
+    <div class="dropzone answerslots" id="answerZone" style="margin-top:10px" aria-label="Поле ответа: сюда собираются фрагменты"></div>
+    <div class="toolbar">
+      <button class="btn secondary" id="eraseBtn">⌫ Стереть последний</button>
+      <button class="btn secondary" id="clearBtn">Очистить ответ</button>
+    </div>
+
+    <div class="verdict" id="verdict" role="status"></div>
+    <div class="solution" id="solution"></div>
+  </section>
+
+  <section class="card summary" id="summary">
+    <h2>Итоги варианта</h2>
+    <div class="bigscore" id="finalScore"></div>
+    <p id="finalTime"></p>
+    <h3>Работа над ошибками</h3>
+    <ul class="errlist" id="errList"></ul>
+    <div class="toolbar">
+      <button class="btn" id="newVarBtn2">Новый вариант</button>
+      <button class="btn secondary" id="resetBtn">Сбросить прогресс</button>
+    </div>
+  </section>
+</main>
+
+<div class="actions">
+  <button class="btn" id="checkBtn">Проверить (Enter)</button>
+  <button class="btn secondary" id="nextBtn2">Дальше →</button>
+  <button class="btn secondary" id="showSummaryBtn">Итоги</button>
+  <button class="btn secondary" id="resetBtn2">Сбросить прогресс</button>
+</div>
+
+<script>
+"use strict";
+/* ======================= УТИЛИТЫ ======================= */
+const $=id=>document.getElementById(id);
+const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+const fmt=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g," ");
+const dec=n=>String(n).replace(".",",");
+function normText(s){return String(s).toLowerCase().replace(/[^a-zа-яё0-9]+/gi," ").trim().replace(/\s+/g," ");}
+/* Сигнатура: нормализованный текст + все числа (сортированы) + канонический эталон */
+function makeSignature(t){
+  const nums=(t.cond.match(/\d+(?:[.,]\d+)?/g)||[]).map(x=>x.replace(",",".")).sort((a,b)=>parseFloat(a)-parseFloat(b));
+  return normText(t.cond)+"|"+nums.join(",")+"|"+normText(t.answerCanon);
+}
+
+/* ======================= ЗВУК ======================= */
+let soundOn=true, audioCtx=null;
+try{soundOn=localStorage.getItem("rasterTrainer.sound")!=="0";}catch(e){}
+function beep(kind){
+  if(!soundOn)return;
+  try{
+    audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==="suspended")audioCtx.resume();
+    const seq=kind==="ok"?[[660,0,.09],[880,.1,.14]]:kind==="bad"?[[220,0,.16],[160,.17,.2]]:[[523,0,.12],[659,.13,.12],[784,.26,.12],[1047,.4,.25]];
+    seq.forEach(([f,t,d])=>{
+      const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+      o.type="sine";o.frequency.value=f;o.connect(g);g.connect(audioCtx.destination);
+      const s=audioCtx.currentTime+t;
+      g.gain.setValueAtTime(.0001,s);g.gain.exponentialRampToValueAtTime(.18,s+.02);g.gain.exponentialRampToValueAtTime(.0001,s+d);
+      o.start(s);o.stop(s+d+.05);
+    });
+  }catch(e){}
+}
+
+/* ======================= ТЕМЫ / ЗВУК UI ======================= */
+const SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.5 4.5l2 2M17.5 17.5l2 2M19.5 4.5l-2 2M6.5 17.5l-2 2"/></svg>';
+const MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg>';
+const SND_ON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>';
+const SND_OFF='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>';
+function paintThemeBtn(){$("themeBtn").innerHTML=document.documentElement.getAttribute("data-theme")==="dark"?SUN:MOON;}
+function paintSoundBtn(){const b=$("soundBtn");b.innerHTML=soundOn?SND_ON:SND_OFF;b.setAttribute("aria-label",soundOn?"Выключить звук":"Включить звук");b.title=soundOn?"Звук включён":"Звук выключен";}
+$("themeBtn").addEventListener("click",()=>{
+  const t=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";
+  document.documentElement.setAttribute("data-theme",t);
+  try{localStorage.setItem("rasterTrainer.theme",t);}catch(e){}
+  paintThemeBtn();
+});
+$("soundBtn").addEventListener("click",()=>{soundOn=!soundOn;try{localStorage.setItem("rasterTrainer.sound",soundOn?"1":"0");}catch(e){}paintSoundBtn();if(soundOn)beep("ok");});
+paintThemeBtn();paintSoundBtn();
+
+/* ======================= ТОЧНЫЕ ЗАДАНИЯ ИЗ ИСТОЧНИКОВ =======================
+   Поля: src, cond (условие как в источнике), given (Дано с пояснениями),
+   find, steps (правильный порядок шагов), answerParts (фрагменты эталона
+   по порядку), answerCanon (каноническая строка для сигнатуры/сравнения),
+   unordered (сравнение нескольких значений в любом порядке), solution. */
+const FIXED=[
+/* --- Источник 1: gym498.ru PDF, задачи 1–18, 20–25 --- */
+{src:"Гимназия 498 · зад. 1",cond:"Сколько цветов будет содержать палитра, если на один пиксель отводится 4 бита памяти?",
+ given:["i = 4 бита — глубина цвета"],find:"N — количество цветов в палитре.",
+ steps:["Записать формулу N = 2^i","Подставить i = 4: N = 2⁴","Вычислить N = 16"],
+ answerParts:["16","цветов"],answerCanon:"16 цветов",
+ solution:["N = 2^i.","N = 2⁴ = 16.","Ответ: 16 цветов."]},
+{src:"Гимназия 498 · зад. 2",cond:"Для кодирования одного из цветов палитры служит двоичный код 001. Сколько цветов содержит палитра?",
+ given:["код цвета 001 — длина кода 3 знака, значит i = 3 бита"],find:"N — количество цветов в палитре.",
+ steps:["Определить длину кода: 001 — три знака, i = 3","Записать формулу N = 2^i","Вычислить N = 2³ = 8"],
+ answerParts:["8","цветов"],answerCanon:"8 цветов",
+ solution:["Двоичный код 001 состоит из 3 знаков, значит i = 3 бита.","N = 2³ = 8.","Ответ: 8 цветов."]},
+{src:"Гимназия 498 · зад. 3",cond:"Сколько битов памяти достаточно для кодирования одного пикселя 16-цветного изображения?",
+ given:["N = 16 цветов — количество цветов в палитре"],find:"i — глубина цвета (бит).",
+ steps:["Записать формулу N = 2^i","Представить 16 как степень двойки: 16 = 2⁴","Сделать вывод: i = 4 бита"],
+ answerParts:["4","бита"],answerCanon:"4 бита",
+ solution:["N = 2^i, 16 = 2⁴.","i = 4 бита.","Ответ: 4 бита."]},
+{src:"Гимназия 498 · зад. 4",cond:"Растровый газетный рисунок состоит из точек четырёх цветов: чёрного, тёмно-серого, светло-серого, белого. Сколько битов понадобится для двоичного кодирования одного пикселя этого рисунка?",
+ given:["N = 4 цвета (чёрный, тёмно-серый, светло-серый, белый)"],find:"i — глубина цвета (бит).",
+ steps:["Пересчитать цвета: N = 4","Записать N = 2^i и представить 4 = 2²","Сделать вывод: i = 2 бита"],
+ answerParts:["2","бита"],answerCanon:"2 бита",
+ solution:["Четыре цвета: N = 4.","4 = 2², значит i = 2.","Ответ: 2 бита."]},
+{src:"Гимназия 498 · зад. 5",cond:"Монитор позволяет получать на экране 2²⁴ цвета. Какой объём памяти в байтах требуется для кодирования 1 пикселя?",
+ given:["N = 2²⁴ цветов — количество цветов в палитре"],find:"объём памяти на 1 пиксель (в байтах).",
+ steps:["Из N = 2^i найти i = 24 бита","Перевести биты в байты: 24 : 8","Получить 3 байта"],
+ answerParts:["3","байта"],answerCanon:"3 байта",
+ solution:["N = 2²⁴, значит i = 24 бита.","24 : 8 = 3 байта.","Ответ: 3 байта."]},
+{src:"Гимназия 498 · зад. 6",cond:"Монитор позволяет получать на экране 65 536 цветов. Какой объём памяти в байтах требуется для кодирования 1 пикселя?",
+ given:["N = 65 536 цветов — количество цветов в палитре"],find:"объём памяти на 1 пиксель (в байтах).",
+ steps:["Представить 65 536 = 2¹⁶, значит i = 16 бит","Перевести биты в байты: 16 : 8","Получить 2 байта"],
+ answerParts:["2","байта"],answerCanon:"2 байта",
+ solution:["65 536 = 2¹⁶, i = 16 бит.","16 : 8 = 2 байта.","Ответ: 2 байта."]},
+{src:"Гимназия 498 · зад. 7",cond:"Вычислите необходимый объём видеопамяти для графического режима, если разрешение экрана монитора составляет 1280 х 1024 пикселей, глубина цвета — 32 бита.",
+ given:["k = 1280 × 1024 пикселей","i = 32 бита — глубина цвета"],find:"I — объём видеопамяти.",
+ steps:["Найти число пикселей: k = 1280 · 1024 = 1 310 720","Найти объём в битах: I = k · i = 1 310 720 · 32","Перевести в байты: I : 8 = 5 242 880 байт","Перевести в Мбайты: 5 242 880 : 1024 : 1024 = 5"],
+ answerParts:["5","Мбайт"],answerCanon:"5 мбайт",
+ solution:["k = 1280 · 1024 = 1 310 720 пикселей.","I = 1 310 720 · 32 = 41 943 040 бит.","41 943 040 : 8 = 5 242 880 байт = 5120 Кбайт = 5 Мбайт.","Ответ: 5 Мбайт."]},
+{src:"Гимназия 498 · зад. 8",cond:"Каков минимальный объём видеопамяти, необходимый для хранения графического изображения, занимающего область экрана 512 х 512 пикселей, где каждая точка может иметь один из 256 цветов?",
+ given:["k = 512 × 512 пикселей","N = 256 цветов"],find:"I — минимальный объём видеопамяти.",
+ steps:["Из N = 2^i найти i: 256 = 2⁸, i = 8 бит","Найти k = 512 · 512 = 262 144 пикселя","Найти I = k · i = 262 144 · 8 = 2 097 152 бит","Перевести: 2 097 152 : 8 : 1024 = 256 Кбайт"],
+ answerParts:["256","Кбайт"],answerCanon:"256 кбайт",
+ solution:["256 = 2⁸, i = 8 бит.","k = 512 · 512 = 262 144.","I = 262 144 · 8 = 2 097 152 бит = 262 144 байт = 256 Кбайт.","Ответ: 256 Кбайт."]},
+{src:"Гимназия 498 · зад. 9",cond:"Рассчитайте объём видеопамяти, необходимой для хранения графического изображения, занимающего весь экран монитора с разрешением 1024 х 768 пикселей и количеством отображаемых цветов, равным 16 777 216.",
+ given:["k = 1024 × 768 пикселей","N = 16 777 216 цветов"],find:"I — объём видеопамяти.",
+ steps:["Из N = 2^i найти i: 16 777 216 = 2²⁴, i = 24 бита","Найти k = 1024 · 768 = 786 432 пикселя","Найти I = k · i = 786 432 · 24 = 18 874 368 бит","Перевести: 18 874 368 : 8 : 1024 = 2304 Кбайт (= 2,25 Мбайт)"],
+ answerParts:["2304","Кбайт"],answerCanon:"2304 кбайт",
+ solution:["16 777 216 = 2²⁴, i = 24 бита.","k = 1024 · 768 = 786 432.","I = 786 432 · 24 = 18 874 368 бит = 2 359 296 байт = 2304 Кбайт = 2,25 Мбайт.","Ответ: 2304 Кбайт (2,25 Мбайт)."]},
+{src:"Гимназия 498 · зад. 10",cond:"Вы хотите работать с разрешением 1600 х 1200 пикселей, используя 16 777 216 цветов. В магазине продаются видеокарты с памятью 512 Кбайт, 2 Мбайт, 4 Мбайт и 64 Мбайт. Какие из них можно купить для вашей работы?",
+ given:["k = 1600 × 1200 пикселей","N = 16 777 216 цветов","варианты видеокарт: 512 Кбайт, 2 Мбайт, 4 Мбайт, 64 Мбайт"],find:"подходящие видеокарты.",
+ steps:["Найти i: 16 777 216 = 2²⁴, i = 24 бита","Найти I = 1600 · 1200 · 24 = 46 080 000 бит","Перевести: 46 080 000 : 8 : 1024 : 1024 ≈ 5,49 Мбайт","Сравнить с вариантами: подходит только память ≥ 5,49 Мбайт — 64 Мбайт"],
+ answerParts:["64","Мбайт"],answerCanon:"64 мбайт",
+ solution:["i = 24 бита (16 777 216 = 2²⁴).","I = 1600 · 1200 · 24 = 46 080 000 бит ≈ 5,49 Мбайт.","512 Кбайт, 2 Мбайт и 4 Мбайт меньше 5,49 Мбайт.","Ответ: можно купить видеокарту 64 Мбайт."]},
+{src:"Гимназия 498 · зад. 11",cond:"Подсчитайте объём данных, передаваемых за одну секунду от видеопамяти к монитору в режиме 1024 х 768 пикселей с глубиной цвета 16 битов и частотой обновления экрана 75 Гц.",
+ given:["k = 1024 × 768 пикселей","i = 16 бит","частота обновления 75 Гц (75 кадров в секунду)"],find:"объём данных за 1 секунду.",
+ steps:["Найти объём одного кадра: I₁ = 1024 · 768 · 16 бит","Перевести кадр в байты: I₁ : 8 = 1 572 864 байт","Умножить на частоту: 1 572 864 · 75 = 117 964 800 байт/с","Перевести в Мбайты: 117 964 800 : 1024 : 1024 = 112,5"],
+ answerParts:["112,5","Мбайт"],answerCanon:"112,5 мбайт",
+ solution:["Кадр: 1024 · 768 · 16 = 12 582 912 бит = 1 572 864 байт.","За секунду: 1 572 864 · 75 = 117 964 800 байт.","117 964 800 : 1024 : 1024 = 112,5 Мбайт.","Ответ: 112,5 Мбайт в секунду."]},
+{src:"Гимназия 498 · зад. 12",cond:"Графический файл содержит чёрно-белое изображение (без градаций серого) размером 100 х 100 пикселей. Каков информационный объём этого файла?",
+ given:["k = 100 × 100 пикселей","чёрно-белое без градаций: N = 2, i = 1 бит"],find:"I — информационный объём файла.",
+ steps:["Определить i: два цвета, 2 = 2¹, i = 1 бит","Найти k = 100 · 100 = 10 000 пикселей","Найти I = k · i = 10 000 бит","Перевести в байты: 10 000 : 8 = 1250 байт"],
+ answerParts:["1250","байт"],answerCanon:"1250 байт",
+ solution:["Чёрно-белое без градаций: N = 2, i = 1 бит.","I = 100 · 100 · 1 = 10 000 бит.","10 000 : 8 = 1250 байт.","Ответ: 1250 байт."]},
+{src:"Гимназия 498 · зад. 13",cond:"Графический файл содержит чёрно-белое изображение с 16 градациями серого цвета размером 10х10 пикселей. Каков информационный объём этого файла?",
+ given:["k = 10 × 10 пикселей","N = 16 градаций серого"],find:"I — информационный объём файла.",
+ steps:["Найти i: 16 = 2⁴, i = 4 бита","Найти k = 10 · 10 = 100 пикселей","Найти I = 100 · 4 = 400 бит","Перевести в байты: 400 : 8 = 50 байт"],
+ answerParts:["50","байт"],answerCanon:"50 байт",
+ solution:["16 = 2⁴, i = 4 бита.","I = 10 · 10 · 4 = 400 бит.","400 : 8 = 50 байт.","Ответ: 50 байт."]},
+{src:"Гимназия 498 · зад. 14",cond:"Для хранения растрового изображения размером 64 х 64 пикселя отвели 512 байтов памяти. Каково максимально возможное число цветов в палитре изображения?",
+ given:["k = 64 × 64 пикселя","I = 512 байт"],find:"N — максимальное число цветов в палитре.",
+ steps:["Перевести I в биты: 512 · 8 = 4096 бит","Найти k = 64 · 64 = 4096 пикселей","Найти i = I : k = 4096 : 4096 = 1 бит","Найти N = 2^i = 2¹ = 2"],
+ answerParts:["2","цвета"],answerCanon:"2 цвета",
+ solution:["I = 512 · 8 = 4096 бит; k = 4096.","i = 4096 : 4096 = 1 бит.","N = 2¹ = 2.","Ответ: 2 цвета."]},
+{src:"Гимназия 498 · зад. 15",cond:"Для хранения растрового изображения размером 128 х 128 пикселей отвели 4 Кбайт памяти. Каково максимально возможное число цветов в палитре изображения?",
+ given:["k = 128 × 128 пикселей","I = 4 Кбайт"],find:"N — максимальное число цветов в палитре.",
+ steps:["Перевести I в биты: 4 · 1024 · 8 = 32 768 бит","Найти k = 128 · 128 = 16 384 пикселя","Найти i = I : k = 32 768 : 16 384 = 2 бита","Найти N = 2² = 4"],
+ answerParts:["4","цвета"],answerCanon:"4 цвета",
+ solution:["I = 4 · 1024 · 8 = 32 768 бит; k = 16 384.","i = 32 768 : 16 384 = 2 бита.","N = 2² = 4.","Ответ: 4 цвета."]},
+{src:"Гимназия 498 · зад. 16",cond:"Рисунок из 256 цветов имеет информационный объём 2400 байтов. Из скольких точек он состоит?",
+ given:["N = 256 цветов","I = 2400 байт"],find:"k — количество точек (пикселей).",
+ steps:["Найти i: 256 = 2⁸, i = 8 бит","Перевести I в биты: 2400 · 8 = 19 200 бит","Найти k = I : i = 19 200 : 8","Получить k = 2400 точек"],
+ answerParts:["2400","точек"],answerCanon:"2400 точек",
+ solution:["256 = 2⁸, i = 8 бит.","I = 2400 · 8 = 19 200 бит.","k = 19 200 : 8 = 2400.","Ответ: 2400 точек."]},
+{src:"Гимназия 498 · зад. 17",cond:"Сравните размеры памяти, необходимые для хранения изображений: первое изображение 4-цветное, его размер 64 х 128 пикселей; второе изображение 16-цветное, его размер 32 х 32 пикселей.",
+ given:["первое: N₁ = 4, k₁ = 64 × 128","второе: N₂ = 16, k₂ = 32 × 32"],find:"сравнение объёмов I₁ и I₂.",
+ steps:["Найти глубины цвета: i₁ = 2 бита, i₂ = 4 бита","Найти I₁ = 64 · 128 · 2 = 16 384 бит","Найти I₂ = 32 · 32 · 4 = 4096 бит","Сравнить: I₁ : I₂ = 16 384 : 4096 = 4"],
+ answerParts:["первое больше второго","в 4 раза"],answerCanon:"первое больше второго в 4 раза",unordered:true,
+ solution:["i₁ = 2 (4 = 2²), i₂ = 4 (16 = 2⁴).","I₁ = 64 · 128 · 2 = 16 384 бит.","I₂ = 32 · 32 · 4 = 4096 бит.","16 384 : 4096 = 4.","Ответ: первое изображение занимает в 4 раза больше памяти."]},
+{src:"Гимназия 498 · зад. 18",cond:"Рисунок размером 1024 х 512 пикселей сохранили в виде несжатого файла размером 1,5 Мбайт. Какое количество информации было использовано для кодирования цвета пикселя? Каково максимально возможное число цветов в палитре, соответствующей такой глубине цвета?",
+ given:["k = 1024 × 512 пикселей","I = 1,5 Мбайт"],find:"i — глубину цвета и N — число цветов.",
+ steps:["Перевести I в биты: 1,5 · 1024 · 1024 · 8 = 12 582 912 бит","Найти k = 1024 · 512 = 524 288 пикселей","Найти i = I : k = 12 582 912 : 524 288 = 24 бита","Найти N = 2²⁴ = 16 777 216"],
+ answerParts:["i = 24 бита","N = 16 777 216 цветов"],answerCanon:"i 24 бита n 16777216 цветов",unordered:true,
+ solution:["I = 1,5 · 2²⁰ · 8 = 12 582 912 бит.","k = 1024 · 512 = 524 288.","i = 12 582 912 : 524 288 = 24 бита.","N = 2²⁴ = 16 777 216.","Ответ: 24 бита; 16 777 216 цветов."]},
+{src:"Гимназия 498 · зад. 20",cond:"Несжатое растровое изображение размером 256 х 128 пикселей занимает 16 Кбайт памяти. Каково максимально возможное число цветов в палитре изображения?",
+ given:["k = 256 × 128 пикселей","I = 16 Кбайт"],find:"N — максимальное число цветов в палитре.",
+ steps:["Перевести I в биты: 16 · 1024 · 8 = 131 072 бит","Найти k = 256 · 128 = 32 768 пикселей","Найти i = I : k = 131 072 : 32 768 = 4 бита","Найти N = 2⁴ = 16"],
+ answerParts:["16","цветов"],answerCanon:"16 цветов",
+ solution:["I = 16 · 1024 · 8 = 131 072 бит; k = 32 768.","i = 131 072 : 32 768 = 4 бита.","N = 2⁴ = 16.","Ответ: 16 цветов."]},
+{src:"Гимназия 498 · зад. 21",cond:"Растровое изображение было сохранено в файле как 256-цветный рисунок. Во сколько раз уменьшится информационный объём файла, если это же изображение сохранить как монохромный (чёрно-белый без градаций серого) рисунок?",
+ given:["N₁ = 256 цветов","N₂ = 2 цвета (монохромный)"],find:"отношение I₁ : I₂.",
+ steps:["Найти i₁: 256 = 2⁸, i₁ = 8 бит","Найти i₂: 2 = 2¹, i₂ = 1 бит","Число пикселей k не меняется, объём пропорционален i","Найти отношение I₁ : I₂ = i₁ : i₂ = 8 : 1 = 8"],
+ answerParts:["в 8","раз"],answerCanon:"в 8 раз",
+ solution:["i₁ = 8 бит, i₂ = 1 бит.","I = k · i, k одинаково.","I₁ : I₂ = 8 : 1 = 8.","Ответ: уменьшится в 8 раз."]},
+{src:"Гимназия 498 · зад. 22",cond:"После преобразования растрового 256-цветного графического файла в чёрно-белый формат (без градаций серого) размер файла уменьшился на 70 байтов. Найдите размер исходного файла.",
+ given:["N₁ = 256 цветов, i₁ = 8 бит","N₂ = 2 цвета, i₂ = 1 бит","уменьшение объёма: 70 байт"],find:"I₁ — размер исходного файла.",
+ steps:["Найти глубины цвета: i₁ = 8 бит, i₂ = 1 бит","Записать: I₂ = I₁ · (1/8), значит I₁ − I₁/8 = 70","Упростить: (7/8) · I₁ = 70","Найти I₁ = 70 · 8 : 7 = 80 байт"],
+ answerParts:["80","байт"],answerCanon:"80 байт",
+ solution:["i₁ = 8, i₂ = 1, объём уменьшился в 8 раз.","I₁ − I₁/8 = (7/8)·I₁ = 70.","I₁ = 70 · 8 : 7 = 80 байт.","Ответ: 80 байт."]},
+{src:"Гимназия 498 · зад. 23",cond:"В процессе преобразования растрового графического изображения количество цветов в палитре уменьшилось с 16 777 216 до 256. Во сколько раз при этом уменьшился информационный объём изображения?",
+ given:["N₁ = 16 777 216 цветов","N₂ = 256 цветов"],find:"отношение I₁ : I₂.",
+ steps:["Найти i₁: 16 777 216 = 2²⁴, i₁ = 24 бита","Найти i₂: 256 = 2⁸, i₂ = 8 бит","Объём пропорционален глубине цвета при том же k","Найти I₁ : I₂ = 24 : 8 = 3"],
+ answerParts:["в 3","раза"],answerCanon:"в 3 раза",
+ solution:["i₁ = 24 бита, i₂ = 8 бит.","I₁ : I₂ = 24 : 8 = 3.","Ответ: уменьшился в 3 раза."]},
+{src:"Гимназия 498 · зад. 24",cond:"Какую часть экрана, имеющего разрешение 1024 х 768 пикселей, займёт изображение файла типа BMP объёмом 1 Мбайт, созданного при глубине цвета, равной 32 бита?",
+ given:["экран: 1024 × 768 пикселей","изображение: I = 1 Мбайт, i = 32 бита"],find:"часть экрана, занятая изображением.",
+ steps:["Найти объём всего экрана: 1024 · 768 · 32 = 25 165 824 бит","Перевести объём изображения: 1 Мбайт = 8 388 608 бит","Найти отношение: 8 388 608 : 25 165 824","Сократить дробь: 1/3"],
+ answerParts:["1/3","экрана"],answerCanon:"1/3 экрана",
+ solution:["Экран: 1024 · 768 · 32 = 25 165 824 бит = 3 Мбайт.","Изображение: 1 Мбайт = 8 388 608 бит.","8 388 608 : 25 165 824 = 1/3.","Ответ: 1/3 экрана."]},
+{src:"Гимназия 498 · зад. 25",cond:"После изменения свойств рабочего стола монитор приобрёл разрешение 1024 х 768 пикселей и получил возможность отображать 65 536 цветов. Какой объём видеопамяти необходим для текущего изображения рабочего стола?",
+ given:["k = 1024 × 768 пикселей","N = 65 536 цветов"],find:"I — объём видеопамяти.",
+ steps:["Найти i: 65 536 = 2¹⁶, i = 16 бит","Найти k = 1024 · 768 = 786 432 пикселя","Найти I = 786 432 · 16 = 12 582 912 бит","Перевести: 12 582 912 : 8 : 1024 : 1024 = 1,5 Мбайт"],
+ answerParts:["1,5","Мбайт"],answerCanon:"1,5 мбайт",
+ solution:["65 536 = 2¹⁶, i = 16 бит.","I = 1024 · 768 · 16 = 12 582 912 бит.","12 582 912 : 8 = 1 572 864 байт = 1536 Кбайт = 1,5 Мбайт.","Ответ: 1,5 Мбайт."]},
+/* --- Источник 2: studfile.net, примеры 1–3 и задания 1–9 --- */
+{src:"Studfile · пример 1",cond:"Видеопамять компьютера имеет объем 512Кб, размер графической сетки 640×200, в палитре 8 цветов. Какое количество страниц экрана может одновременно разместиться в видеопамяти компьютера?",
+ given:["Vвп = 512 Кбайт — объём видеопамяти","k = 640 × 200 пикселей","N = 8 цветов"],find:"m — число полных страниц экрана.",
+ steps:["Найти i: 8 = 2³, i = 3 бита","Найти объём страницы: 640 · 200 · 3 = 384 000 бит = 48 000 байт = 46,875 Кб","Разделить память на страницу: 512 : 46,875 ≈ 10,923","Взять целую часть: 10 полных страниц"],
+ answerParts:["10","страниц"],answerCanon:"10 страниц",
+ solution:["i = 3 бита (8 = 2³).","Страница: 640 · 200 · 3 = 384 000 бит = 46,875 Кб.","512 : 46,875 ≈ 10,923.","Ответ: 10 полных страниц."]},
+{src:"Studfile · пример 2",cond:"В результате преобразования растрового графического изображения количество цветов уменьшилось с 256 до 16. Как при этом изменился объем видеопамяти, занимаемой изображением?",
+ given:["N₁ = 256 цветов","N₂ = 16 цветов"],find:"как изменился объём.",
+ steps:["Найти i₁: 256 = 2⁸, i₁ = 8 бит","Найти i₂: 16 = 2⁴, i₂ = 4 бита","Записать V₁ = 8k, V₂ = 4k","Найти V₂ : V₁ = 4 : 8 = 1/2 — объём уменьшился в 2 раза"],
+ answerParts:["уменьшится","в 2 раза"],answerCanon:"уменьшится в 2 раза",unordered:true,
+ solution:["i₁ = 8, i₂ = 4.","V₁ = 8k, V₂ = 4k.","V₂/V₁ = 1/2.","Ответ: объём уменьшится в 2 раза."]},
+{src:"Studfile · пример 3",cond:"Сканируется цветное изображение стандартного размера А4 (21×29,7 см²). Разрешающая способность сканера 1200dpi (точек на один дюйм) и глубина цвета 24 бита. Какой информационный объём будет иметь полученный графический файл?",
+ given:["размер 21 × 29,7 см; 1 дюйм = 2,54 см","разрешение 1200 dpi","i = 24 бита"],find:"I — объём файла (ответ источника: ≈ 398 Мб).",
+ steps:["Перевести размеры в дюймы: 21/2,54 и 29,7/2,54","Найти k = (21/2,54) · (29,7/2,54) · 1200² ≈ 139 210 118 пикселей","Найти I = k · 24 ≈ 3 341 042 842 бит","Перевести: ≈ 417 630 355 байт ≈ 407 842 Кб ≈ 398 Мб"],
+ answerParts:["398","Мб"],answerCanon:"398 мб",
+ solution:["k = (21/2,54)·(29,7/2,54)·1200² ≈ 139 210 118 пикселей.","I = 139 210 118 · 24 ≈ 3 341 042 842 бит.","≈ 417 630 355 байт ≈ 407 842 Кб ≈ 398 Мб.","Ответ: ≈ 398 Мб."]},
+{src:"Studfile · зад. 1",cond:"Определите количество цветов в палитре при глубине цвета 4, 8, 16, 24, 32 бита.",
+ given:["i = 4, 8, 16, 24, 32 бита"],find:"N для каждого значения i (по порядку).",
+ steps:["Записать формулу N = 2^i","Вычислить 2⁴ = 16 и 2⁸ = 256","Вычислить 2¹⁶ = 65 536","Вычислить 2²⁴ = 16 777 216 и 2³² = 4 294 967 296"],
+ answerParts:["16","256","65 536","16 777 216","4 294 967 296"],answerCanon:"16 256 65536 16777216 4294967296",
+ solution:["N = 2^i.","2⁴ = 16; 2⁸ = 256; 2¹⁶ = 65 536.","2²⁴ = 16 777 216; 2³² = 4 294 967 296.","Ответ: 16; 256; 65 536; 16 777 216; 4 294 967 296 (по порядку глубин)."]},
+{src:"Studfile · зад. 2",cond:"В процессе преобразования растрового графического изображения количество цветов уменьшилось с 65536 до 16. Во сколько раз уменьшится информационный объем файла?",
+ given:["N₁ = 65 536 цветов","N₂ = 16 цветов"],find:"отношение I₁ : I₂.",
+ steps:["Найти i₁: 65 536 = 2¹⁶, i₁ = 16 бит","Найти i₂: 16 = 2⁴, i₂ = 4 бита","Объём пропорционален i при неизменном k","Найти I₁ : I₂ = 16 : 4 = 4"],
+ answerParts:["в 4","раза"],answerCanon:"в 4 раза",
+ solution:["i₁ = 16, i₂ = 4.","I₁ : I₂ = 16 : 4 = 4.","Ответ: в 4 раза."]},
+{src:"Studfile · зад. 3",cond:"256-цветный рисунок содержит 120 байт информации. Из скольких точек он состоит?",
+ given:["N = 256 цветов","I = 120 байт"],find:"k — количество точек.",
+ steps:["Найти i: 256 = 2⁸, i = 8 бит","Перевести I в биты: 120 · 8 = 960 бит","Найти k = I : i = 960 : 8","Получить k = 120 точек"],
+ answerParts:["120","точек"],answerCanon:"120 точек",
+ solution:["i = 8 бит.","I = 960 бит.","k = 960 : 8 = 120.","Ответ: 120 точек."]},
+{src:"Studfile · зад. 4",cond:"Достаточно ли видеопамяти объёмом 256 Кбайт для работы монитора в режиме 640×480 и палитрой из 16 цветов?",
+ given:["Vвп = 256 Кбайт","k = 640 × 480 пикселей","N = 16 цветов"],find:"достаточно ли памяти (да/нет).",
+ steps:["Найти i: 16 = 2⁴, i = 4 бита","Найти объём кадра: 640 · 480 · 4 = 1 228 800 бит","Перевести: 1 228 800 : 8 : 1024 = 150 Кбайт","Сравнить: 150 Кбайт ≤ 256 Кбайт — памяти достаточно"],
+ answerParts:["да","достаточно"],answerCanon:"да достаточно",unordered:true,
+ solution:["i = 4 бита.","Кадр: 640 · 480 · 4 = 1 228 800 бит = 150 Кбайт.","150 ≤ 256.","Ответ: да, достаточно."]},
+{src:"Studfile · зад. 5",cond:"Какой объем видеопамяти необходим для хранения двух страниц изображения при условии, что разрешающая способность дисплея равна 640×350 пикселей, а количество используемых цветов – 16?",
+ given:["страниц: 2","k = 640 × 350 пикселей","N = 16 цветов"],find:"I — объём видеопамяти.",
+ steps:["Найти i: 16 = 2⁴, i = 4 бита","Найти объём одной страницы: 640 · 350 · 4 = 896 000 бит","Умножить на 2: 1 792 000 бит","Перевести: 1 792 000 : 8 : 1024 = 218,75 Кбайт"],
+ answerParts:["218,75","Кбайт"],answerCanon:"218,75 кбайт",
+ solution:["i = 4 бита.","Страница: 640 · 350 · 4 = 896 000 бит.","Две страницы: 1 792 000 бит = 224 000 байт.","224 000 : 1024 = 218,75 Кбайт.","Ответ: 218,75 Кбайт."]},
+{src:"Studfile · зад. 6",cond:"Какой объем видеопамяти необходим для хранения четырех страниц изображения, если битовая глубина равна 24, а разрешающая способность дисплея 800×600 пикселей?",
+ given:["страниц: 4","i = 24 бита","k = 800 × 600 пикселей"],find:"I — объём видеопамяти.",
+ steps:["Найти объём страницы: 800 · 600 · 24 = 11 520 000 бит","Умножить на 4: 46 080 000 бит","Перевести в байты: 46 080 000 : 8 = 5 760 000 байт","Перевести в Кбайты: 5 760 000 : 1024 = 5625 Кбайт"],
+ answerParts:["5625","Кбайт"],answerCanon:"5625 кбайт",
+ solution:["Страница: 800 · 600 · 24 = 11 520 000 бит.","4 страницы: 46 080 000 бит = 5 760 000 байт.","5 760 000 : 1024 = 5625 Кбайт (≈ 5,49 Мбайт).","Ответ: 5625 Кбайт."]},
+{src:"Studfile · зад. 7",cond:"Объем видеопамяти равен 2 Мб, битовая глубина 24, разрешающая способность дисплея 640×480. Какое максимальное количество страниц можно использовать при этих условиях?",
+ given:["Vвп = 2 Мбайт","i = 24 бита","k = 640 × 480 пикселей"],find:"m — максимальное число страниц.",
+ steps:["Найти объём страницы: 640 · 480 · 24 = 7 372 800 бит","Перевести память: 2 Мб = 2 · 1024 · 1024 · 8 = 16 777 216 бит","Разделить: 16 777 216 : 7 372 800 ≈ 2,27","Взять целую часть: 2 страницы"],
+ answerParts:["2","страницы"],answerCanon:"2 страницы",
+ solution:["Страница: 7 372 800 бит = 921 600 байт.","Память: 2 097 152 байт.","2 097 152 : 921 600 ≈ 2,27.","Ответ: 2 страницы."]},
+{src:"Studfile · зад. 8",cond:"Видеопамять имеет объем, в котором может храниться 4-х цветное изображение размером 640×480. Какого размера изображение можно хранить в том же объеме видеопамяти, если использовать 256 – цветную палитру?",
+ given:["исходное: N₁ = 4, k₁ = 640 × 480","новое: N₂ = 256 цветов","объём памяти тот же"],find:"k₂ — число пикселей нового изображения.",
+ steps:["Найти глубины: i₁ = 2 бита, i₂ = 8 бит","Найти объём: I = 640 · 480 · 2 = 614 400 бит","Из равенства объёмов: k₂ = I : i₂ = 614 400 : 8","Получить k₂ = 76 800 пикселей (например, 320 × 240)"],
+ answerParts:["76 800","пикселей"],answerCanon:"76800 пикселей",
+ solution:["i₁ = 2, i₂ = 8 — глубина выросла в 4 раза.","При том же объёме число пикселей уменьшится в 4 раза.","k₂ = 640 · 480 : 4 = 76 800 (например, 320 × 240).","Ответ: 76 800 пикселей."]},
+{src:"Studfile · зад. 9",cond:"Для хранения растрового изображения размером 1024×512 отвели 256 Кб памяти. Каково максимальное возможное количество цветов в палитре изображения?",
+ given:["k = 1024 × 512 пикселей","I = 256 Кбайт"],find:"N — максимальное число цветов.",
+ steps:["Перевести I в биты: 256 · 1024 · 8 = 2 097 152 бит","Найти k = 1024 · 512 = 524 288 пикселей","Найти i = I : k = 2 097 152 : 524 288 = 4 бита","Найти N = 2⁴ = 16"],
+ answerParts:["16","цветов"],answerCanon:"16 цветов",
+ solution:["I = 2 097 152 бит; k = 524 288.","i = 4 бита.","N = 2⁴ = 16.","Ответ: 16 цветов."]},
+/* --- Источник 3: chel-gymnasia23 (уникальный пример А; остальные — дубликаты studfile) --- */
+{src:"Чел. гимназия 23 · пример А",cond:"Видеопамять компьютера имеет объем 512Кб, размер графической сетки 640×200, в палитре 16 цветов. Какое количество страниц экрана может одновременно разместиться в видеопамяти компьютера?",
+ given:["Vвп = 512 Кбайт","k = 640 × 200 = 128 000 пикселей","N = 16 цветов"],find:"m — число полных страниц экрана.",
+ steps:["Найти i: 16 = 2⁴, i = 4 бита","Найти объём страницы: 128 000 · 4 = 512 000 бит = 64 000 байт = 62,5 Кб","Разделить: m = 512 : 62,5","Получить m = 8 страниц"],
+ answerParts:["8","страниц"],answerCanon:"8 страниц",
+ solution:["i = 4 бита.","Страница: 512 000 бит = 62,5 Кб.","m = 512 : 62,5 = 8.","Ответ: 8 полных страниц."]},
+/* --- Источник 4: lebedevann.tesigoh29.ru, теория 1–3 и практика 1–7 --- */
+{src:"Лебедева Н.Н. · теория 1",cond:"Найдите глубину цвета изображения, если количество цветов в палитре 8.",
+ given:["N = 8 цветов"],find:"i — глубина цвета (бит).",
+ steps:["Записать N = 2^i","Представить 8 = 2³","Сделать вывод: i = 3 бита"],
+ answerParts:["3","бита"],answerCanon:"3 бита",
+ solution:["8 = 2³.","i = 3 бита.","Ответ: 3 бита."]},
+{src:"Лебедева Н.Н. · теория 2",cond:"Найдите количество цветов в палитре, если глубина цвета изображения 7.",
+ given:["i = 7 бит"],find:"N — количество цветов.",
+ steps:["Записать N = 2^i","Подставить i = 7","Вычислить N = 2⁷ = 128"],
+ answerParts:["128","цветов"],answerCanon:"128 цветов",
+ solution:["N = 2⁷ = 128.","Ответ: 128 цветов."]},
+{src:"Лебедева Н.Н. · теория 3",cond:"Какой объём информации занимает растровое изображение размером 1024 х 512 пикселей с глубиной цвета 8 бит.",
+ given:["k = 1024 × 512 пикселей","i = 8 бит"],find:"I — информационный объём.",
+ steps:["Найти k = 1024 · 512 = 524 288 пикселей","Найти I = k · i = 524 288 · 8 = 4 194 304 бит","Перевести в байты: 4 194 304 : 8 = 524 288 байт","Перевести в Кбайты: 524 288 : 1024 = 512 Кбайт"],
+ answerParts:["512","Кбайт"],answerCanon:"512 кбайт",
+ solution:["k = 524 288.","I = 4 194 304 бит = 524 288 байт.","524 288 : 1024 = 512 Кбайт.","Ответ: 512 Кбайт."]},
+{src:"Лебедева Н.Н. · практика 1",cond:"Найдите глубину цвета изображения, если в палитре 64 цвета.",
+ given:["N = 64 цвета"],find:"i — глубина цвета (бит).",
+ steps:["Записать N = 2^i","Представить 64 = 2⁶","Сделать вывод: i = 6 бит"],
+ answerParts:["6","бит"],answerCanon:"6 бит",
+ solution:["64 = 2⁶.","i = 6 бит.","Ответ: 6 бит."]},
+{src:"Лебедева Н.Н. · практика 2",cond:"Глубина цвета графического изображения равна 5 бит. Сколько цветов используется в палитре?",
+ given:["i = 5 бит"],find:"N — количество цветов.",
+ steps:["Записать N = 2^i","Подставить i = 5","Вычислить N = 2⁵ = 32"],
+ answerParts:["32","цвета"],answerCanon:"32 цвета",
+ solution:["N = 2⁵ = 32.","Ответ: 32 цвета."]},
+{src:"Лебедева Н.Н. · практика 3",cond:"Глубина цвета графического изображения равна 10 бит. Сколько цветов используется в палитре?",
+ given:["i = 10 бит"],find:"N — количество цветов.",
+ steps:["Записать N = 2^i","Подставить i = 10","Вычислить N = 2¹⁰ = 1024"],
+ answerParts:["1024","цвета"],answerCanon:"1024 цвета",
+ solution:["N = 2¹⁰ = 1024.","Ответ: 1024 цвета."]},
+{src:"Лебедева Н.Н. · практика 4",cond:"Найдите глубину цвета монохромного изображения.",
+ given:["монохромное изображение: N = 2 цвета (чёрный и белый)"],find:"i — глубина цвета (бит).",
+ steps:["Определить число цветов: N = 2","Записать N = 2^i: 2 = 2¹","Сделать вывод: i = 1 бит"],
+ answerParts:["1","бит"],answerCanon:"1 бит",
+ solution:["Монохромное: два цвета.","2 = 2¹.","i = 1 бит.","Ответ: 1 бит."]},
+{src:"Лебедева Н.Н. · практика 5",cond:"Размеры растрового графического изображения 800 х 1024 точек. Глубина цвета 16 бит. Определить информационный объём изображения.",
+ given:["k = 800 × 1024 точки","i = 16 бит"],find:"I — объём (в килобайтах).",
+ steps:["Найти k = 800 · 1024 = 819 200 точек","Найти I = 819 200 · 16 = 13 107 200 бит","Перевести в байты: 13 107 200 : 8 = 1 638 400 байт","Перевести в Кбайты: 1 638 400 : 1024 = 1600 Кбайт"],
+ answerParts:["1600","Кбайт"],answerCanon:"1600 кбайт",
+ solution:["k = 819 200.","I = 13 107 200 бит = 1 638 400 байт.","1 638 400 : 1024 = 1600 Кбайт.","Ответ: 1600 Кбайт."]},
+{src:"Лебедева Н.Н. · практика 6",cond:"Размеры растрового графического изображения 1280 х 960 точек. Количество цветов в палитре 64. Определить информационный объём изображения.",
+ given:["k = 1280 × 960 точек","N = 64 цвета"],find:"I — объём (в килобайтах).",
+ steps:["Найти i: 64 = 2⁶, i = 6 бит","Найти k = 1280 · 960 = 1 228 800 точек","Найти I = 1 228 800 · 6 = 7 372 800 бит","Перевести: 7 372 800 : 8 : 1024 = 900 Кбайт"],
+ answerParts:["900","Кбайт"],answerCanon:"900 кбайт",
+ solution:["i = 6 бит.","k = 1 228 800.","I = 7 372 800 бит = 921 600 байт.","921 600 : 1024 = 900 Кбайт.","Ответ: 900 Кбайт."]},
+{src:"Лебедева Н.Н. · практика 7",cond:"Определить информационный объём фотографии (9х13 см), отсканированной с разрешением в 400 DPI и использованием 128 цветовой палитры. (Ответ округлите до целых вверх)",
+ given:["размер 9 × 13 см; 1 дюйм = 2,54 см","разрешение 400 DPI","N = 128 цветов"],find:"I — объём в Мбайтах (округление вверх).",
+ steps:["Найти i: 128 = 2⁷, i = 7 бит","Перевести стороны в дюймы и найти k = (9/2,54 · 400) · (13/2,54 · 400) ≈ 2 903 000 точек","Найти I = k · 7 ≈ 20 314 000 бит ≈ 2,42 Мбайт","Округлить вверх: 3 Мбайт"],
+ answerParts:["3","Мбайт"],answerCanon:"3 мбайт",
+ solution:["i = 7 бит (128 = 2⁷).","k ≈ (1417) · (2047) ≈ 2 901 000 точек.","I ≈ 2,42 Мбайт.","Округляем вверх: 3 Мбайт.","Ответ: 3 Мбайт."]},
+/* --- Источник 5: ЯКласс, разобранные примеры по графике --- */
+{src:"ЯКласс · пример (Полина)",cond:"Полина увлекается компьютерной графикой. Для конкурса она создала рисунок размером 1024×768 пикселей, на диске он занял 900 Кбайт. Найди максимально возможное количество цветов в палитре изображения.",
+ given:["k = 1024 × 768","I = 900 Кбайт"],find:"N — максимальное число цветов в палитре.",
+ steps:["Перевести I в биты: 900 · 1024 · 8 = 7 372 800 бит","Выразить i = I : k = 7 372 800 : 786 432 ≈ 9,3","Взять i = 9 бит (i = 10 превысит объём 900 Кбайт)","Найти N = 2⁹ = 512"],
+ answerParts:["512","цветов"],answerCanon:"512 цветов",
+ solution:["i = I/k = 900·1024·8 / (1024·768) ≈ 9,3.","Берём i = 9 бит: при i = 10 файл превысил бы 900 Кбайт.","N = 2⁹ = 512.","Ответ: 512 цветов."]},
+{src:"ЯКласс · пример (сканирование)",cond:"Для обучения нейросети распознаванию изображений фотографии сканируются с разрешением 600 ppi и цветовой системой, содержащей 16777216 цветов. Методы сжатия изображений не используются. Средний размер отсканированного документа составляет 18 Мбайт. В целях экономии было решено перейти на разрешение 300ppi и цветовую систему, содержащую 65536 цветов. Сколько Мбайт будет составлять средний размер документа, отсканированного с изменёнными параметрами?",
+ given:["было: 600 ppi, N₁ = 16 777 216, I₁ = 18 Мбайт","стало: 300 ppi, N₂ = 65 536"],find:"I₂ — новый средний размер документа (Мбайт).",
+ steps:["Найти глубины: i₁ = 24 бита, i₂ = 16 бит","Записать I = k · i · ppi² для обоих случаев","Найти отношение I₁ : I₂ = (24 · 600²) : (16 · 300²) = 6","Найти I₂ = 18 : 6 = 3 Мбайт"],
+ answerParts:["3","Мбайт"],answerCanon:"3 мбайт",
+ solution:["16 777 216 = 2²⁴ → i₁ = 24; 65 536 = 2¹⁶ → i₂ = 16.","I₁/I₂ = (24·600²)/(16·300²) = 6.","I₂ = 18 : 6 = 3.","Ответ: 3 Мбайт."]}
+];
+
+/* ======================= ГЕНЕРАТОРЫ (6 шаблонов, эталон — по формуле) ======================= */
+const GEN=[
+function T1(wide){ // I = k·i, ответ в Кбайт (целый)
+  const Ws=wide?[128,256,512,640,800,1024,1280,1600,2048,320,960]:[256,512,1024,1280,640,800];
+  const Hs=wide?[128,256,480,512,600,768,960,1024,1200,200,350]:[256,512,768,480,600,1024];
+  for(let t=0;t<60;t++){
+    const W=pick(Ws),H=pick(Hs),i=pick([2,4,8,16,24,32]);
+    const bits=W*H*i;
+    if(bits%8192===0){const kb=bits/8192;
+      return {src:"Сгенерировано · шаблон T1",
+        cond:`Размеры растрового изображения ${W} х ${H} пикселей, глубина цвета ${i} бит. Определите информационный объём изображения в килобайтах.`,
+        given:[`k = ${W} × ${H} пикселей`,`i = ${i} бит — глубина цвета`],find:"I — информационный объём (Кбайт).",
+        steps:[`Найти число пикселей: k = ${W} · ${H} = ${fmt(W*H)}`,`Найти объём в битах: I = k · i = ${fmt(W*H)} · ${i} = ${fmt(bits)} бит`,`Перевести в байты: ${fmt(bits)} : 8 = ${fmt(bits/8)} байт`,`Перевести в Кбайты: ${fmt(bits/8)} : 1024 = ${fmt(kb)} Кбайт`],
+        answerParts:[fmt(kb),"Кбайт"],answerCanon:kb+" кбайт",
+        solution:[`k = ${fmt(W*H)}.`,`I = ${fmt(bits)} бит = ${fmt(bits/8)} байт.`,`${fmt(bits/8)} : 1024 = ${fmt(kb)} Кбайт.`,`Ответ: ${fmt(kb)} Кбайт.`]};
+    }
+  }
+  return null;
+},
+function T2(wide){ // N = 2^i
+  const i=rnd(2,wide?20:14),N=Math.pow(2,i);
+  return {src:"Сгенерировано · шаблон T2",
+    cond:`Глубина цвета растрового изображения равна ${i} бит. Сколько цветов содержится в палитре?`,
+    given:[`i = ${i} бит — глубина цвета`],find:"N — количество цветов в палитре.",
+    steps:["Записать формулу N = 2^i",`Подставить i = ${i}`,`Вычислить N = 2^${i} = ${fmt(N)}`],
+    answerParts:[fmt(N),"цветов"],answerCanon:N+" цветов",
+    solution:[`N = 2^${i} = ${fmt(N)}.`,`Ответ: ${fmt(N)} цветов.`]};
+},
+function T3(wide){ // i = log2 N
+  const i=rnd(2,wide?20:16),N=Math.pow(2,i);
+  return {src:"Сгенерировано · шаблон T3",
+    cond:`В палитре растрового изображения ${fmt(N)} цветов. Найдите глубину цвета изображения (в битах).`,
+    given:[`N = ${fmt(N)} цветов`],find:"i — глубина цвета (бит).",
+    steps:["Записать формулу N = 2^i",`Представить ${fmt(N)} как степень двойки: ${fmt(N)} = 2^${i}`,`Сделать вывод: i = ${i} бит`],
+    answerParts:[String(i),"бит"],answerCanon:i+" бит",
+    solution:[`${fmt(N)} = 2^${i}.`,`i = ${i} бит.`,`Ответ: ${i} бит.`]};
+},
+function T4(wide){ // max N по памяти
+  const combos=[[64,64],[128,128],[256,128],[256,256],[512,256],[512,512],[1024,512],[1024,768],[128,64],[256,64],[512,128],[640,480],[800,600],[200,100]];
+  for(let t=0;t<60;t++){
+    const [W,H]=pick(combos),i=rnd(1,wide?10:8),bits=W*H*i;
+    if(bits%8!==0)continue;
+    const B=bits/8;let mem,unit;
+    if(B%1024===0&&B>=1024){mem=B/1024;unit="Кбайт";}else if(B>=8){mem=B;unit="байт";}else continue;
+    const N=Math.pow(2,i);
+    return {src:"Сгенерировано · шаблон T4",
+      cond:`Для хранения растрового изображения размером ${W} х ${H} пикселей отвели ${fmt(mem)} ${unit==="Кбайт"?"Кбайт":"байтов"} памяти. Каково максимально возможное число цветов в палитре изображения?`,
+      given:[`k = ${W} × ${H} пикселей`,`I = ${fmt(mem)} ${unit}`],find:"N — максимальное число цветов в палитре.",
+      steps:[`Перевести I в биты: I = ${fmt(bits)} бит`,`Найти k = ${W} · ${H} = ${fmt(W*H)} пикселей`,`Найти i = I : k = ${fmt(bits)} : ${fmt(W*H)} = ${i} бит`,`Найти N = 2^${i} = ${fmt(N)}`],
+      answerParts:[fmt(N),N===2?"цвета":"цветов"],answerCanon:N+" цвет",
+      solution:[`I = ${fmt(bits)} бит; k = ${fmt(W*H)}.`,`i = ${i} бит.`,`N = 2^${i} = ${fmt(N)}.`,`Ответ: ${fmt(N)}.`]};
+  }
+  return null;
+},
+function T5(wide){ // во сколько раз уменьшится объём
+  for(let t=0;t<60;t++){
+    const i1=rnd(2,wide?24:16),i2=rnd(1,i1-1);
+    if(i1%i2!==0)continue;
+    const N1=Math.pow(2,i1),N2=Math.pow(2,i2),r=i1/i2;
+    return {src:"Сгенерировано · шаблон T5",
+      cond:`В процессе преобразования растрового изображения количество цветов в палитре уменьшилось с ${fmt(N1)} до ${fmt(N2)}. Во сколько раз уменьшился информационный объём изображения?`,
+      given:[`N₁ = ${fmt(N1)} цветов`,`N₂ = ${fmt(N2)} цветов`],find:"отношение I₁ : I₂.",
+      steps:[`Найти i₁: ${fmt(N1)} = 2^${i1}, i₁ = ${i1} бит`,`Найти i₂: ${fmt(N2)} = 2^${i2}, i₂ = ${i2} бит`,"Объём пропорционален глубине цвета при том же числе пикселей",`Найти I₁ : I₂ = ${i1} : ${i2} = ${r}`],
+      answerParts:["в "+r,r===2||r===3||r===4?"раза":"раз"],answerCanon:"в "+r+" раз",
+      solution:[`i₁ = ${i1}, i₂ = ${i2}.`,`I₁ : I₂ = ${i1} : ${i2} = ${r}.`,`Ответ: в ${r} раз${r>=5?"":""}.`]};
+  }
+  return null;
+},
+function T6(wide){ // k = I·8 / i
+  for(let t=0;t<60;t++){
+    const i=pick([2,4,8,16,24]),K=pick(wide?[100,120,200,256,400,512,600,1000,1024,2400,4096,800,1600,300,1500]:[100,200,256,512,1000,2400,4096]);
+    const bits=K*i;if(bits%8!==0)continue;
+    const B=bits/8,N=Math.pow(2,i);
+    return {src:"Сгенерировано · шаблон T6",
+      cond:`Рисунок с палитрой из ${fmt(N)} цветов имеет информационный объём ${fmt(B)} байтов. Из скольких точек он состоит?`,
+      given:[`N = ${fmt(N)} цветов`,`I = ${fmt(B)} байт`],find:"k — количество точек (пикселей).",
+      steps:[`Найти i: ${fmt(N)} = 2^${i}, i = ${i} бит`,`Перевести I в биты: ${fmt(B)} · 8 = ${fmt(bits)} бит`,`Найти k = I : i = ${fmt(bits)} : ${i}`,`Получить k = ${fmt(K)} точек`],
+      answerParts:[fmt(K),"точек"],answerCanon:K+" точек",
+      solution:[`i = ${i} бит.`,`I = ${fmt(bits)} бит.`,`k = ${fmt(bits)} : ${i} = ${fmt(K)}.`,`Ответ: ${fmt(K)} точек.`]};
+  }
+  return null;
+}];
+
+/* ======================= ЛИШНИЕ ШАГИ (правдоподобные, под тип задачи) ======================= */
+function wrongStepsFor(t){
+  const c=t.cond.toLowerCase();
+  let pool=[];
+  if(/во сколько раз|уменьшил|изменился объем|как при этом изменился/.test(c)){
+    pool=[
+      "Найти отношение количеств цветов N₁ : N₂ — оно равно отношению объёмов",
+      "Вычесть из большего объёма меньший и записать разность как ответ",
+      "Разделить i₁ на i₂ и дополнительно умножить результат на 8",
+      "Сложить глубины цвета i₁ и i₂ и разделить сумму на 2"
+    ];
+  }else if(/сколько точек|из скольких точек|какого размера изображение/.test(c)){
+    pool=[
+      "Умножить объём в байтах на глубину цвета i",
+      "Разделить объём в байтах на 8 и записать результат как число точек",
+      "Найти k = I · i вместо k = I : i",
+      "Перевести объём в Кбайты и принять это число за количество точек"
+    ];
+  }else if(/максимально возможное число цветов|максимальное возможное количество цветов|найди максимально/.test(c)){
+    pool=[
+      "Принять число байтов, отведённых на пиксель, за число цветов палитры",
+      "Умножить i на число пикселей k и записать результат как N",
+      "Округлить i вверх до ближайшего чётного числа перед вычислением N",
+      "Найти N = i² вместо N = 2^i"
+    ];
+  }else if(/глубину цвета|сколько битов|битов памяти достаточно|битов понадобится/.test(c)){
+    pool=[
+      "Разделить количество цветов N на 8 и записать результат в битах",
+      "Принять само число цветов N за глубину цвета в битах",
+      "Умножить показатель степени двойки на 8 для перевода в биты",
+      "Найти i = N : 2 вместо поиска показателя степени двойки"
+    ];
+  }else if(/страниц/.test(c)){
+    pool=[
+      "Округлить частное вверх до целого числа страниц",
+      "Умножить объём видеопамяти на объём одной страницы",
+      "Разделить объём видеопамяти сразу на число пикселей, минуя глубину цвета",
+      "Перевести объём страницы в Мбайты и вычесть его из объёма памяти"
+    ];
+  }else if(/достаточно ли/.test(c)){
+    pool=[
+      "Сравнить объём кадра в битах напрямую с объёмом памяти в Кбайтах",
+      "Умножить объём кадра на 8 перед сравнением с памятью",
+      "Сравнить количество цветов палитры с объёмом видеопамяти",
+      "Сложить объём кадра и объём памяти и сравнить сумму с нулём"
+    ];
+  }else if(/часть экрана|какую часть/.test(c)){
+    pool=[
+      "Разделить объём экрана на объём изображения вместо обратного отношения",
+      "Вычесть объём изображения из объёма экрана и записать разность",
+      "Сравнить число пикселей изображения с числом цветов палитры",
+      "Умножить отношение объёмов на глубину цвета 32"
+    ];
+  }else if(/сканир|dpi|фотографии/.test(c)){
+    pool=[
+      "Умножить размеры в сантиметрах на разрешение, не переводя в дюймы",
+      "Разделить полученный объём на 2,54 для перевода в мегабайты",
+      "Возвести глубину цвета в квадрат вместе с разрешением",
+      "Округлить число пикселей вниз до целых тысяч перед умножением на i"
+    ];
+  }else if(/сравните/.test(c)){
+    pool=[
+      "Сравнить только количества цветов, не учитывая размеры изображений",
+      "Сложить объёмы обоих изображений и записать сумму как ответ",
+      "Сравнить произведения ширины на высоту без учёта глубины цвета",
+      "Вычесть из числа пикселей первого изображения число пикселей второго"
+    ];
+  }else{ // объём изображения / видеопамяти / данных за секунду
+    pool=[
+      "Умножить объём в битах на 8 вместо деления при переводе в байты",
+      "Разделить объём в байтах на 1000 вместо 1024 при переводе в Кбайты",
+      "Сложить ширину и высоту изображения вместо их умножения",
+      "Умножить число цветов палитры на число пикселей и записать как объём"
+    ];
+  }
+  const used=new Set(t.steps.map(normText));
+  const filtered=pool.filter(s=>!used.has(normText(s)));
+  return shuffle(filtered).slice(0,2); // ДВА лишних правдоподобных шага
+}
+
+/* ======================= ЛИШНИЕ ФРАГМЕНТЫ ОТВЕТА (правдоподобные) ======================= */
+function distractorsFor(t){
+  const used=new Set(t.answerParts.map(normText));
+  const out=[],seen=new Set();
+  const push=v=>{
+    v=String(v);const n=normText(v);
+    if(!n||used.has(n)||seen.has(n))return;
+    // не добавлять короткий кусок, который целиком входит в эталонный фрагмент
+    if(t.answerParts.some(p=>normText(p).includes(n)&&n.length<4))return;
+    seen.add(n);out.push(v);
+  };
+  const UNITS=["бит","байт","Кбайт","Мбайт","Гбайт"];
+  const COUNT=["цветов","точек","пикселей","страниц","бита","байта","цвета"];
+  // 1) близкие числа к каждому числовому фрагменту эталона
+  t.answerParts.forEach(part=>{
+    const clean=part.replace(/\s/g,"").replace(",",".");
+    if(/^\d+(\.\d+)?$/.test(clean)){
+      const v=parseFloat(clean);
+      const isInt=Number.isInteger(v);
+      const near=[];
+      if(isInt){
+        near.push(v*2,v/2,v+1,v-1,v*8,v/8,v+2,v*4);
+        if(Number.isInteger(Math.log2(v))&&v>=2){near.push(v*2,v/2);}
+      }else{
+        near.push(v*2,v/2,Math.round(v),v+0.5,v-0.25,v*4);
+      }
+      shuffle(near).forEach(x=>{
+        if(out.length>=3)return;
+        if(x>0&&(Number.isInteger(x)||Math.abs(x-Math.round(x*100)/100)<1e-9)){
+          push(fmt(Number.isInteger(x)?x:dec(Math.round(x*100)/100)));
+        }
+      });
+    }else if(/^в \d+$/.test(part)){
+      const r=parseInt(part.slice(2),10);
+      shuffle([r*2,r/2,r+1,r-1,r+2]).forEach(x=>{if(out.length<3&&x>0&&Number.isInteger(x))push("в "+x);});
+    }else if(/^\d+\/\d+$/.test(part)){
+      shuffle(["1/2","1/4","2/3","3/4","1/8","2/5"]).forEach(push);
+    }
+  });
+  // 2) похожие единицы измерения и счётные слова
+  const unitLike=t.answerParts.filter(p=>UNITS.concat(COUNT,["раз","раза","экрана","Мб"]).includes(p));
+  if(unitLike.length){
+    const kind=UNITS.includes(unitLike[0])||unitLike[0]==="Мб"?UNITS.concat(["Мб"]):COUNT.concat(["раз","раза"]);
+    shuffle(kind).forEach(u=>{if(out.length<5)push(u);});
+  }
+  // 3) правдоподобные «числовые ловушки» темы, если ещё мало
+  if(out.length<4){
+    shuffle(["16","32","64","128","256","512","1024","2048","8","4","2","3","6"]).forEach(v=>{if(out.length<4)push(v);});
+  }
+  // 4) текстовые ловушки для качественных ответов
+  if(t.answerParts.some(p=>/уменьшится|увеличится|больше|меньше|достаточно|да|нет/i.test(p))){
+    shuffle(["увеличится","недостаточно","нет","второе больше первого","в 16 раз","в 2 раза"]).forEach(v=>{if(out.length<6)push(v);});
+  }
+  return shuffle(out).slice(0,5);
+}
+
+/* ======================= СБОРКА ВАРИАНТА (дедупликация) ======================= */
+function buildVariant(){
+  const sigs=new Set(),tasks=[];
+  for(const f of shuffle(FIXED)){
+    const s=makeSignature(f);
+    if(sigs.has(s))continue;
+    sigs.add(s);tasks.push(Object.assign({},f,{fixed:true}));
+    if(tasks.length>=50)break;
+  }
+  let slot=tasks.length,guard=0;
+  while(tasks.length<50&&guard<500){
+    guard++;
+    let made=null,attempts=0;
+    const order=shuffle(GEN.map((_,i)=>i));
+    while(attempts<20&&!made){
+      attempts++;
+      const wide=attempts>10; // расширение диапазонов при исчерпании попыток
+      const g=GEN[order[attempts%order.length]](wide);
+      if(!g)continue;
+      const s=makeSignature(g);
+      if(sigs.has(s))continue;
+      sigs.add(s);made=g;
+    }
+    if(made){made.fixed=false;tasks.push(made);slot++;}
+    else break;
+  }
+  return shuffle(tasks).slice(0,50);
+}
+
+/* ======================= СОСТОЯНИЕ / СОХРАНЕНИЕ ======================= */
+const LS_KEY="rasterTrainer.v1";
+let variant=[],cur=0,startedAt=Date.now(),elapsedBase=0;
+let progress={}; // id -> {status:'ok'|'bad', answer:[...], stepsOrder:[...]}
+function taskKey(t){return makeSignature(t);}
+function save(){
+  try{
+    localStorage.setItem(LS_KEY,JSON.stringify({
+      variant:variant,cur:cur,progress:progress,
+      elapsed:elapsedBase+(Date.now()-startedAt)
+    }));
+  }catch(e){}
+}
+function load(){
+  try{
+    const raw=localStorage.getItem(LS_KEY);
+    if(!raw)return false;
+    const d=JSON.parse(raw);
+    if(!d||!Array.isArray(d.variant)||d.variant.length!==50)return false;
+    variant=d.variant;cur=Math.min(Math.max(0,d.cur|0),49);
+    progress=d.progress||{};elapsedBase=d.elapsed||0;
+    return true;
+  }catch(e){return false;}
+}
+function newVariant(){
+  variant=buildVariant();progress={};cur=0;elapsedBase=0;startedAt=Date.now();
+  save();renderAll();$("summary").classList.remove("open");$("taskCard").style.display="";
+  window.scrollTo({top:0});
+}
+function resetProgress(){
+  progress={};elapsedBase=0;startedAt=Date.now();
+  save();renderAll();$("summary").classList.remove("open");$("taskCard").style.display="";
+}
+
+/* ======================= РЕНДЕР СПИСКА / НАВИГАЦИИ ======================= */
+function shortLabel(t){
+  let s=t.cond.replace(/\s+/g," ").trim();
+  return s.length>52?s.slice(0,52)+"…":s;
+}
+function statusOf(t){const p=progress[taskKey(t)];return p?p.status:null;}
+function renderSelect(){
+  const sel=$("taskSelect");sel.innerHTML="";
+  variant.forEach((t,idx)=>{
+    const st=statusOf(t);
+    const mark=st==="ok"?"верно":st==="bad"?"ошибка":"не решено";
+    const o=document.createElement("option");
+    o.value=idx;o.textContent=`№${idx+1} · ${shortLabel(t)} · ${mark}`;
+    sel.appendChild(o);
+  });
+  sel.value=cur;
+  $("counter").textContent=(cur+1)+" из 50";
+  const done=variant.filter(t=>statusOf(t)).length;
+  $("progressBar").style.width=(done/50*100)+"%";
+  $("prevBtn").disabled=cur===0;
+  $("nextBtn").disabled=cur===49;
+  $("nextBtn2").disabled=cur===49;
+}
+function goNext(){if(cur<49){cur++;save();renderTask();renderSelect();window.scrollTo({top:0,behavior:"smooth"});}}
+$("taskSelect").addEventListener("change",e=>{cur=parseInt(e.target.value,10)||0;save();renderTask();renderSelect();});
+$("prevBtn").addEventListener("click",()=>{if(cur>0){cur--;save();renderTask();renderSelect();}});
+$("nextBtn").addEventListener("click",goNext);
+$("nextBtn2").addEventListener("click",goNext);
+$("newVarBtn").addEventListener("click",newVariant);
+$("newVarBtn2").addEventListener("click",newVariant);
+$("resetBtn").addEventListener("click",resetProgress);
+$("resetBtn2").addEventListener("click",resetProgress);
+
+/* ======================= DRAG & DROP (Pointer Events) + TAP-TAP ======================= */
+let selectedTile=null;
+function clearSelection(){if(selectedTile){selectedTile.classList.remove("selected");selectedTile=null;}}
+function attachDnD(tile,onDrop){
+  tile.addEventListener("pointerdown",ev=>{
+    if(tile.classList.contains("locked"))return;
+    if(ev.button!==undefined&&ev.button!==0)return;
+    const startX=ev.clientX,startY=ev.clientY;
+    let dragging=false,ghost=null;
+    const move=e=>{
+      const dx=e.clientX-startX,dy=e.clientY-startY;
+      if(!dragging&&Math.hypot(dx,dy)>8){
+        dragging=true;tile.classList.add("dragging");
+        ghost=tile.cloneNode(true);ghost.classList.add("ghost");ghost.classList.remove("dragging");
+        ghost.style.width=tile.offsetWidth+"px";
+        document.body.appendChild(ghost);
+        try{tile.setPointerCapture(ev.pointerId);}catch(err){}
+      }
+      if(dragging&&ghost){
+        ghost.style.left=e.clientX+"px";ghost.style.top=e.clientY+"px";
+        document.querySelectorAll(".dropzone").forEach(z=>z.classList.remove("over"));
+        const el=document.elementFromPoint(e.clientX,e.clientY);
+        const z=el&&el.closest?el.closest(".dropzone"):null;
+        if(z)z.classList.add("over");
+        e.preventDefault();
+      }
+    };
+    const up=e=>{
+      tile.removeEventListener("pointermove",move);
+      tile.removeEventListener("pointerup",up);
+      tile.removeEventListener("pointercancel",up);
+      document.querySelectorAll(".dropzone").forEach(z=>z.classList.remove("over"));
+      if(dragging){
+        if(ghost)ghost.remove();
+        tile.classList.remove("dragging");
+        const el=document.elementFromPoint(e.clientX,e.clientY);
+        const z=el&&el.closest?el.closest(".dropzone"):null;
+        if(z){onDrop(tile,z);} // бросок мимо цели — элемент остаётся на месте
+        clearSelection();
+      }else{
+        // режим «нажать источник → нажать цель»
+        if(selectedTile===tile){clearSelection();}
+        else{clearSelection();selectedTile=tile;tile.classList.add("selected");}
+      }
+    };
+    tile.addEventListener("pointermove",move);
+    tile.addEventListener("pointerup",up);
+    tile.addEventListener("pointercancel",up);
+  });
+  tile.addEventListener("keydown",e=>{
+    if(e.key==="Enter"||e.key===" "){
+      e.preventDefault();e.stopPropagation();
+      if(selectedTile===tile)clearSelection();
+      else{clearSelection();selectedTile=tile;tile.classList.add("selected");}
+    }
+  });
+}
+function zoneTap(zone,handler){
+  zone.addEventListener("click",e=>{
+    if(e.target.closest(".tile"))return;
+    if(selectedTile){const t=selectedTile;clearSelection();handler(t,zone);}
+  });
+  zone.addEventListener("keydown",e=>{
+    if((e.key==="Enter"||e.key===" ")&&selectedTile&&e.target===zone){
+      e.preventDefault();e.stopPropagation();
+      const t=selectedTile;clearSelection();handler(t,zone);
+    }
+  });
+}
+
+/* ======================= РЕНДЕР ЗАДАНИЯ ======================= */
+let curStepsOrder=[],curAnswer=[],stepsShuffled=[],answerShuffled=[];
+function renderTask(){
+  const t=variant[cur];if(!t)return;
+  const key=taskKey(t),p=progress[key];
+  $("taskNum").textContent="Задание №"+(cur+1);
+  $("taskBadge").textContent=t.src;
+  const st=p?p.status:null;
+  $("taskStatus").textContent=st==="ok"?"✓ верно":st==="bad"?"✗ ошибка":"не решено";
+  $("taskStatus").style.color=st==="ok"?"var(--ok)":st==="bad"?"var(--bad)":"var(--muted)";
+  $("condition").textContent=t.cond;
+  const gl=$("givenList");gl.innerHTML="";
+  t.given.forEach(g=>{const li=document.createElement("li");li.textContent=g;gl.appendChild(li);});
+  $("findWhat").textContent=t.find;
+  $("hintContent").classList.remove("open");
+  $("hintBtn").setAttribute("aria-expanded","false");
+  $("hintContent").innerHTML='<div class="f">I = k · i &nbsp;&nbsp;и&nbsp;&nbsp; N = 2<sup>i</sup></div>'+
+    '<div>k — число пикселей (ширина × высота); i — глубина цвета (бит); N — число цветов; I — объём (бит).</div>'+
+    '<div>1 байт = 8 бит; 1 Кбайт = 1024 байт; 1 Мбайт = 1024 Кбайт.</div>'+
+    '<div style="margin-top:6px">'+t.steps[0].replace(/[0-9]/g,"•")+' … (наводящий первый шаг; числа скрыты)</div>';
+  // шаги: правильные + ДВА лишних правдоподобных
+  const savedOrder=p&&p.stepsOrder?p.stepsOrder:null;
+  stepsShuffled=p&&p.stepsShuffled?p.stepsShuffled:shuffle(t.steps.concat(wrongStepsFor(t)));
+  curStepsOrder=savedOrder?savedOrder.slice():new Array(t.steps.length).fill(null);
+  // ответ: эталонные фрагменты + правдоподобные лишние
+  answerShuffled=p&&p.answerShuffled?p.answerShuffled:shuffle(t.answerParts.concat(distractorsFor(t)));
+  curAnswer=p&&p.answer?p.answer.slice():[];
+  renderSteps(t,!!p);renderAnswer(t,!!p);
+  const v=$("verdict"),sol=$("solution");
+  if(p){
+    v.className="verdict "+(p.status==="ok"?"ok":"bad");
+    v.textContent=p.status==="ok"?"Верно! Отличная работа.":"Неверно. Посмотри разбор ниже и попробуй понять ошибку.";
+    sol.classList.add("open");
+    sol.innerHTML=solutionHTML(t,p);
+  }else{v.className="verdict";v.textContent="";sol.classList.remove("open");sol.innerHTML="";}
+  $("checkBtn").disabled=false;
+}
+function solutionHTML(t,p){
+  let h="<b>Пошаговый разбор:</b><ol>";
+  t.solution.forEach(s=>h+="<li>"+escapeHtml(s)+"</li>");
+  h+="</ol><div class='etalon'>Эталонный ответ: "+escapeHtml(t.answerParts.join(" "))+"</div>";
+  if(p&&p.status==="bad"){h+="<div style='margin-top:6px'>Твой ответ: "+escapeHtml((p.answer||[]).join(" ")||"— пусто —")+"</div>";}
+  h+="<div style='margin-top:8px;color:var(--muted);font-size:.85em'>Правильный порядок шагов: "+t.steps.map((s,i)=>(i+1)+") "+escapeHtml(s)).join("; ")+".</div>";
+  return h;
+}
+function escapeHtml(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+function renderSteps(t,locked){
+  const pool=$("stepsPool"),slots=$("stepsSlots");
+  pool.innerHTML="";slots.innerHTML="";
+  const placed=new Set(curStepsOrder.filter(x=>x!==null));
+  const mkTile=(text,inSlot,slotIdx)=>{
+    const b=document.createElement("button");
+    b.type="button";b.className="tile"+(locked?" locked":"");
+    b.textContent=text;b.dataset.text=text;
+    if(!locked){
+      attachDnD(b,(tile,zone)=>{
+        const kind=zone.dataset.kind;
+        if(kind==="step"){
+          const idx=parseInt(zone.dataset.idx,10);
+          placeStep(tile.dataset.text,idx,t);
+        }else if(kind==="steppool"){
+          removeStep(tile.dataset.text,t);
+        }
+      });
+    }
+    return b;
+  };
+  stepsShuffled.forEach(s=>{if(!placed.has(s))pool.appendChild(mkTile(s,false));});
+  if(pool.children.length===0){const ph=document.createElement("span");ph.className="placeholder";ph.textContent="Все шаги распределены";pool.appendChild(ph);}
+  pool.dataset.kind="steppool";pool.classList.add("dropzone");
+  zoneTap(pool,(tile)=>removeStep(tile.dataset.text,t));
+  t.steps.forEach((_,i)=>{
+    const row=document.createElement("div");row.className="stepslot";
+    const n=document.createElement("span");n.className="n";n.textContent=(i+1)+")";
+    const z=document.createElement("div");z.className="dropzone";z.dataset.kind="step";z.dataset.idx=i;
+    z.tabIndex=0;z.setAttribute("role","button");z.setAttribute("aria-label","Место для шага "+(i+1));
+    if(curStepsOrder[i]!==null){z.appendChild(mkTile(curStepsOrder[i],true,i));}
+    else{const ph=document.createElement("span");ph.className="placeholder";ph.textContent="перетащи или нажми сюда выбранный шаг";z.appendChild(ph);}
+    zoneTap(z,(tile,zone)=>placeStep(tile.dataset.text,parseInt(zone.dataset.idx,10),t));
+    row.appendChild(n);row.appendChild(z);slots.appendChild(row);
+  });
+}
+function placeStep(text,idx,t){
+  if(progress[taskKey(t)])return;
+  const from=curStepsOrder.indexOf(text);
+  const occupant=curStepsOrder[idx];
+  if(from>=0)curStepsOrder[from]=occupant!==text?occupant:null;
+  curStepsOrder[idx]=text;
+  renderSteps(t,false);
+}
+function removeStep(text,t){
+  if(progress[taskKey(t)])return;
+  const from=curStepsOrder.indexOf(text);
+  if(from>=0){curStepsOrder[from]=null;renderSteps(t,false);}
+}
+function renderAnswer(t,locked){
+  const pool=$("answerPool"),zone=$("answerZone");
+  pool.innerHTML="";zone.innerHTML="";
+  const counts={};curAnswer.forEach(a=>counts[a]=(counts[a]||0)+1);
+  const seen={};
+  answerShuffled.forEach(part=>{
+    seen[part]=(seen[part]||0)+1;
+    if((counts[part]||0)>=seen[part])return;
+    const b=document.createElement("button");
+    b.type="button";b.className="tile"+(locked?" locked":"");b.textContent=part;b.dataset.text=part;
+    if(!locked){
+      attachDnD(b,(tile,z)=>{if(z.dataset.kind==="answer")addAnswerPart(tile.dataset.text,t);});
+      b.addEventListener("dblclick",e=>e.preventDefault());
+    }
+    pool.appendChild(b);
+  });
+  pool.dataset.kind="answerpool";pool.classList.add("dropzone");
+  zone.dataset.kind="answer";
+  zoneTap(zone,(tile)=>addAnswerPart(tile.dataset.text,t));
+  // одиночное нажатие на фрагмент ответа сразу кладёт его в поле ответа (механика «нажатием»)
+  pool.querySelectorAll(".tile").forEach(b=>{
+    b.addEventListener("click",e=>{
+      if(progress[taskKey(t)])return;
+      if(selectedTile===b){clearSelection();}
+      addAnswerPart(b.dataset.text,t);
+    });
+  });
+  if(curAnswer.length===0){const ph=document.createElement("span");ph.className="placeholder";ph.textContent="Поле ответа: нажимай на фрагменты выше или перетаскивай их сюда";zone.appendChild(ph);}
+  else curAnswer.forEach((part,i)=>{
+    const b=document.createElement("button");
+    b.type="button";b.className="tile"+(locked?" locked":"");
+    b.innerHTML='<span class="ord">'+(i+1)+'</span>'+escapeHtml(part);
+    b.dataset.text=part;
+    if(!locked){
+      b.addEventListener("click",()=>{curAnswer.splice(i,1);renderAnswer(t,false);});
+      attachDnD(b,(tile,z)=>{if(z.dataset.kind==="answerpool"){const j=curAnswer.indexOf(tile.dataset.text);if(j>=0){curAnswer.splice(j,1);renderAnswer(t,false);}}});
+    }
+    zone.appendChild(b);
+  });
+}
+function addAnswerPart(part,t){
+  if(progress[taskKey(t)])return;
+  const total=answerShuffled.filter(x=>x===part).length;
+  const used=curAnswer.filter(x=>x===part).length;
+  if(used>=total)return;
+  curAnswer.push(part);renderAnswer(t,false);
+}
+$("eraseBtn").addEventListener("click",()=>{const t=variant[cur];if(progress[taskKey(t)])return;curAnswer.pop();renderAnswer(t,false);});
+$("clearBtn").addEventListener("click",()=>{const t=variant[cur];if(progress[taskKey(t)])return;curAnswer=[];renderAnswer(t,false);});
+$("hintBtn").addEventListener("click",()=>{
+  const c=$("hintContent"),open=c.classList.toggle("open");
+  $("hintBtn").setAttribute("aria-expanded",open?"true":"false");
+});
+
+/* ======================= ПРОВЕРКА ======================= */
+function checkAnswer(){
+  const t=variant[cur];if(!t)return;
+  const key=taskKey(t);
+  if(progress[key]){ // уже решено — просто показать разбор
+    $("solution").classList.add("open");return;
+  }
+  if(curAnswer.length===0){
+    const v=$("verdict");v.className="verdict bad";v.textContent="Сначала собери ответ из фрагментов в поле ответа.";
+    beep("bad");return;
+  }
+  let ok;
+  if(t.unordered){
+    const a=curAnswer.map(normText).sort().join("|");
+    const b=t.answerParts.map(normText).sort().join("|");
+    ok=a===b;
+  }else{
+    ok=normText(curAnswer.join(" "))===normText(t.answerParts.join(" "));
+  }
+  const stepsOk=curStepsOrder.every((s,i)=>s===t.steps[i]);
+  progress[key]={status:ok?"ok":"bad",answer:curAnswer.slice(),stepsOrder:curStepsOrder.slice(),
+    stepsShuffled:stepsShuffled.slice(),answerShuffled:answerShuffled.slice(),stepsOk:stepsOk};
+  save();
+  const v=$("verdict");
+  v.className="verdict "+(ok?"ok":"bad");
+  v.textContent=ok?("Верно!"+(stepsOk?" Шаги алгоритма тоже расставлены правильно.":" Ответ верный, но проверь порядок шагов в разборе.")):"Неверно. Изучи пошаговый разбор ниже.";
+  beep(ok?"ok":"bad");
+  const sol=$("solution");sol.classList.add("open");sol.innerHTML=solutionHTML(t,progress[key]);
+  renderTask();renderSelect();
+  const done=variant.filter(x=>statusOf(x)).length;
+  if(done===50){beep("final");setTimeout(showSummary,600);}
+}
+$("checkBtn").addEventListener("click",checkAnswer);
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){$("hintContent").classList.remove("open");$("hintBtn").setAttribute("aria-expanded","false");clearSelection();}
+  if(e.key==="Enter"){
+    const tag=(e.target.tagName||"").toLowerCase();
+    if(tag==="select"||tag==="button"||tag==="a")return; // нативное поведение
+    if(e.target.classList&&e.target.classList.contains("dropzone"))return;
+    e.preventDefault();checkAnswer();
+  }
+});
+
+/* ======================= ИТОГИ ======================= */
+function showSummary(){
+  const okc=variant.filter(t=>statusOf(t)==="ok").length;
+  const done=variant.filter(t=>statusOf(t)).length;
+  $("finalScore").textContent=okc+" из 50";
+  const ms=elapsedBase+(Date.now()-startedAt);
+  const m=Math.floor(ms/60000),s=Math.floor(ms/1000)%60;
+  $("finalTime").textContent="Решено заданий: "+done+" из 50. Затраченное время: "+m+" мин "+s+" с.";
+  const ul=$("errList");ul.innerHTML="";
+  let errs=0;
+  variant.forEach((t,i)=>{
+    if(statusOf(t)!=="bad")return;
+    errs++;
+    const li=document.createElement("li");
+    const b=document.createElement("button");
+    b.innerHTML="<b>№"+(i+1)+"</b> · "+escapeHtml(shortLabel(t))+
+      "<div class='sol'>Твой ответ: "+escapeHtml((progress[taskKey(t)].answer||[]).join(" ")||"—")+
+      " · Эталон: "+escapeHtml(t.answerParts.join(" "))+"<br>"+escapeHtml(t.solution[t.solution.length-1])+"</div>";
+    b.addEventListener("click",()=>{cur=i;save();renderTask();renderSelect();$("summary").classList.remove("open");$("taskCard").style.display="";window.scrollTo({top:0});});
+    li.appendChild(b);ul.appendChild(li);
+  });
+  if(errs===0){const li=document.createElement("li");li.textContent=done===50?"Ошибок нет — блестяще!":"Ошибок пока нет. Реши остальные задания!";ul.appendChild(li);}
+  $("summary").classList.add("open");
+  $("summary").scrollIntoView({behavior:"smooth"});
+}
+$("showSummaryBtn").addEventListener("click",showSummary);
+
+/* ======================= СТАРТ ======================= */
+function renderAll(){renderSelect();renderTask();}
+if(!load()){variant=buildVariant();save();}
+startedAt=Date.now();
+renderAll();
+window.addEventListener("beforeunload",save);
+</script>
+</body>
+</html>
