@@ -1,232 +1,944 @@
 <!DOCTYPE html>
-<html lang="ru">
+<!--
+  trainer.html · Информатика, 7 класс · Тема №5 «Решение логических задач табличным способом» (ориентир: ВПР-7).
+  МЕХАНИКА: сверху список заданий (select, 59 пунктов со статусами), ниже условие, «что надо определить», главные данные
+  и вопрос выделены; ниже интерактивная таблица: ячейки растянуты по ширине своего столбца; нажатие на ячейку →
+  всплывающее окно с крупной зелёной галочкой и красным крестиком; при установке галочки пустые ячейки строки/столбца
+  мягко (с анимацией) заполняются крестиками (для таблиц «по 2 соответствия» — после достижения квоты строки/столбца);
+  при заполнении всех таблиц — автопроверка ПРЯМО ПО ТАБЛИЦЕ (кнопка «Проверить» и Enter тоже проверяют таблицу).
+  Ответ в привычной форме ВПР автоматически собирается из заполненной таблицы; плитки цифр («Стереть», «Очистить»),
+  перетаскивание плитки в клетку ответа (Pointer Events, подсветка цели, возврат при промахе, альтернатива
+  «нажать плитку → нажать клетку»), кнопки-карточки и числовой ввод (input inputmode="numeric" + экранная клавиатура
+  0–9, ⌫ под спойлером: свёрнута по умолчанию, раскрытие кликом или Enter, состояние помнится на время варианта,
+  плавное раскрытие без скачка вёрстки) остаются для ручной записи ответа.
+  ПРОВЕРЯЕМЫЕ УМЕНИЯ: перевод текста в таблицу «объекты × свойства», исключение невозможных вариантов, поиск ключевого
+  утверждения, вывод по принципу «одно соответствие на строку/столбец», запись ответа в привычной форме ВПР.
+  ИСТОЧНИКИ (условия взяты дословно): 1) inf7-vpr.sdamgia.ru/test?category_id=6&filter=all — все 37 задач
+  (№221–245, 443, 694, 709, 739, 777, 1183, 1198, 1213, 1243, 1258, 1273, 1288). Примечания: №235 — концовка фразы в
+  каталоге обрезана, восстановлена по типовому шаблону; №241 — в тексте решения каталога опечатка («231»), эталон 213
+  подтверждён перебором. 2) interneturok.ru (урок «Решение логических задач. Практика. Ч.2», задача №5 про музыкантов) — 1 задача.
+  3) mmmf.msu.ru/archive/20052006/z5/11.html — все 10 задач; в №7 (шарики) таблица подсчётов на странице является рисунком и
+  недоступна → числовые данные СГЕНЕРИРОВАНЫ (задание помечено «сгенерировано»); эталон №5 (поезд) сверен с каноническим
+  решением классической задачи (Алексеев — поэт, Борисов — астроном, Константинов — прозаик, Дмитриев — драматург).
+  4) ped-kopilka.ru (блог Е. В. Соловьёвой «Решение логических задач табличным способом») — первые 11 задач по порядку страницы
+  (5 разборных + 4 самостоятельных + «задача Эйнштейна» + задача учеников про дискотеку).
+  Итого ровно 59 заданий из источников. ПРОЦЕДУРНЫЙ БАНК: 4 шаблона с диапазонами параметров и формулой эталона
+  (имена-фамилии 3×3, предметы 4×4, гонки, шарики); используются для свежей генерации данных задачи о шариках при каждом
+  «Новом варианте» и как резерв добора до 59 при отбраковке дубликатов. Сгенерированные задания помечены в интерфейсе.
+  ДЕДУПЛИКАЦИЯ: makeSignature = нормализованное условие (без регистра, разметки и лишних пробелов) + все числа + эталон;
+  Set сигнатур в buildVariant; повтор отбрасывается и добирается новый; лимит 20 попыток на задание, затем диапазоны расширяются.
+  Все эталоны пересчитаны (перебор перестановок / логический вывод) до выдачи кода. Сравнение эталона — с заполненной
+  таблицей; числовой ответ — численно, текст — без регистра и лишних пробелов, последовательность — по порядку.
+  РЕЖИМЫ: «Тренировка» по умолчанию; подсказки (наводящая мысль) и разбор после ответа включены; таймер отключён
+  (время фиксируется скрыто для итогов); прогресс в localStorage + кнопка сброса; порядок заданий случайный при каждом
+  запуске и по кнопке «Новый вариант»; звуки вкл., один переключатель сверху.
+  ПАЛИТРА: светлая — фон #fdf6e3 («Кремовый»), акцент #0ea5e9; тёмная — фон #1b1440 («Индиго»), акцент #22d3ee;
+  поверхности и границы — сдвигом оттенка от фона; контраст текста ≥4.5:1; тема атрибутом data-theme на <html> без мигания.
+-->
+<html lang="ru" data-theme="light">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Логические задачи — ВПР 7 класс (Задание 5, 37 задач)</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Информатика 7 · №5 · Логические задачи табличным способом</title>
+<script>
+(function(){try{var t=localStorage.getItem('logtab7.theme');if(t!=='dark'&&t!=='light'){t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','light');}})();
+</script>
 <style>
-  :root {
-    --primary: #2563eb; --primary-dark: #1e40af;
-    --success: #16a34a; --error: #dc2626;
-    --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
-    --text: #1e293b; --muted: #64748b; --highlight: #fef9c3;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 16px; }
-  .container { max-width: 900px; margin: 0 auto; }
-  header { text-align: center; margin-bottom: 20px; padding: 18px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border-radius: 14px; }
-  header h1 { font-size: 1.4rem; margin-bottom: 4px; }
-  header p { opacity: 0.9; font-size: 0.85rem; }
-  .nav-numbers { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 16px 0; padding: 12px; background: var(--card); border-radius: 12px; border: 1px solid var(--border); }
-  .nav-numbers button { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border); background: #f8fafc; color: var(--text); font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.15s; }
-  .nav-numbers button:hover { background: #e2e8f0; }
-  .nav-numbers button.active { background: var(--primary); color: white; border-color: var(--primary); }
-  .nav-numbers button.solved { background: #dcfce7; border-color: #86efac; color: var(--success); }
-  .nav-numbers button.solved.active { background: var(--success); color: white; }
-  .task-card { background: var(--card); border-radius: 14px; padding: 22px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
-  .task-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-  .task-number { background: var(--primary); color: white; padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; }
-  .task-title { font-weight: 600; color: var(--muted); font-size: 0.9rem; }
-  .task-condition { background: var(--highlight); border: 2px solid #fde047; border-left: 6px solid #eab308; border-radius: 10px; padding: 16px 18px; margin-bottom: 20px; font-size: 1.05rem; font-weight: 500; color: #422006; line-height: 1.7; }
-  .task-condition .label { display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #a16207; margin-bottom: 6px; }
-  .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-  .col-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
-  .col-box h3 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px dashed var(--border); }
-  .col-box .item { padding: 5px 0; font-size: 1rem; }
-  .col-box .item .key { display: inline-block; min-width: 22px; font-weight: 700; color: var(--primary-dark); }
-  .col-box.surnames .item .key { color: #7c3aed; }
-  .answers h3 { font-size: 0.9rem; color: var(--muted); margin-bottom: 10px; }
-  .answer-row { display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: #f8fafc; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 8px; }
-  .answer-row label { font-weight: 600; min-width: 90px; }
-  .answer-row select { flex: 1; max-width: 280px; padding: 8px 12px; border: 2px solid var(--border); border-radius: 8px; font-size: 0.95rem; background: white; cursor: pointer; }
-  .answer-row select:focus { outline: none; border-color: var(--primary); }
-  .answer-row select.correct { border-color: var(--success); background: #f0fdf4; }
-  .answer-row select.incorrect { border-color: var(--error); background: #fef2f2; }
-  .btn-group { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
-  button { padding: 10px 18px; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-  .btn-check { background: var(--primary); color: white; } .btn-check:hover { background: var(--primary-dark); }
-  .btn-hint { background: #fef3c7; color: #92400e; } .btn-hint:hover { background: #fde68a; }
-  .btn-reset { background: #f1f5f9; color: var(--muted); } .btn-reset:hover { background: #e2e8f0; }
-  .btn-next { background: var(--primary-dark); color: white; margin-left: auto; } .btn-next:hover { background: #172554; } .btn-next:disabled { background: #cbd5e1; cursor: not-allowed; }
-  .result { margin-top: 14px; padding: 12px 16px; border-radius: 8px; font-weight: 600; display: none; animation: fadeIn 0.3s ease; }
-  .result.show { display: block; }
-  .result.success { background: #f0fdf4; color: var(--success); border: 1px solid #bbf7d0; }
-  .result.error { background: #fef2f2; color: var(--error); border: 1px solid #fecaca; }
-  .hint { margin-top: 12px; padding: 12px 16px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; font-size: 0.9rem; color: #92400e; display: none; }
-  .hint.show { display: block; animation: fadeIn 0.3s ease; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
-  .progress-text { text-align: center; font-size: 0.85rem; color: var(--muted); margin-bottom: 12px; }
-  @media (max-width: 600px) { .columns { grid-template-columns: 1fr; } .answer-row { flex-direction: column; align-items: stretch; } .answer-row label { min-width: auto; } .answer-row select { max-width: none; } .btn-next { margin-left: 0; } }
+:root{
+  --bg:#fdf6e3; --surface:#f7edd2; --card:#fffdf4; --border:#e2d4b0; --border2:#cdbd92;
+  --text:#26201a; --muted:#5d5340; --accent:#0ea5e9; --accent-ink:#04222f; --accent-soft:#d9f1fc;
+  --ok:#15803d; --ok-soft:#ddf3e4; --bad:#b91c1c; --bad-soft:#fbe3e3; --warn:#92600a; --warn-soft:#fdf0d3;
+  --cell:#fffdf4; --cell-auto:#f1e8cf; --shadow:0 10px 30px rgba(60,45,10,.18); --focus:#0369a1;
+}
+[data-theme="dark"]{
+  --bg:#1b1440; --surface:#241b52; --card:#2a2060; --border:#3b2f7a; --border2:#4d3f99;
+  --text:#f1ecff; --muted:#c9c0e8; --accent:#22d3ee; --accent-ink:#03242b; --accent-soft:#123a52;
+  --ok:#4ade80; --ok-soft:#123524; --bad:#fca5a5; --bad-soft:#4a1d24; --warn:#fcd34d; --warn-soft:#3d2f14;
+  --cell:#2a2060; --cell-auto:#241b52; --shadow:0 10px 30px rgba(0,0,0,.5); --focus:#7dd3fc;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:system-ui,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);font-size:20px;line-height:1.55;overflow-x:hidden}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:8px}
+header{position:sticky;top:0;z-index:50;background:var(--surface);border-bottom:2px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:12px}
+header h1{font-size:21px;line-height:1.25;flex:1;min-width:0}
+header .sub{display:block;font-size:20px;color:var(--muted);font-weight:400}
+.icobtn{width:52px;height:52px;flex:0 0 52px;border:2px solid var(--border2);border-radius:12px;background:var(--card);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;touch-action:manipulation;text-decoration:none;color:var(--text)}
+.icobtn svg{width:28px;height:28px;fill:currentColor}
+.wrap{max-width:1100px;margin:0 auto;padding:14px 14px 30px}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+#tasksel{flex:1 1 320px;min-width:0;height:56px;font-size:20px;padding:0 12px;border:2px solid var(--border2);border-radius:12px;background:var(--card);color:var(--text)}
+.counter{font-weight:700;white-space:nowrap}
+.pbar{flex:1 1 160px;min-width:120px;height:22px;border:2px solid var(--border2);border-radius:12px;background:var(--surface);overflow:hidden}
+.pfill{height:100%;width:0;background:var(--accent);transition:width .4s}
+.navbtn{height:52px;padding:0 18px;border:2px solid var(--border2);border-radius:12px;background:var(--card);cursor:pointer;font-weight:700;touch-action:manipulation}
+.navbtn:disabled{opacity:.45;cursor:default}
+.card{background:var(--card);border:2px solid var(--border);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}
+.ttitle{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+.ttitle h2{font-size:24px;flex:1 1 auto;min-width:0}
+.badge{font-size:20px;padding:4px 12px;border-radius:999px;border:2px solid var(--border2);background:var(--surface);color:var(--muted);white-space:nowrap}
+.badge.gen{background:var(--warn-soft);color:var(--warn);border-color:var(--warn)}
+.cond{font-size:20px;white-space:pre-line}
+.keyline{margin-top:12px;padding:10px 14px;border-left:6px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0}
+.quest{margin-top:10px;padding:10px 14px;border-left:6px solid var(--warn);background:var(--warn-soft);border-radius:0 12px 12px 0;font-weight:700}
+.given{margin-top:12px}
+.given table{border-collapse:collapse}
+.given th,.given td{border:2px solid var(--border2);padding:8px 14px;font-size:20px;text-align:center;background:var(--surface)}
+.tcap{font-size:20px;font-weight:700;margin:14px 0 6px;color:var(--muted)}
+.tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+table.lt{border-collapse:separate;border-spacing:4px;min-width:100%}
+.lt th{font-size:20px;padding:6px 10px;background:var(--surface);border:2px solid var(--border);border-radius:10px;min-width:60px}
+.lt th.rowh{position:sticky;left:0;z-index:2;text-align:left;white-space:nowrap}
+.lt td{padding:0}
+.cell{width:100%;height:60px;min-width:60px;min-height:60px;border:2px solid var(--border2);border-radius:12px;background:var(--cell);cursor:pointer;font-size:30px;font-weight:900;line-height:1;display:flex;align-items:center;justify-content:center;touch-action:manipulation;transition:background .25s,transform .2s}
+.cell.v1{color:var(--ok);background:var(--ok-soft);border-color:var(--ok)}
+.cell.v-1{color:var(--bad);background:var(--cell)}
+.cell.auto{background:var(--cell-auto)}
+.cell.fill{animation:pop .35s ease}
+.cell.warn{box-shadow:0 0 0 4px var(--bad) inset}
+@keyframes pop{0%{transform:scale(.5);opacity:.2}100%{transform:scale(1);opacity:1}}
+.scrollhint{font-size:20px;color:var(--muted);margin-top:4px;display:none}
+.ansblock{margin-top:16px;padding-top:12px;border-top:2px dashed var(--border2)}
+.anslabel{font-weight:700;margin-bottom:8px}
+.slots{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.slotwrap{display:flex;flex-direction:column;align-items:center;gap:4px}
+.slotlab{font-size:20px;font-weight:700;color:var(--muted)}
+.slot{width:64px;height:64px;border:3px dashed var(--border2);border-radius:12px;background:var(--surface);font-size:30px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation}
+.slot.filled{border-style:solid;border-color:var(--accent);background:var(--accent-soft)}
+.slot.drop{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft);transform:scale(1.08)}
+.tiles{display:flex;gap:10px;flex-wrap:wrap}
+.tile{width:64px;height:64px;border:2px solid var(--border2);border-radius:12px;background:var(--card);font-size:28px;font-weight:900;cursor:grab;touch-action:none;display:flex;align-items:center;justify-content:center;user-select:none;-webkit-user-select:none}
+.tile.active{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.tile.tool{width:auto;padding:0 16px;font-size:20px;font-weight:700;cursor:pointer;touch-action:manipulation}
+.ghost{position:fixed;z-index:300;width:64px;height:64px;border-radius:12px;background:var(--accent);color:var(--accent-ink);font-size:28px;font-weight:900;display:flex;align-items:center;justify-content:center;pointer-events:none;box-shadow:var(--shadow)}
+.choices{display:flex;gap:12px;flex-wrap:wrap}
+.choice{flex:1 1 180px;min-height:64px;padding:10px 18px;border:3px solid var(--border2);border-radius:14px;background:var(--card);font-size:22px;font-weight:700;cursor:pointer;touch-action:manipulation}
+.choice.sel{border-color:var(--accent);background:var(--accent-soft)}
+.nums{display:flex;gap:12px;flex-wrap:wrap}
+.numwrap{display:flex;flex-direction:column;gap:4px;flex:1 1 150px;min-width:140px}
+.numwrap label{font-size:20px;font-weight:700;color:var(--muted)}
+.numin{height:60px;font-size:26px;font-weight:700;text-align:center;border:2px solid var(--border2);border-radius:12px;background:var(--surface);color:var(--text);width:100%}
+.kbd-toggle{margin-top:12px;min-height:52px;width:100%;border:2px solid var(--border2);border-radius:12px;background:var(--surface);cursor:pointer;font-weight:700;font-size:20px;touch-action:manipulation}
+.kbd-wrap{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.kbd-wrap.open{max-height:240px}
+.kbd{display:flex;gap:8px;flex-wrap:wrap;padding-top:12px}
+.key{flex:1 1 48px;min-width:48px;height:56px;border:2px solid var(--border2);border-radius:10px;background:var(--card);font-size:24px;font-weight:700;cursor:pointer;touch-action:manipulation}
+.hintbox,.fb,.sol{display:none;margin-top:12px;padding:12px 14px;border-radius:12px;font-size:20px}
+.hintbox.show{display:block;background:var(--warn-soft);border-left:6px solid var(--warn)}
+.fb.show{display:block;font-weight:700}
+.fb.ok{background:var(--ok-soft);border-left:6px solid var(--ok)}
+.fb.bad{background:var(--bad-soft);border-left:6px solid var(--bad)}
+.fb.info{background:var(--accent-soft);border-left:6px solid var(--accent)}
+.sol.show{display:block;background:var(--surface);border:2px solid var(--border);white-space:pre-line}
+.sol b{color:var(--accent)}
+.actionbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.btn{flex:1 1 150px;min-height:56px;padding:10px 18px;border-radius:14px;border:2px solid var(--border2);background:var(--card);font-size:21px;font-weight:700;cursor:pointer;touch-action:manipulation}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.ok{background:var(--ok);color:#fff;border-color:var(--ok)}
+[data-theme="dark"] .btn.ok{color:#052e16}
+.utilrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.popup{position:fixed;z-index:200;display:none;background:var(--card);border:2px solid var(--border2);border-radius:16px;padding:12px;box-shadow:var(--shadow)}
+.popup.show{display:block}
+.popup .row{display:flex;gap:10px}
+.pbtn{width:88px;height:72px;border-radius:12px;border:none;font-size:36px;font-weight:900;cursor:pointer;touch-action:manipulation}
+.pbtn.yes{background:var(--ok);color:#fff}
+[data-theme="dark"] .pbtn.yes{color:#052e16}
+.pbtn.no{background:var(--bad);color:#fff}
+[data-theme="dark"] .pbtn.no{color:#450a0a}
+.pbtn.erase{width:100%;height:48px;margin-top:10px;font-size:20px;font-weight:700;background:var(--surface);border:2px solid var(--border2);color:var(--text)}
+.modal{position:fixed;inset:0;z-index:400;display:none;background:rgba(10,5,30,.65);padding:16px;overflow-y:auto}
+.modal.show{display:flex;align-items:flex-start;justify-content:center}
+.mbox{background:var(--card);border:2px solid var(--border2);border-radius:18px;max-width:760px;width:100%;margin:auto;padding:20px}
+.mbox h2{font-size:26px;margin-bottom:12px}
+.mstats{font-size:22px;margin-bottom:12px}
+.erritem{border:2px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px;background:var(--surface)}
+.erritem .t{font-weight:700;margin-bottom:6px}
+.erritem .s{font-size:20px;color:var(--muted);margin-bottom:8px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:110px;z-index:500;background:var(--text);color:var(--bg);padding:12px 20px;border-radius:12px;font-size:20px;display:none;max-width:92vw}
+.toast.show{display:block}
+@media (max-width:768px){
+  body{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+  .wrap{padding:10px 10px 20px}
+  .actionbar{position:fixed;left:0;right:0;bottom:0;z-index:60;margin:0;padding:10px 10px calc(10px + env(safe-area-inset-bottom));background:var(--surface);border-top:2px solid var(--border)}
+  .actionbar .btn{flex:1 1 0;min-width:0;padding:10px 8px;font-size:20px}
+  .toolbar .navbtn{flex:1 1 40%}
+  #tasksel{flex:1 1 100%}
+  .utilrow .btn{flex:1 1 100%}
+  header h1{font-size:20px}
+}
 </style>
 </head>
 <body>
-<div class="container">
-  <header>
-    <h1>🧩 Логические задачи — табличный способ</h1>
-    <p>ВПР 7 класс · Задание 5 · 37 задач</p>
-  </header>
-  <div class="progress-text" id="progressText"></div>
-  <div class="nav-numbers" id="navNumbers"></div>
-  <div id="taskView"></div>
+<header>
+  <a class="icobtn" href="index.html" aria-label="На главную" title="На главную"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/></svg></a>
+  <h1>№5 · Логические задачи: табличный способ<span class="sub">Информатика · 7 класс · режим «Тренировка»</span></h1>
+  <button class="icobtn" id="sndBtn" data-act="sound" aria-label="Выключить звук" title="Звук вкл/выкл"><svg viewBox="0 0 24 24" aria-hidden="true"><path id="sndPath" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg></button>
+  <button class="icobtn" id="thBtn" data-act="theme" aria-label="Переключить тему" title="Светлая/тёмная тема"><svg viewBox="0 0 24 24" aria-hidden="true"><path id="thPath" d="M12 4a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0V5a1 1 0 0 1 1-1zm0 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 3a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0v-1a1 1 0 0 1 1-1zM4 11h1a1 1 0 1 1 0 2H4a1 1 0 1 1 0-2zm15 0h1a1 1 0 1 1 0 2h-1a1 1 0 1 1 0-2zM5.6 4.2l.8.7A1 1 0 1 1 5 6.4l-.8-.8a1 1 0 0 1 1.4-1.4zm12.8 12.8.8.8a1 1 0 0 1-1.4 1.4l-.8-.8a1 1 0 0 1 1.4-1.4zm1.4-12.8a1 1 0 0 1 0 1.4l-.8.8a1 1 0 1 1-1.4-1.4l.8-.8a1 1 0 0 1 1.4 0zM6.4 17.6a1 1 0 0 1 0 1.4l-.8.8a1 1 0 0 1-1.4-1.4l.8-.8a1 1 0 0 1 1.4 0z"/></svg></button>
+</header>
+<div class="wrap">
+  <div class="toolbar">
+    <select id="tasksel" aria-label="Список заданий: номер, подпись и статус"></select>
+    <span class="counter" id="counter">1 из 59</span>
+    <div class="pbar" role="progressbar" aria-label="Прогресс верных ответов" aria-valuemin="0" aria-valuemax="59" aria-valuenow="0" id="pbar"><div class="pfill" id="pfill"></div></div>
+    <button class="navbtn" data-act="prev" id="prevBtn">← Назад</button>
+    <button class="navbtn" data-act="next" id="nextBtn">Дальше →</button>
+  </div>
+  <div class="card" id="taskCard"></div>
+  <div class="actionbar">
+    <button class="btn" data-act="hint" id="hintBtn">💡 Подсказка</button>
+    <button class="btn ok" data-act="check" id="checkBtn">✓ Проверить</button>
+    <button class="btn primary" data-act="next">Дальше →</button>
+  </div>
+  <div class="utilrow">
+    <button class="btn" data-act="clear">🧹 Очистить таблицу</button>
+    <button class="btn primary" data-act="new">🔄 Новый вариант</button>
+    <button class="btn" data-act="summary">📊 Итоги</button>
+    <button class="btn" data-act="reset">♻️ Сброс прогресса</button>
+  </div>
 </div>
-
+<div class="popup" id="popup" role="dialog" aria-label="Выбор метки для ячейки">
+  <div class="row">
+    <button class="pbtn yes" data-act="mark" data-v="1" aria-label="Поставить зелёную галочку — соответствует">✓</button>
+    <button class="pbtn no" data-act="mark" data-v="-1" aria-label="Поставить красный крестик — не соответствует">✗</button>
+  </div>
+  <button class="pbtn erase" data-act="mark" data-v="0" aria-label="Убрать метку из ячейки">Убрать метку</button>
+</div>
+<div class="modal" id="modal" role="dialog" aria-label="Итоги тренировки">
+  <div class="mbox">
+    <h2>📊 Итоги варианта</h2>
+    <div class="mstats" id="mstats"></div>
+    <div id="merrors"></div>
+    <div class="actionbar" style="position:static;padding:0;border:none;background:none">
+      <button class="btn primary" data-act="new">🔄 Новый вариант</button>
+      <button class="btn" data-act="closemodal">Закрыть</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<noscript><p style="padding:20px;font-size:22px">Для работы тренажёра включите JavaScript.</p></noscript>
 <script>
-/* Все 37 задач с печатной версии sdamgia (category_id=6).
-   correct — правильные ответы по порядку A, Б, В(, Г). */
-const tasks = [
-{num:"№ 221",text:"На пикник пришли три мальчика: Артем, Борис, Виктор. Фамилии мальчиков — Антонов, Белов, Воронов. В разговоре с Виктором Белов заметил, что ни у одного из них первая буква своего имени и первая буква своей фамилии не совпадают. Соотнесите имена и фамилии.",names:["Артем","Борис","Виктор"],surnames:["Антонов","Белов","Воронов"],correct:[3,1,2],hint:"Виктор ≠ Белов (они разные люди). Первые буквы не совпадают: Артем ≠ Антонов, Борис ≠ Белов, Виктор ≠ Воронов. Итог: Артем→Воронов, Борис→Антонов, Виктор→Белов."},
-{num:"№ 222",text:"На вечеринку пришли три девушки: Анна, Вера, Дарья. Фамилии девушек — Васильева, Дмитриева, Андреева. Вера обратила внимание Андреевой на то, что ни у одной из них первая буква своего имени и первая буква своей фамилии не совпадают. Соотнесите имена и фамилии.",names:["Анна","Вера","Дарья"],surnames:["Васильева","Дмитриева","Андреева"],correct:[3,1,2],hint:"Вера ≠ Андреева. Первые буквы не совпадают: Анна ≠ Андреева, Вера ≠ Васильева, Дарья ≠ Дмитриева. Итог: Анна→Андреева, Вера→Васильева, Дарья→Дмитриева."},
-{num:"№ 223",text:"На соревнования пришли три юноши: Петр, Семен, Федор. Фамилии юношей — Сидоров, Фролов, Петров. Во время разговора с Сидоровым Федор отметил, что у каждого из них первая буква своего имени и первая буква своего фамилии не совпадают. Соотнесите имена и фамилии.",names:["Петр","Семен","Федор"],surnames:["Сидоров","Фролов","Петров"],correct:[3,1,2],hint:"Федор ≠ Сидоров. Первые буквы не совпадают: Петр ≠ Петров, Семен ≠ Сидоров, Федор ≠ Фролов. Итог: Петр→Фролов, Семен→Петров, Федор→Сидоров."},
-{num:"№ 224",text:"На встречу пришли три женщины: Ольга, Юлия, Екатерина. Фамилии женщин — Ершова, Юдина, Орлова. Юлия во время беседы с Орловой заметила, что ни у одной из них первая буква своего имени и первая буква своей фамилии не совпадают. Соотнесите имена и фамилии.",names:["Ольга","Юлия","Екатерина"],surnames:["Ершова","Юдина","Орлова"],correct:[3,1,2],hint:"Юлия ≠ Орлова. Первые буквы не совпадают: Ольга ≠ Орлова, Юлия ≠ Юдина, Екатерина ≠ Ершова. Итог: Ольга→Орлова, Юлия→Ершова, Екатерина→Юдина."},
-{num:"№ 225",text:"На концерт пришли три парня: Иван, Алексей, Николай. Фамилии парней — Никифоров, Алексеев, Иванов. Алексей заметил при общении с Ивановым, что ни у одного из них первая буква своего имени и первая буква своей фамилии не совпадают. Соотнесите имена и фамилии.",names:["Иван","Алексей","Николай"],surnames:["Никифоров","Алексеев","Иванов"],correct:[3,1,2],hint:"Алексей ≠ Иванов. Первые буквы не совпадают: Иван ≠ Иванов, Алексей ≠ Алексеев, Николай ≠ Никифоров. Итог: Иван→Иванов? Нет: Иван→Алексеев, Алексей→Никифоров, Николай→Иванов."},
-{num:"№ 226",text:"На собрание пришли три человека: Сергей, Дмитрий, Павел. Фамилии людей — Петров, Сидоров, Дмитриев. Дмитрий, разговаривая с Сидоровым, отметил, что ни у одного из них первая буква своего имени и первая буква своей фамилии не совпадают. Соотнесите имена и фамилии.",names:["Сергей","Дмитрий","Павел"],surnames:["Петров","Сидоров","Дмитриев"],correct:[3,1,2],hint:"Дмитрий ≠ Сидоров и ≠ Дмитриев → Дмитрий→Петров. Сергей ≠ Сидоров (и Петров занят) → Сергей→Дмитриев. Павел→Сидоров."},
-{num:"№ 227",text:"На встречу пришли три девушки: Лидия, Ксения, Надежда. Фамилии девушек — Николаева, Лебедева, Крылова. Во время разговора Ксения и Николаева выяснили, что ни у одной из них первая буква своего имени и первая буква своей фамилии не совпадают. Соотнесите имена и фамилии.",names:["Лидия","Ксения","Надежда"],surnames:["Николаева","Лебедева","Крылова"],correct:[2,3,1],hint:"Ксения ≠ Николаева. Лидия ≠ Лебедева, Ксения ≠ Крылова, Надежда ≠ Николаева. Ксения не Крылова и не Николаева → Ксения→Лебедева. Лидия не Лебедева → Лидия→Крылова. Надежда→Николаева."},
-{num:"№ 228",text:"На ужин пришли три мужчины: Георгий, Артем, Борис. Фамилии мужчин — Беляев, Артамонов, Громов. Артем с Громовым заметили, что ни у одного из мужчин первая буква своего имени и первая буква своей фамилии не совпадают. Соотнесите имена и фамилии.",names:["Георгий","Артем","Борис"],surnames:["Беляев","Артамонов","Громов"],correct:[1,3,2],hint:"Артем ≠ Громов. Борис ≠ Беляев, Георгий ≠ Громов, Артем ≠ Артамонов. Артем не Громов и не Артамонов → Артем→Беляев. Борис не Беляев → Борис→Громов. Георгий→Артамонов."},
-{num:"№ 229",text:"На праздник пришли три женщины: Валентина, Татьяна, Елена. Фамилии женщин — Егорова, Тихонова, Власова. В ходе беседы с Егоровой Татьяна заметила, что ни у одной из них первая буква своего имени и первая буква своей фамилии не совпадают. Соотнесите имена и фамилии.",names:["Валентина","Татьяна","Елена"],surnames:["Егорова","Тихонова","Власова"],correct:[3,1,2],hint:"Татьяна ≠ Егорова. Валентина ≠ Власова, Татьяна ≠ Тихонова, Елена ≠ Егорова. Татьяна не Егорова и не Тихонова → Татьяна→Власова. Валентина не Власова → Валентина→Егорова. Елена→Тихонова."},
-{num:"№ 230",text:"На конференцию пришли три человека: Михаил, Андрей, Григорий. Фамилии людей — Григорьев, Михайлов, Андреев. Во время перерыва Михаил общался с Григорьевым и заметил, что ни у одного из них первая буква своего имени и первая буква своей фамилии не совпадают. Соотнесите имена и фамилии.",names:["Михаил","Андрей","Григорий"],surnames:["Григорьев","Михайлов","Андреев"],correct:[2,3,1],hint:"Михаил ≠ Григорьев и ≠ Михайлов → Михаил→Андреев. Андрей ≠ Андреев (занято) → Андрей→Григорьев. Григорий→Михайлов."},
-{num:"№ 231",text:"На прогулку пришли три мальчика: Тимур, Олег, Денис. Фамилии мальчиков — Дорофеев, Тимофеев, Орлов. Олег во время разговора с Дорофеевым заметил, что ни у одного из них первая буква своего имени и первая буква своей фамилии не совпадают. Соотнесите имена и фамилии.",names:["Тимур","Олег","Денис"],surnames:["Дорофеев","Тимофеев","Орлов"],correct:[3,1,2],hint:"Олег ≠ Дорофеев и ≠ Орлов → Олег→Тимофеев. Тимур ≠ Тимофеев (занято) → Тимур→Орлов. Денис→Дорофеев."},
-{num:"№ 232",text:"На вечеринку пришли три девушки: Юлия, Марина, Галина. Фамилии девушек — Гусева, Юдина, Маркова. Разговорившись с Галиной, Маркова узнала, что ни у одной из них первая буква своего имени и первая буква своей фамилии не совпадают. Соотнесите имена и фамилии.",names:["Юлия","Марина","Галина"],surnames:["Гусева","Юдина","Маркова"],correct:[1,3,2],hint:"Галина ≠ Маркова (Маркова — другой человек). Галина ≠ Гусева → Галина→Юдина. Юлия ≠ Юдина (занято) → Юлия→Гусева. Марина→Маркова."},
-{num:"№ 233",text:"На собрание пришли три мужчины: Кирилл, Владимир, Семен. Фамилии мужчин — Смирнов, Ковалев, Воронов. Владимир после беседы со Смирновым заметил, что ни у одного из них первая буква имени и первая буква фамилии не совпадают. Соотнесите имена и фамилии.",names:["Кирилл","Владимир","Семен"],surnames:["Смирнов","Ковалев","Воронов"],correct:[3,1,2],hint:"Владимир ≠ Смирнов и ≠ Воронов → Владимир→Ковалев. Семен ≠ Смирнов → Семен→Воронов. Кирилл→Смирнов."},
-{num:"№ 234",text:"На пикник пришли три девушки: Лариса, Наталья, Виктория. Фамилии девушек — Никифорова, Лазарева, Воронова. Наталья, пообщавшись с Вороновой заметила, что ни у одной из них первая буква имени и первая буква фамилии не совпадают. Соотнесите имена и фамилии.",names:["Лариса","Наталья","Виктория"],surnames:["Никифорова","Лазарева","Воронова"],correct:[2,1,3],hint:"Наталья ≠ Воронова и ≠ Никифорова → Наталья→Лазарева. Лариса ≠ Лазарева (занято) → Лариса→Никифорова. Виктория→Воронова."},
-{num:"№ 235",text:"На ужин пришли три парня: Андрей, Константин, Сергей. Фамилии парней — Смирнов, Андреев, Кузнецов. Константин во время общения с Андреевым заметил, что ни у одного из них первая буква своего имени и первая буква своей фамилии не совпадают. Соотнесите имена и фамилии.",names:["Андрей","Константин","Сергей"],surnames:["Смирнов","Андреев","Кузнецов"],correct:[1,3,2],hint:"Константин ≠ Андреев и ≠ Кузнецов → Константин→Смирнов. Андрей ≠ Андреев и ≠ Смирнов (занято) → Андрей→Кузнецов. Сергей→Андреев."},
-{num:"№ 236",text:"На праздник пришли три женщины: Екатерина, Светлана, Ольга. Фамилии женщин — Орлова, Савельева, Егорова. Светлана, разговаривая с Егоровой заметила, что ни у одной из них первая буква имени и первая буква фамилии не совпадают. Соотнесите имена и фамилии.",names:["Екатерина","Светлана","Ольга"],surnames:["Орлова","Савельева","Егорова"],correct:[3,1,2],hint:"Светлана ≠ Егорова и ≠ Савельева → Светлана→Орлова. Екатерина ≠ Егорова → Екатерина→Савельева. Ольга→Егорова."},
-{num:"№ 237",text:"На конференцию пришли три человека: Филипп, Роман, Артем. Фамилии людей — Андреев, Федоров, Романов. Филипп с Романовым заметили, что ни у одного из них первая буква имени и первая буква фамилии не совпадают. Соотнесите имена и фамилии.",names:["Филипп","Роман","Артем"],surnames:["Андреев","Федоров","Романов"],correct:[2,1,3],hint:"Филипп ≠ Романов и ≠ Федоров → Филипп→Андреев. Роман ≠ Романов (и Андреев занят) → Роман→Федоров. Артем→Романов."},
-{num:"№ 238",text:"На встречу пришли три девушки: Кристина, Алина, Валерия. Фамилии девушек — Воронова, Кузнецова, Алексеева. Алина с Кузнецовой заметили, что ни у одной из них первая буква имени и первая буква фамилии не совпадают. Соотнесите имена и фамилии.",names:["Кристина","Алина","Валерия"],surnames:["Воронова","Кузнецова","Алексеева"],correct:[1,3,2],hint:"Алина ≠ Кузнецова и ≠ Алексеева → Алина→Воронова. Кристина ≠ Кузнецова (и Воронова занята) → Кристина→Алексеева. Валерия→Кузнецова."},
-{num:"№ 239",text:"На прогулку пришли три мальчика: Артем, Денис, Кирилл. Фамилии мальчиков — Кузьмин, Артемьев, Денисов. Денис с Кузьминым заметили, что ни у одного из них первая буква имени и первая буква фамилии не совпадают. Соотнесите имена и фамилии.",names:["Артем","Денис","Кирилл"],surnames:["Кузьмин","Артемьев","Денисов"],correct:[2,3,1],hint:"Денис ≠ Кузьмин и ≠ Денисов → Денис→Артемьев. Артем ≠ Артемьев (занято) → Артем→Кузьмин? Проверка: Артем ≠ Кузьмин? Первые буквы А и К — разные, подходит. Кирилл→Денисов."},
-{num:"№ 240",text:"На ужин пришли три девушки: Олеся, Галина, Марина. Фамилии девушек — Михайлова, Овчинникова, Григорьева. После ужина Марина возвращалась домой вместе с Григорьевой. Обсуждая вечер, они выяснили, что ни у одной из всех девушек первая буква своего имени и первая буква своей фамилии не совпадают. Соотнесите имена и фамилии.",names:["Олеся","Галина","Марина"],surnames:["Михайлова","Овчинникова","Григорьева"],correct:[3,1,2],hint:"Марина ≠ Григорьева и ≠ Михайлова → Марина→Овчинникова. Галина ≠ Григорьева → Галина→Михайлова. Олеся→Григорьева."},
-{num:"№ 241",text:"На встречу пришли три мужчины: Антон, Виталий, Сергей. Фамилии мужчин — Сидоров, Воробьев, Антонов. Виталий с Антоновым заметили, что ни у одного из них первая буква своего имени и первая буква своей фамилии не совпадают. Соотнесите имена и фамилии.",names:["Антон","Виталий","Сергей"],surnames:["Сидоров","Воробьев","Антонов"],correct:[3,1,2],hint:"Виталий ≠ Антонов и ≠ Воробьев → Виталий→Сидоров. Антон ≠ Антонов (и Сидоров занят) → Антон→Воробьев. Сергей→Антонов."},
-{num:"№ 242",text:"На пикник пришли три девушки: Инна, Светлана, Наталья. Фамилии девушек — Никифорова, Сидорова, Иванова. Светлана в разговоре с Никифоровой заметила, что ни у одной из них первая буква своего имени и первая буква своей фамилии не совпадают. Соотнесите имена и фамилии.",names:["Инна","Светлана","Наталья"],surnames:["Никифорова","Сидорова","Иванова"],correct:[3,1,2],hint:"Светлана ≠ Никифорова и ≠ Сидорова → Светлана→Иванова. Наталья ≠ Никифорова (и Иванова занята) → Наталья→Сидорова. Инна→Никифорова."},
-{num:"№ 243",text:"На спортивное мероприятие пришли три мальчика: Александр, Борис, Владимир. Фамилии мальчиков — Алексеев, Васильев, Белов. Борис и Васильев заметили, что ни у одного из них первая буква имени и первая буква фамилии не совпадают. Соотнесите имена и фамилии.",names:["Александр","Борис","Владимир"],surnames:["Алексеев","Васильев","Белов"],correct:[3,1,2],hint:"Борис ≠ Васильев и ≠ Белов → Борис→Алексеев. Владимир ≠ Васильев → Владимир→Белов. Александр→Васильев."},
-{num:"№ 244",text:"На конференцию пришли три ученых: Наталья, Ольга, Елена. Фамилии ученых — Новикова, Егорова, Орлова. Ольга и Новикова заметили, что ни у одной из них первая буква имени и первая буква фамилии не совпадают. Какая фамилия у каждой ученой?",names:["Наталья","Ольга","Елена"],surnames:["Новикова","Егорова","Орлова"],correct:[3,1,2],hint:"Ольга ≠ Новикова и ≠ Орлова → Ольга→Егорова. Наталья ≠ Новикова (и Егорова занята) → Наталья→Орлова. Елена→Новикова."},
-{num:"№ 245",text:"На вечеринку пришли три друга: Дмитрий, Павел, Сергей. Фамилии друзей — Петров, Смирнов, Данилов. Сергей с Даниловым отметили, что ни у одного из них первая буква имени и первая буква фамилии не совпадают.",names:["Дмитрий","Павел","Сергей"],surnames:["Петров","Смирнов","Данилов"],correct:[3,1,2],hint:"Сергей ≠ Данилов и ≠ Смирнов → Сергей→Петров. Дмитрий ≠ Данилов (и Петров занят) → Дмитрий→Смирнов. Павел→Данилов."},
-{num:"№ 443",text:"На выставку пришли три девочки: Мария, Ирина, Светлана. Фамилии девочек — Миронова, Иванова, Сергеева. Светлана обратила внимание Ивановой на то, что ни у одной из них первая буква имени и первая буква фамилии не совпадают.",names:["Мария","Ирина","Светлана"],surnames:["Миронова","Иванова","Сергеева"],correct:[2,3,1],hint:"Светлана ≠ Иванова и ≠ Сергеева → Светлана→Миронова. Ирина ≠ Иванова (и Миронова занята) → Ирина→Сергеева. Мария→Иванова."},
-{num:"№ 694",text:"На соревнованиях встретились четыре девочки: Ксения, Светлана, Галина и Белла. Кроссовки разных цветов — красного, синего, голубого и белого. Ни у одной девочки имя и цвет кроссовок не начинаются на одну букву. Ксении и Светлане выдали номера 1 и 2, а девочкам в голубых и белых кроссовках — номера 3 и 4.",names:["Ксения","Светлана","Галина","Белла"],surnames:["красные","синие","голубые","белые"],correct:[3,2,4,1],hint:"Ксения ≠ красные, Светлана ≠ синие, Галина ≠ голубые, Белла ≠ белые. Номера 1,2 у Ксении и Светланы → они не в голубых/белых → голубые и белые у Галины и Беллы. Белла ≠ белые → Белла→голубые, Галина→белые. Ксения ≠ красные → Ксения→синие, Светлана→красные. Ответ: 3,2,4,1."},
-{num:"№ 709",text:"На чемпионате по бадминтону встретились четыре девочки: Кира, Зоя, Соня, Жанна. Форма четырёх цветов — красного, зелёного, синего и жёлтого. Ни у одной девочки имя и цвет формы не начинаются на одну букву. В полуфиналах Кира играла против Жанны, и девочка в форме зелёного цвета — против девочки в форме синего цвета.",names:["Кира","Зоя","Соня","Жанна"],surnames:["красный","зеленый","синий","желтый"],correct:[3,1,4,2],hint:"Кира ≠ красный, Зоя ≠ зелёный, Соня ≠ синий, Жанна ≠ жёлтый. Кира и Жанна играли друг с другом → они не зелёная/синяя пара. Перебор даёт: Кира→синий, Зоя→красный, Соня→жёлтый, Жанна→зелёный. Ответ: 3,1,4,2."},
-{num:"№ 739",text:"В лагере встретились четыре девочки: Ирина, Марина, Арина, Карина. Фамилии — Иванова, Максимова, Александрова, Кириллова. Ни у одной девочки имя и фамилия не начинаются на одну букву. Ирина и Максимова живут в комнате №4, а Арина и Кириллова — в комнате №3.",names:["Ирина","Марина","Арина","Карина"],surnames:["Иванова","Максимова","Александрова","Кириллова"],correct:[2,4,3,1],hint:"Ирина ≠ Иванова, Марина ≠ Максимова, Арина ≠ Александрова, Карина ≠ Кириллова. Ирина и Максимова — разные (комната 4). Арина и Кириллова — разные (комната 3). Перебор: Ирина→Максимова? Нет — они разные. Итог: Ирина→Александрова... проверьте перебором; ответ 2,4,3,1."},
-{num:"№ 777",text:"На дне рождения встретились четыре девочки: Вероника, Дарья, Екатерина, Софья. Фамилии — Владимирова, Дмитриева, Егорова, Сергеева. Ни у одной девочки имя и фамилия не начинаются на одну букву. На Софье и Егоровой были платья розового цвета, а на Веронике и Дмитриевой — голубого.",names:["Вероника","Дарья","Екатерина","Софья"],surnames:["Владимирова","Дмитриева","Егорова","Сергеева"],correct:[4,1,3,2],hint:"Софья ≠ Сергеева, Екатерина ≠ Егорова, Дарья ≠ Дмитриева, Вероника ≠ Владимирова. Софья и Егорова — разные (розовые). Вероника и Дмитриева — разные (голубые). Перебор даёт: Вероника→Сергеева, Дарья→Владимирова, Екатерина→Егорова, Софья→Дмитриева. Ответ: 4,1,3,2."},
-{num:"№ 1183",text:"Четыре девочки (Софья, Карина, Марго, Белла) купили кефир, мандарины, сахар и бананы. Ни у одной девочки имя и название продукта не начинаются на одну букву. Софья и девочка, купившая бананы, хотят приготовить пироги, а Карина и девочка, купившая сахар, планируют приготовить желе.",names:["Софья","Карина","Марго","Белла"],surnames:["Кефир","Мандарины","Сахар","Бананы"],correct:[2,4,1,3],hint:"Софья ≠ сахар, Карина ≠ кефир, Марго ≠ мандарины, Белла ≠ бананы. Софья и «бананы» — разные. Карина и «сахар» — разные. Перебор: Софья→мандарины, Карина→бананы, Марго→кефир, Белла→сахар. Ответ: 2,4,1,3."},
-{num:"№ 1198",text:"На дне рождения встретились четыре девочки: Фаина, Мария, Виолетта, Камилла. Подарки — мяч, фломастеры, ваза, конфеты. Ни у одной девочки имя и название подарка не начинаются на одну букву. Фаина и девочка с вазой сели за один стол, а Виолетта и девочка с мячом — за другой.",names:["Фаина","Мария","Виолетта","Камилла"],surnames:["Мяч","Фломастеры","Ваза","Конфеты"],correct:[2,4,3,1],hint:"Фаина ≠ фломастеры, Мария ≠ мяч, Виолетта ≠ ваза, Камилла ≠ конфеты. Фаина и «ваза» — разные. Виолетта и «мяч» — разные. Перебор: Фаина→мяч? нет... Ответ: 2,4,3,1."},
-{num:"№ 1213",text:"Четыре мальчика (Олег, Марк, Иван, Борис) выбрали разные предметы — обществознание, историю, биологию и математику. Ни у одного имя и предмет не начинаются на одну букву. Иван и мальчик, сдающий обществознание, уверены в знаниях, а Марк и мальчик, сдающий биологию, думают, что нужно готовиться.",names:["Олег","Марк","Иван","Борис"],surnames:["Обществознание","История","Биология","Математика"],correct:[2,4,3,1],hint:"Олег ≠ обществознание, Марк ≠ математика, Иван ≠ история, Борис ≠ биология. Иван и «обществознание» — разные. Марк и «биология» — разные. Перебор: Олег→история, Марк→биология? нет (разные)... Ответ: 2,4,3,1."},
-{num:"№ 1243",text:"На дне рождения встретились четыре девочки: Кристина, Василиса, Белла, Полина. Подарки — кукла, пирамидка, бубен, вертушка. Ни у одной девочки имя и подарок не начинаются на одну букву. Василиса и девочка с пирамидкой сели за один стол, а Белла и девочка с куклой — за другой.",names:["Кристина","Василиса","Белла","Полина"],surnames:["Кукла","Пирамидка","Бубен","Вертушка"],correct:[1,2,3,4],hint:"Кристина ≠ кукла, Василиса ≠ вертушка, Белла ≠ бубен, Полина ≠ пирамидка. Василиса и «пирамидка» — разные. Белла и «кукла» — разные. Перебор: Кристина→кукла? нет (разные)... Ответ: 1,2,3,4."},
-{num:"№ 1258",text:"В одном подъезде живут четыре девочки: Анастасия, Зинаида, Татьяна и Марина. Фамилии — Зайцева, Алфёрова, Тарелкина и Мартынова. Ни у одной имя и фамилия не начинаются на одну букву. Татьяна и Мартынова живут на 4-м этаже, а Зинаида и Алфёрова — на 7-м.",names:["Анастасия","Зинаида","Татьяна","Марина"],surnames:["Зайцева","Алфёрова","Тарелкина","Мартынова"],correct:[1,4,2,3],hint:"Анастасия ≠ Алфёрова, Зинаида ≠ Зайцева, Татьяна ≠ Тарелкина, Марина ≠ Мартынова. Татьяна и Мартынова — разные (4 этаж). Зинаида и Алфёрова — разные (7 этаж). Перебор: Анастасия→Зайцева, Зинаида→Мартынова, Татьяна→Алфёрова, Марина→Тарелкина. Ответ: 1,4,2,3."},
-{num:"№ 1273",text:"Четыре девочки (Софья, Полина, Клавдия, Мария) купили капусту, помидоры, морковь, свёклу. Ни у одной имя и продукт не начинаются на одну букву. Полина и девочка с морковью хотят сварить суп, а Мария и девочка с капустой планируют салат.",names:["Софья","Полина","Клавдия","Мария"],surnames:["Капуста","Помидоры","Морковь","Свёкла"],correct:[2,3,4,1],hint:"Софья ≠ свёкла, Полина ≠ помидоры, Клавдия ≠ капуста, Мария ≠ морковь. Полина и «морковь» — разные. Мария и «капуста» — разные. Перебор: Софья→помидоры, Полина→морковь? нет (разные)... Ответ: 2,3,4,1."},
-{num:"№ 1288",text:"Четыре мальчика (Андрей, Руслан, Харитон и Григорий) выбрали разные предметы — русский язык, химию, алгебру и геометрию. Ни у одного имя и предмет не начинаются на одну букву. Руслан и мальчик, сдающий химию, уверены в знаниях, а Андрей и мальчик, сдающий русский язык, думают, что нужно готовиться.",names:["Андрей","Руслан","Харитон","Григорий"],surnames:["Русский язык","Химия","Алгебра","Геометрия"],correct:[4,3,1,2],hint:"Андрей ≠ алгебра, Руслан ≠ русский язык, Харитон ≠ химия, Григорий ≠ геометрия. Руслан и «химия» — разные. Андрей и «русский язык» — разные. Перебор: Андрей→геометрия, Руслан→алгебра, Харитон→русский язык, Григорий→химия. Ответ: 4,3,1,2."}
+'use strict';
+/* ================= утилиты ================= */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const perms=n=>{const r=[],p=[],used=Array(n).fill(false);(function rec(){if(p.length===n){r.push(p.slice());return;}for(let i=0;i<n;i++)if(!used[i]){used[i]=true;p.push(i);rec();p.pop();used[i]=false;}})();return r;};
+const PERMS={3:perms(3),4:perms(4),5:perms(5),6:perms(6)};
+const L=s=>s[0].toLowerCase();
+const fmtT=ms=>{const s=Math.floor(ms/1000);return Math.floor(s/60)+' мин '+(s%60)+' с';};
+/* ================= звук ================= */
+const Snd={ctx:null,on:true,
+  init(){try{if(!this.ctx)this.ctx=new (window.AudioContext||window.webkitAudioContext)();if(this.ctx.state==='suspended')this.ctx.resume();}catch(e){}},
+  beep(f,d,type,when,vol){if(!this.on)return;this.init();if(!this.ctx)return;try{const t=this.ctx.currentTime+(when||0);const o=this.ctx.createOscillator(),g=this.ctx.createGain();o.type=type||'sine';o.frequency.value=f;g.gain.setValueAtTime(vol||.18,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(this.ctx.destination);o.start(t);o.stop(t+d+.02);}catch(e){}},
+  ok(){this.beep(660,.12);this.beep(880,.16,'sine',.09);},
+  bad(){this.beep(180,.25,'square',0,.12);},
+  fin(){[523,659,784,1047].forEach((f,i)=>this.beep(f,.22,'sine',i*.13));}
+};
+/* ================= данные: ВПР 3×3 (26 задач, дословно) ================= */
+const TAILS=['Соотнесите имена и фамилии.','Какая фамилия у каждой учёной? Для каждого имени учёной укажите ее фамилию.','Какая фамилия у каждого друга? Для каждого имени друга укажите его фамилию.','Какая фамилия у каждой девочки? Для каждого имени девочки укажите ее фамилию.'];
+const INSTR=['Запишите в ответ цифры, расположив их в порядке, соответствующем буквам.','Запишите в таблицу выбранные цифры под соответствующими буквами.'];
+/* [№, событие, группа, род.п., имена, фамилии, фраза разговора, тип вопроса, говорящий, фамилия собеседника, ответ] */
+const V3=[
+[221,'пикник','мальчика','мальчиков','Артем,Борис,Виктор','Антонов,Белов,Воронов','В разговоре с Беловым Виктор заметил, что ни у одного из них первая буква своего имени и первая буква своей фамилии не совпадают.',0,2,1,'231'],
+[222,'вечеринку','девушки','девушек','Анна,Вера,Дарья','Васильева,Дмитриева,Андреева','Вера обратила внимание Андреевой на то, что ни у одной из них первая буква своего имени и первая буква своей фамилии не совпадают.',0,1,2,'123'],
+[223,'соревнования','юноши','юношей','Петр,Семен,Федор','Сидоров,Фролов,Петров','Во время разговора с Сидоровым Федор отметил, что у каждого из них первая буква своего имени и первая буква своей фамилии не совпадают.',0,2,0,'123'],
+[224,'встречу','женщины','женщин','Ольга,Юлия,Екатерина','Ершова,Юдина,Орлова','Юлия во время беседы с Орловой заметила, что ни у одной из них первая буква своего имени и первая буква своей фамилии не совпадают.',0,1,2,'213'],
+[225,'концерт','парня','парней','Иван,Алексей,Николай','Никифоров,Алексеев,Иванов','Алексей заметил при общении с Ивановым, что ни у одного из них первая буква своего имени и первая буква своей фамилии не совпадают.',0,1,2,'213'],
+[226,'собрание','человека','людей','Сергей,Дмитрий,Павел','Петров,Сидоров,Дмитриев','Дмитрий, разговаривая с Сидоровым, отметил, что ни у одного из них первая буква своего имени и первая буква своей фамилии не совпадают.',0,1,1,'312'],
+[227,'встречу','девушки','девушек','Лидия,Ксения,Надежда','Николаева,Лебедева,Крылова','Во время разговора Ксения и Николаева выяснили, что ни у одной из них первая буква своего имени и первая буква своей фамилии не совпадают.',0,1,0,'123'],
+[228,'ужин','мужчины','мужчин','Георгий,Артем,Борис','Беляев,Артамонов,Громов','Артем с Громовым заметили, что ни у одного из мужчин первая буква своего имени и первая буква своей фамилии не совпадают.',0,1,2,'213'],
+[229,'праздник','женщины','женщин','Валентина,Татьяна,Елена','Егорова,Тихонова,Власова','В ходе беседы с Егоровой Татьяна заметила, что ни у одной из них первая буква своего имени и первая буква своей фамилии не совпадают.',0,1,0,'132'],
+[230,'конференцию','человека','людей','Михаил,Андрей,Григорий','Григорьев,Михайлов,Андреев','Во время перерыва Михаил общался с Григорьевым и заметил, что ни у одного из них первая буква своего имени и первая буква своей фамилии не совпадают.',0,0,0,'312'],
+[231,'прогулку','мальчика','мальчиков','Тимур,Олег,Денис','Дорофеев,Тимофеев,Орлов','Олег во время разговора с Дорофеевым заметил, что ни у одного из них первая буква своего имени и первая буква своей фамилии не совпадают.',0,1,0,'123'],
+[232,'вечеринку','девушки','девушек','Юлия,Марина,Галина','Гусева,Юдина,Маркова','Разговорившись с Галиной, Маркова узнала, что ни у одной из них первая буква своего имени и первая буква своей фамилии не совпадают.',0,2,2,'312'],
+[233,'собрание','мужчины','мужчин','Кирилл,Владимир,Семен','Смирнов,Ковалев,Воронов','Владимир после беседы со Смирновым заметил, что ни у одного из них первая буква имени и первая буква фамилии не совпадают.',0,1,0,'123'],
+[234,'пикник','девушки','девушек','Лариса,Наталья,Виктория','Никифорова,Лазарева,Воронова','Наталья, пообщавшись с Вороновой заметила, что ни у одной из них первая буква имени и первая буква фамилии не совпадают.',0,1,2,'321'],
+[235,'ужин','парня','парней','Андрей,Константин,Сергей','Смирнов,Андреев,Кузнецов','Константин во время общения с Андреевым заметил, что ни у одного из них первая буква своего имени и первая буква своей фамилии не совпадают.',0,1,1,'312'],
+[236,'праздник','женщины','женщин','Екатерина,Светлана,Ольга','Орлова,Савельева,Егорова','Светлана, разговаривая с Егоровой заметила, что ни у одной из них первая буква имени и первая буква фамилии не совпадают.',0,1,2,'213'],
+[237,'конференцию','человека','людей','Филипп,Роман,Артем','Андреев,Федоров,Романов','Филипп с Романовым заметили, что ни у одного из них первая буква имени и первая буква фамилии не совпадают.',0,0,2,'123'],
+[238,'встречу','девушки','девушек','Кристина,Алина,Валерия','Воронова,Кузнецова,Алексеева','Алина с Кузнецовой заметили, что ни у одной из них первая буква имени и первая буква фамилии не совпадают.',0,1,1,'312'],
+[239,'прогулку','мальчика','мальчиков','Артем,Денис,Кирилл','Кузьмин,Артемьев,Денисов','Денис с Кузьминым заметили, что ни у одного из них первая буква имени и первая буква фамилии не совпадают.',0,1,0,'123'],
+[240,'ужин','девушки','девушек','Олеся,Галина,Марина','Михайлова,Овчинникова,Григорьева','После ужина Марина возвращалась домой вместе с Григорьевой. Обсуждая вечер, они выяснили, что ни у одной из всех девушек первая буква своего имени и первая буква своей фамилии не совпадают.',0,2,2,'312'],
+[241,'встречу','мужчины','мужчин','Антон,Виталий,Сергей','Сидоров,Воробьев,Антонов','Виталий с Антоновым заметили, что ни у одного из них первая буква своего имени и первая буква своей фамилии не совпадают.',0,1,2,'213'],
+[242,'пикник','девушки','девушек','Инна,Светлана,Наталья','Никифорова,Сидорова,Иванова','Светлана в разговоре с Никифоровой заметила, что ни у одной из них первая буква своего имени и первая буква своей фамилии не совпадают.',0,1,0,'132'],
+[243,'спортивное мероприятие','мальчика','мальчиков','Александр,Борис,Владимир','Алексеев,Васильев,Белов','Борис и Васильев заметили, что ни у одного из них первая буква имени и первая буква фамилии не совпадают.',0,1,1,'213'],
+[244,'конференцию','ученых','учёных','Наталья,Ольга,Елена','Новикова,Егорова,Орлова','Ольга и Новикова заметили, что ни у одной из них первая буква имени и первая буква фамилии не совпадают.',1,1,0,'321'],
+[245,'вечеринку','друга','друзей','Дмитрий,Павел,Сергей','Петров,Смирнов,Данилов','Сергей с Даниловым отметили, что ни у одного из них первая буква имени и первая буква фамилии не совпадают.',2,2,2,'231'],
+[443,'выставку','девочки','девочек','Мария,Ирина,Светлана','Миронова,Иванова,Сергеева','Светлана обратила внимание Ивановой на то, что ни у одной из них первая буква имени и первая буква фамилии не совпадают.',3,2,1,'231']
 ];
-
-/* ===== состояние и логика (без изменений) ===== */
-let currentIndex = 0;
-const answers = {};
-const solved = new Set();
-const taskView = document.getElementById('taskView');
-const navNumbers = document.getElementById('navNumbers');
-const progressText = document.getElementById('progressText');
-
-function buildNav() {
-  navNumbers.innerHTML = '';
-  tasks.forEach((t, i) => {
-    const btn = document.createElement('button');
-    btn.textContent = i + 1;
-    btn.title = t.num;
-    btn.onclick = () => goTo(i);
-    if (i === currentIndex) btn.classList.add('active');
-    if (solved.has(i)) btn.classList.add('solved');
-    navNumbers.appendChild(btn);
-  });
+/* ================= данные: ВПР 4×4 (11 задач, дословно) ================= */
+const V4=[
+{id:1273,cond:'Четыре девочки (Софья, Полина, Клавдия, Мария) пошли в магазин за продуктами. Они купили капусту, помидоры, морковь, свёклу. Известно, что ни у одной девочки имя и название продукта, который она купила, не начинаются на одну букву. Полина и девочка, которая купила морковь, хотят приготовить суп, а Мария и девочка, которая купила капусту, планируют приготовить салат.',q:'Какой продукт купила каждая из девочек? Для каждого имени девочки укажите соответствующий продукт.',names:['Софья','Полина','Клавдия','Мария'],items:['Капуста','Помидоры','Морковь','Свёкла'],excl:{1:[2,0],3:[0,2]},ans:'1432'},
+{id:1288,cond:'Четыре мальчика (Андрей, Руслан, Харитон и Григорий) собираются сдавать экзамены. Все четверо выбрали различные предметы — русский язык, химию, алгебру и геометрию. Известно, что ни у одного мальчика имя и название выбранного предмета не начинаются на одну букву. Руслан и мальчик, сдающий химию, уверены в своих знаниях, а Андрей и мальчик, сдающий русский язык, думают, что им необходимо ещё подготовиться.',q:'Какой предмет выбрал каждый из мальчиков? Для каждого имени мальчика укажите предмет, который он выбрал для сдачи.',names:['Андрей','Руслан','Харитон','Григорий'],items:['Русский язык','Химия','Алгебра','Геометрия'],excl:{1:[1,0],0:[0,1]},ans:'4312'},
+{id:1183,cond:'Четыре девочки (Софья, Карина, Марго, Белла) пошли в магазин за продуктами. Они купили кефир, мандарины, сахар и бананы. Известно, что ни у одной девочки имя и название продукта, который она купила, не начинаются на одну букву. Софья и девочка, которая купила бананы, хотят приготовить пироги, а Карина и девочка, которая купила сахар, планируют приготовить желе.',q:'Какой продукт купила каждая из девочек? Для каждого имени девочки укажите соответствующий продукт.',names:['Софья','Карина','Марго','Белла'],items:['Кефир','Мандарины','Сахар','Бананы'],excl:{0:[3,2],1:[2,3]},ans:'1243'},
+{id:1198,cond:'На дне рождения встретились четыре девочки: Фаина, Мария, Виолетта, Камилла. Девочки принесли подарки — мяч, фломастеры, вазу, конфеты. Известно, что ни у одной девочки имя и название её подарка не начинаются на одну букву. Фаина и девочка, которая подарила вазу, сели за один стол, а Виолетта и девочка, которая подарила мяч, — за другой.',q:'Какой подарок подарила каждая из девочек? Для каждого имени девочки укажите подарок, который она подарила.',names:['Фаина','Мария','Виолетта','Камилла'],items:['Мяч','Фломастеры','Ваза','Конфеты'],excl:{0:[2,0],2:[0,2]},ans:'4321'},
+{id:1213,cond:'Четыре мальчика (Олег, Марк, Иван и Борис) собираются сдавать экзамены. Все четверо выбрали различные предметы — обществознание, историю, биологию и математику. Известно, что ни у одного мальчика имя и название выбранного предмета не начинаются на одну букву. Иван и мальчик, сдающий обществознание, уверены в своих знаниях, а Марк и мальчик, сдающий биологию, думают, что им необходимо ещё подготовиться.',q:'Какой предмет выбрал каждый из мальчиков? Для каждого имени мальчика укажите предмет, который он выбрал для сдачи.',names:['Олег','Марк','Иван','Борис'],items:['Обществознание','История','Биология','Математика'],excl:{2:[0,2],1:[2,0]},ans:'3241'},
+{id:1243,cond:'На дне рождения встретились четыре девочки: Кристина, Василиса, Белла, Полина. Девочки принесли подарки – куклу, пирамидку, бубен, вертушку. Известно, что ни у одной девочки имя и название её подарка не начинаются на одну букву. Василиса и девочка, которая подарила пирамидку, сели за один стол, а Белла и девочка, которая подарила куклу, – за другой.',q:'Какой подарок подарила каждая из девочек? Для каждого имени девочки укажите подарок, который она подарила.',names:['Кристина','Василиса','Белла','Полина'],items:['Кукла','Пирамидка','Бубен','Вертушка'],excl:{1:[1,0],2:[0,1]},ans:'2341'},
+{id:1258,cond:'В одном подъезде живут четыре девочки: Анастасия, Зинаида, Татьяна и Марина. Фамилии девочек — Зайцева, Алфёрова, Тарелкина и Мартынова. Известно, что ни у одной девочки имя и фамилия не начинаются на одну букву. Татьяна и Мартынова живут на четвёртом этаже, а Зинаида и Алфёрова — на седьмом.',q:'Какая фамилия у каждой девочки? Для каждого имени девочки укажите её фамилию.',names:['Анастасия','Зинаида','Татьяна','Марина'],items:['Зайцева','Алфёрова','Тарелкина','Мартынова'],excl:{2:[3,1],1:[1,3]},ans:'4312'},
+{id:694,cond:'На соревнованиях встретились четыре девочки: Ксения, Светлана, Галина и Белла. Девочки пришли в кроссовках разных цветов — красного, синего, голубого и белого. Известно, что ни у одной девочки имя и название цвета кроссовок не начинаются на одну букву. Ксении и Светлане выдали номера 1 и 2, а девочкам в кроссовках голубого и белого цветов — номера 3 и 4.',q:'Какого цвета кроссовки у каждой девочки? Для каждого имени девочки укажите цвет её кроссовок.',names:['Ксения','Светлана','Галина','Белла'],items:['красные','синие','голубые','белые'],excl:{0:[2,3],1:[2,3]},ans:'2143'},
+{id:709,cond:'На чемпионате по бадминтону встретились четыре девочки: Кира, Зоя, Соня, Жанна. Девочки были в спортивной форме четырёх цветов — красного, зелёного, синего и жёлтого. Известно, что ни у одной девочки имя и цвет формы не начинаются на одну букву. В полуфиналах Кира играла против Жанны, и девочка в форме зелёного цвета — против девочки в форме синего цвета.',q:'Какого цвета форма у каждой девочки? Для каждого имени девочки укажите цвет её формы.',names:['Кира','Зоя','Соня','Жанна'],items:['красный','зелёный','синий','жёлтый'],excl:{0:[1,2],3:[1,2],1:[0,3],2:[0,3]},ans:'4321'},
+{id:739,cond:'В лагере встретились четыре девочки: Ирина, Марина, Арина, Карина. Фамилии девочек — Иванова, Максимова, Александрова, Кириллова. Известно, что ни у одной девочки имя и фамилия не начинаются на одну букву. Ирина и Максимова живут в комнате №4, а Арина и Кириллова в комнате №3.',q:'Какая фамилия у каждой девочки? Для каждого имени девочки укажите её фамилию.',names:['Ирина','Марина','Арина','Карина'],items:['Иванова','Максимова','Александрова','Кириллова'],excl:{0:[1,3],2:[3,1]},ans:'3412'},
+{id:777,cond:'На дне рождения встретились четыре девочки: Вероника, Дарья, Екатерина, Софья. Фамилии девочек — Владимирова, Дмитриева, Егорова, Сергеева. Известно, что ни у одной девочки имя и фамилия не начинаются на одну букву. На Софье и Егоровой были платья розового цвета, а на Веронике и Дмитриевой — голубого.',q:'Какая фамилия у каждой девочки? Для каждого имени девочки укажите её фамилию.',names:['Вероника','Дарья','Екатерина','Софья'],items:['Владимирова','Дмитриева','Егорова','Сергеева'],excl:{3:[2,1],0:[1,2]},ans:'4321'}
+];
+/* ================= сборка заданий ВПР ================= */
+function refMatrix(n,ansStr){const m=[];for(let r=0;r<n;r++){const row=Array(n).fill(0);row[+ansStr[r]-1]=1;m.push(row);}return m;}
+function vprExplain(names,items,excl,ansStr,exReason){
+  const n=names.length,cand=[];
+  for(let i=0;i<n;i++){cand[i]=[];for(let j=0;j<n;j++){if(L(names[i])===L(items[j]))continue;if((excl[i]||[]).includes(j))continue;cand[i].push(j);}}
+  const order=[],assigned=Array(n).fill(-1),lines=[];
+  let guard=0;
+  while(order.length<n&&guard++<20){
+    let k=-1;for(let i=0;i<n;i++)if(assigned[i]<0&&cand[i].length===1){k=i;break;}
+    if(k<0)for(let i=0;i<n;i++)if(assigned[i]<0){k=i;break;}
+    const j=cand[k][0];assigned[k]=j;order.push(k);
+    const no=[];
+    for(let x=0;x<n;x++){if(x===j)continue;const why=[];if(L(names[k])===L(items[x]))why.push('буква «'+names[k][0]+'»');if((excl[k]||[]).includes(x))why.push(exReason(k,x));if(why.length)no.push(items[x]+' ('+why.join(', ')+')');}
+    lines.push(names[k]+': '+(no.length?'исключаем '+no.join('; ')+' → ':'')+'<b>'+items[j]+'</b>.');
+    for(let i=0;i<n;i++)cand[i]=cand[i].filter(x=>x!==j);
+  }
+  return lines.join('\n')+'\nОтвет: <b>'+ansStr+'</b>.';
 }
-function goTo(index) {
-  if (index < 0 || index >= tasks.length) return;
-  currentIndex = index; buildNav(); renderTask(); updateProgress();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+function buildV3(r){
+  const[id,ev,gr,gen,ns,ss,conv,tail,tk,ls,ans]=r;
+  const names=ns.split(','),surn=ss.split(',');
+  const cond='На '+ev+' пришли три '+gr+': '+names.join(', ')+'. Фамилии '+gen+' — '+surn.join(', ')+'. '+conv;
+  return{uid:'v'+id,src:'Решу ВПР · №'+id,gen:false,title:names.join(', '),cond:cond,q:TAILS[tail],
+    key:'Главное: первые буквы имени и фамилии не совпадают; '+names[tk]+' общался(ась) не со «своим» тёзкой — фамилия собеседника '+surn[ls]+' ему(ей) не принадлежит.',
+    instr:INSTR[tail===0?0:1],
+    tables:[{cap:'Имена × фамилии',rows:names,cols:surn,rq:1,cq:1,letters:true,ref:refMatrix(3,ans)}],
+    ans:{type:'seq',n:3,ref:ans},
+    hint:'Начни с разговора: у говорящего фамилия не та, что у собеседника. Затем в каждой строке вычеркни фамилию на ту же букву, что и имя. Где остался один вариант?',
+    sol:vprExplain(names,surn,{[tk]:[ls]},ans,()=>'разговор')};
 }
-function nextTask() { if (currentIndex < tasks.length - 1) goTo(currentIndex + 1); }
-function updateProgress() { progressText.textContent = `Решено: ${solved.size} из ${tasks.length}`; }
-
-function renderTask() {
-  const t = tasks[currentIndex];
-  const saved = answers[currentIndex] || t.names.map(() => '');
-  const namesHtml = t.names.map((n, i) => `<div class="item"><span class="key">${String.fromCharCode(65+i)})</span> ${n}</div>`).join('');
-  const surnamesHtml = t.surnames.map((s, i) => `<div class="item"><span class="key">${i+1})</span> ${s}</div>`).join('');
-  const selectsHtml = t.names.map((name, i) => `
-    <div class="answer-row">
-      <label>${String.fromCharCode(65+i)}) ${name}</label>
-      <select data-index="${i}" id="sel-${i}">
-        <option value="">— выберите —</option>
-        ${t.surnames.map((s, j) => `<option value="${j+1}" ${saved[i] == (j+1) ? 'selected' : ''}>${j+1}) ${s}</option>`).join('')}
-      </select>
-    </div>`).join('');
-  const isLast = currentIndex === tasks.length - 1;
-  taskView.innerHTML = `
-    <div class="task-card">
-      <div class="task-header">
-        <span class="task-number">Задача ${currentIndex+1} / ${tasks.length}</span>
-        <span class="task-title">${t.num}</span>
-      </div>
-      <div class="task-condition"><span class="label">Условие</span>${t.text}</div>
-      <div class="columns">
-        <div class="col-box names"><h3>Имена</h3>${namesHtml}</div>
-        <div class="col-box surnames"><h3>${t.surnames.length === 4 ? 'Цвета / предметы / подарки / фамилии' : 'Фамилии'}</h3>${surnamesHtml}</div>
-      </div>
-      <div class="answers"><h3>Установите соответствие:</h3>${selectsHtml}</div>
-      <div class="btn-group">
-        <button class="btn-check" id="btnCheck">✓ Проверить</button>
-        <button class="btn-hint" id="btnHint">💡 Подсказка</button>
-        <button class="btn-reset" id="btnReset">↺ Сбросить</button>
-        <button class="btn-next" id="btnNext" ${isLast ? 'disabled' : ''}>Следующая →</button>
-      </div>
-      <div class="result" id="result"></div>
-      <div class="hint" id="hint">${t.hint}</div>
-    </div>`;
-  if (solved.has(currentIndex)) {
-    for (let i = 0; i < t.names.length; i++) {
-      const sel = document.getElementById(`sel-${i}`);
-      if (sel && sel.value && parseInt(sel.value) === t.correct[i]) sel.classList.add('correct');
+function buildV4(o){
+  return{uid:'v'+o.id,src:'Решу ВПР · №'+o.id,gen:false,title:o.names.join(', '),cond:o.cond,q:o.q,
+    key:'Главное: правило первых букв + запреты из условия (названные пары — разные люди).',
+    instr:INSTR[1],
+    tables:[{cap:'Имена × варианты',rows:o.names,cols:o.items,rq:1,cq:1,letters:true,ref:refMatrix(4,o.ans)}],
+    ans:{type:'seq',n:4,ref:o.ans},
+    hint:'Найди человека, о котором сказано больше всего: имя запрещает один вариант, а две подсказки — ещё два. Сколько вариантов остаётся?',
+    sol:vprExplain(o.names,o.items,o.excl,o.ans,()=>'по условию — другой человек')};
+}
+/* ================= сложные задания из источников (дословно) ================= */
+function T(cap,rows,cols,rq,cq,ref){return{cap:cap,rows:rows,cols:cols,rq:rq,cq:cq,ref:ref};}
+const FIX=[
+{uid:'iu-mus',src:'InternetUrok · задача №5',title:'Музыканты оркестра',
+ cond:'В симфонический оркестр приняли на работу трёх музыкантов: Барсукова, Смирнова и Ветрова, умеющих играть на скрипке, флейте, альте, кларнете, гобое и трубе.\nИзвестно, что:\n1. Смирнов самый высокий.\n2. Играющий на скрипке меньше ростом играющего на флейте.\n3. Играющие на скрипке и флейте и Барсуков любят пиццу.\n4. Когда между альтистом и трубачом возникает ссора, Смирнов мирит их.\n5. Барсуков не умеет играть ни на трубе, ни на гобое.',
+ q:'На каких инструментах играет каждый из музыкантов, если каждый владеет двумя инструментами?',
+ key:'Главное: каждый владеет ровно ДВУМЯ инструментами; каждый инструмент — у одного музыканта. Галочки ставь, только когда соответствие доказано.',
+ tables:[T('Музыканты × инструменты (по 2 галочки в строке)',['Барсуков','Смирнов','Ветров'],['Скрипка','Флейта','Альт','Кларнет','Гобой','Труба'],2,1,[[0,0,1,1,0,0],[0,1,0,0,1,0],[1,0,0,0,0,1]])],
+ hint:'Сравни рост: скрипач ниже флейтиста, а Смирнов выше всех. Кто тогда точно не скрипач и не флейтист? Из (3) — ещё один.',
+ sol:'Из (1)+(2): Смирнов не скрипач и не флейтист. Из (3): Барсуков тоже не скрипач и не флейтист → скрипач — Ветров. Из (4): Смирнов не альтист и не трубач. Из (5): Барсуков не трубач и не гобоист → у Барсукова остаются ровно альт и кларнет (по 2 инструмента) → они его. Смирнову остаются флейта и гобой, Ветрову — скрипка и труба.'},
+{uid:'mm1',src:'Малый мехмат · №1',title:'Клоуны Бим, Бом и Бам',
+ cond:'Три клоуна – Бим, Бом и Бам – выступают в зелёной, красной и синей рубашках. Их ботинки тех же трех цветов. У Бима цвета рубашки и ботинок совпадают. У Бома ни рубашка, ни ботинки не красные. Бам в зелёных ботинках и рубашке другого цвета.',
+ q:'Как одеты клоуны? (У всех клоунов разные рубашки и разные ботинки)',
+ key:'Главное: рубашки все разные и ботинки все разные; у Бима цвета совпадают; Бам — зелёные ботинки, рубашка другого цвета.',
+ tables:[T('Рубашки',['Бим','Бом','Бам'],['Зелёная','Красная','Синяя'],1,1,[[0,1,0],[1,0,0],[0,0,1]]),T('Ботинки',['Бим','Бом','Бам'],['Зелёные','Красные','Синие'],1,1,[[0,1,0],[0,0,1],[1,0,0]])],
+ hint:'Начни с ботинок: они уже заданы Баму. Какие ботинки могут быть у Бома, если красные ему нельзя?',
+ sol:'Бам в зелёных ботинках → Биму и Бому зелёные не достаются. Бом: не красные → синие. Бим: красные, рубашка того же цвета → красная. Бам: рубашка не зелёная и не красная → синяя. Бому остаётся зелёная рубашка.'},
+{uid:'mm2',src:'Малый мехмат · №2',title:'Девочки в кружке и цвета платьев',
+ cond:'На улице, встав в кружок, беседуют 4 девочки: Аня, Валя, Галя и Надя. Девочка в зелёном платье (не Аня и не Валя) стоит между девочкой в голубом платье и Надей. Девочка в белом платье стоит между девочкой в розовом платье и Валей.',
+ q:'Какого цвета платье на каждой из девочек?',
+ key:'Главное: в кружке из четырёх у каждой девочки ровно два соседа; «между» — значит соседка обеих названных.',
+ tables:[T('Девочки × цвет платья',['Аня','Валя','Галя','Надя'],['Зелёное','Голубое','Белое','Розовое'],1,1,[[0,0,1,0],[0,1,0,0],[1,0,0,0],[0,0,0,1]])],
+ hint:'Кто в зелёном? Она не Аня, не Валя и стоит рядом с Надей — значит, не Надя. Дальше разбери соседей девочки в белом.',
+ sol:'Зелёное — у Гали (не Аня, не Валя; не Надя, т.к. стоит рядом с Надей). Соседи Гали: девочка в голубом и Надя. В белом не Валя (она соседка) и не Надя (её соседи — Галя в зелёном и ещё одна, а нужны розовое и Валя) → белое у Ани. Соседи Ани — Валя и Надя: Валя в голубом (соседка Гали), Надя в розовом.'},
+{uid:'mm3',src:'Малый мехмат · №3',title:'Токарь, слесарь и сварщик',
+ cond:'На одном заводе работают три друга: токарь, слесарь и сварщик. Их фамилии Борисов, Иванов и Семёнов. У слесаря нет ни братьев, ни сестёр. Он самый младший из друзей. Семёнов, женатый на сестре Борисова, старше токаря.',
+ q:'Назовите фамилии слесаря, токаря и сварщика.',
+ key:'Главное: у слесаря нет сестёр; Семёнов женат на сестре Борисова; Семёнов старше токаря.',
+ tables:[T('Фамилии × профессии',['Борисов','Иванов','Семёнов'],['Токарь','Слесарь','Сварщик'],1,1,[[1,0,0],[0,1,0],[0,0,1]])],
+ hint:'У кого точно есть сестра? Кто не может быть самым младшим?',
+ sol:'У Борисова есть сестра → он не слесарь. Семёнов старше токаря → не токарь и не самый младший → не слесарь → Семёнов сварщик. Борисов → токарь, Иванов → слесарь.'},
+{uid:'mm4',src:'Малый мехмат · №4',title:'Учителя и их предметы',
+ cond:'Учителя Алексеев, Воронин и Соколов преподают в одном классе математику, физику, химию, биологию, английский язык и историю. Каждый учитель ведёт по два предмета. Учитель химии живёт в одном доме с учителем математики. Алексеев – самый молодой из трех преподавателей. Учитель математики часто играет в шахматы с Соколовым.\nУчитель физики старше учителя биологии, но младше Воронина. Самый старший из учителей живёт дальше всех от школы.',
+ q:'Какие предметы преподает каждый из них?',
+ key:'Главное: по ДВА предмета на учителя; возраст: Воронин > физик > биолог; химик и математик — соседи по дому.',
+ tables:[T('Учителя × предметы (по 2 галочки в строке)',['Алексеев','Воронин','Соколов'],['Математика','Физика','Химия','Биология','Английский','История'],2,1,[[1,0,0,1,0,0],[0,0,0,0,1,1],[0,1,1,0,0,0]])],
+ hint:'Выстрой учителей по возрасту. Кто самый старший и почему он не может жить в одном доме с кем-то?',
+ sol:'Воронин > физик > биолог → физик и биолог — Алексеев и Соколов; Алексеев самый молодой → биолог, Соколов — физик. Воронин самый старший, живёт дальше всех; химик и математик в одном доме → Воронин не химик и не математик → у него английский и история. Математик играет в шахматы с Соколовым → математик Алексеев, химик — Соколов.'},
+{uid:'mm5',src:'Малый мехмат · №5',title:'Пассажиры купе: кто кем был',
+ cond:'В поезде в одном купе ехали астроном, поэт, прозаик и драматург. Их фамилии были Алексеев, Борисов, Константинов и Дмитриев. Каждый из них взял с собой книгу, написанную одним из пассажиров купе.\nАлексеев и Борисов поменялись книгами и углубились в чтение. Поэт читал пьесу.\nПрозаик, очень молодой человек, выпустивший свою первую книгу, говорил, что он никогда ничего не читает по астрономии. Борисов купил в дорогу одно из произведений Дмитриева.\nНикто из пассажиров не покупал и не читал книг, написанных им самим.',
+ q:'Что читал каждый из них? Кто кем был?',
+ key:'Главное: прозаик ГОВОРИЛ, а Алексеев и Борисов ЧИТАЛИ; у Дмитриева несколько произведений, у прозаика — первая книга; никто не читает своё.',
+ tables:[T('Кто кем был',['Алексеев','Борисов','Константинов','Дмитриев'],['Астроном','Поэт','Прозаик','Драматург'],1,1,[[0,1,0,0],[1,0,0,0],[0,0,1,0],[0,0,0,1]]),T('Чью книгу читал (автор)',['Алексеев','Борисов','Константинов','Дмитриев'],['Алексеев','Борисов','Константинов','Дмитриев'],1,1,[[0,0,0,1],[0,0,1,0],[1,0,0,0],[0,1,0,0]])],
+ hint:'Кто говорил, а кто читал? У кого несколько произведений, а у кого только первая книга? Что читает поэт?',
+ sol:'Прозаик говорил, а Алексеев и Борисов читали → прозаик — Константинов или Дмитриев. «Одно из произведений Дмитриева» — книг у него несколько, а прозаик выпустил первую → прозаик Константинов. Чтение: поэт — пьесу; прозаик не астрономию и не своё, пьеса занята → стихи; астроном не своё → прозу; драматург → астрономию. Пара «Алексеев+Борисов» (обмен книгами) может быть только «поэт+астроном». Поэт читал пьесу → пьесу купил астроном Борисов (книга Дмитриева) → Дмитриев — драматург, Борисов — астроном, Алексеев — поэт. Читают: Алексеев — Дмитриева, Борисов — Константинова, Константинов — Алексеева, Дмитриев — Борисова.'},
+{uid:'mm6',src:'Малый мехмат · №6',title:'Кросс: правда и ложь болельщиков',
+ cond:'Корреспондент районной газеты опоздал к финишу легкоатлетического кросса. Поэтому он обратился к группе болельщиков с просьбой расказать о результатах кросса. Он получил такие ответы:\n1) «Серёжа занял второе место, а Коля – третье.»\n2) «Серёжа занял второе место, а Ваня – четвёртое.»\n3) «Надя заняла третье место, а Толя – пятое.»\n4) «Толя занял первое место, а Надя – второе.»\n5) «Коля занял первое место, а Ваня – четвёртое.»',
+ q:'Какое же место занял каждый из пяти бегунов, если каждый из болельщиков один раз сказал правду, а один раз соврал?',
+ key:'Главное: в каждом из пяти ответов ровно одно утверждение истинно и ровно одно ложно.',
+ tables:[T('Бегуны × места',['Серёжа','Коля','Ваня','Надя','Толя'],['1 место','2 место','3 место','4 место','5 место'],1,1,[[1,0,0,0,0],[0,0,1,0,0],[0,0,0,1,0],[0,1,0,0,0],[0,0,0,0,1]])],
+ hint:'Проверь гипотезу «Серёжа — второй»: что произойдёт с ответом (4), где оба утверждения про других бегунов?',
+ sol:'Если Серёжа второй, то в (4) «Толя первый» и «Надя вторая» оба ложны — противоречие. Значит, Серёжа не второй → из (1) Коля третий, из (2) Ваня четвёртый ((5) согласовано). Из (3): Надя не третья → Толя пятый. Из (4): Толя не первый → Надя вторая. Серёже остаётся первое место.'},
+{uid:'mm8',src:'Малый мехмат · №8',title:'Подруги и магазины',
+ cond:'В городе обувной магазин закрывается каждый понедельник, хозяйственный – каждый вторник, продуктовый – каждый четверг, а парфюмерный работает только по понедельникам, средам и пятницам. В воскресенье все магазины закрыты.\nОднажды подруги Ася, Ира, Клава и Женя отправились за покупками, причём каждая в свой магазин и притом в один. По дороге они обменивались такими замечаниями:\nАся – «Женя и я хотели пойти вместе ещё раньше на этой неделе, но не было такого дня, чтобы мы обе смогли сделать наши покупки»\nИра – «Я не хотела идти сегодня, но завтра я уже не смогу купить то, что мне нужно.»\nКлава – «А я могла бы пойти в магазин и вчера, и позавчера.»\nЖеня – «А я могла бы пойти и вчера, и завтра.»',
+ q:'Кому какой магазин нужен?',
+ key:'Главное: все пошли в один день; выпиши, в какие дни открыт каждый магазин, и проверь среду и пятницу.',
+ tables:[T('Подруги × магазины',['Ася','Ира','Клава','Женя'],['Обувной','Хозяйственный','Продуктовый','Парфюмерный'],1,1,[[0,1,0,0],[0,0,0,1],[0,0,1,0],[1,0,0,0]])],
+ hint:'В какой день открыты сразу все четыре магазина? Для этого дня проверь слова каждой подруги про «вчера» и «завтра».',
+ sol:'Все четыре магазина открыты вместе только в среду и пятницу. Среда: Женя (вчера и завтра) → обувной (вт,ср,чт); Ира (завтра закрыт) → парфюмерный (пн,ср,пт); Клава (вчера и позавчера) → продуктовый (пн,вт,ср); Ася → хозяйственный; раньше недели общих дней у хозяйственного и обувного нет ✓. Пятница нарушает слова Аси (общие дни у её магазина и обувного/хозяйственного есть раньше) → подходит только среда.'},
+{uid:'mm9',src:'Малый мехмат · №9',title:'Поезд Москва–Кострома: бригада',
+ cond:'В поезде Москва-Кострома едут пассажиры Иванов, Петров и Сидоров. Такие же фамилии имеют машинист, проводник и кондуктор поездной бригады.\nИзвестно, что:\n1. Пассажир Иванов Живёт в Москве.\n2. Кондуктор живёт на полпути от Москвы до Костромы.\n3. Пассажир-однофамилец кондуктора живет в Костроме.\n4. Тот пассажир, который живет ближе к месту жительства кондуктора, чем другие пассажиры, зарабатывает в месяц ровно втрое больше кондуктора.\n5. Пассажир Петров зарабатывает в месяц 200 рублей.\n6. Сидоров из бригады недавно выиграл у проводника партию в бильярд.',
+ q:'Какие фамилии у машиниста, проводника и кондуктора?',
+ key:'Главное: 200 рублей не делятся на 3; однофамилец кондуктора живёт в Костроме; Иванов — в Москве.',
+ tables:[T('Фамилии бригады × должности',['Иванов','Петров','Сидоров'],['Машинист','Проводник','Кондуктор'],1,1,[[0,1,0],[0,0,1],[1,0,0]])],
+ hint:'Зарплата ближайшего к кондуктору пассажира делится на 3. Кто это не может быть? Где живут остальные?',
+ sol:'Кондуктор не Иванов (его однофамилец в Костроме, а пассажир Иванов в Москве). Ближайший к кондуктору зарабатывает втрое больше; 200 на 3 не делится → не Петров → Сидоров, он живёт между городами. В Костроме тогда Петров → кондуктор Петров. Сидоров из бригады играл с проводником → не проводник и не кондуктор → машинист. Иванов — проводник.'},
+{uid:'mm10',src:'Малый мехмат · №10',title:'Инженеры: профессии и рейтинги',
+ cond:'Борисов, Кириллов, Данин и Савин – инженеры. Их профессии – автомеханик, химик, строитель, радиотехник.\nБорисов, который обыгрывает в шахматы Данина, но проигрывает Савину, бегает на лыжах лучше того инженера, который моложе его, и ходит в театр вдвое чаще, чем тот инженер, который старше Кириллова.\nХимик, посещающий театр вдвое чаще автомеханика, не является ни самым молодым, ни самым пожилым из этой четверки.\nСтроитель, который на лыжах бегает хуже, чем радиотехник, как правило, проигрывает в шахматы автомеханику.\nСамый пожилой из инженеров лучше всех играет в шахматы и чаще всех бывает в театре, а самый молодой лучше всех ходит на лыжах.',
+ q:'Назовите профессию каждого из инженеров, если ни в спорте, ни в приверженности к театру среди них нет двух одинаковых.',
+ key:'Главное: шахматы Савин > Борисов > Данин; «вдвое чаще» связывает театр Борисова с тем, кто старше Кириллова; химик — средний по возрасту.',
+ tables:[T('Инженеры × профессии',['Борисов','Кириллов','Данин','Савин'],['Автомеханик','Химик','Строитель','Радиотехник'],1,1,[[0,0,1,0],[1,0,0,0],[0,1,0,0],[0,0,0,1]])],
+ hint:'Кто самый пожилой (лучший шахматист и завсегдатай театра)? Кто самый младший (лучший лыжник)? Может ли «старше Кириллова» быть Савиным?',
+ sol:'Старший — лучший шахматист: Савин > Борисов > Данин → старший Савин или Кириллов. Борисов ходит в театр вдвое чаще того, кто старше Кириллова; у старшего театр чаще всех → это не Савин и не сам Борисов → Данин старше Кириллова → Кириллов младший (лучший лыжник). Борисов катается лучше младшего его → не младший → возраст: Савин, Борисов, Данин, Кириллов. Химик — Борисов или Данин. Если химик Борисов, автомеханик — Данин (театр вдвое), тогда строитель проигрывает Данину → строитель Кириллов, но радиотехник Савин должен быть лучше Кириллова на лыжах, а тот лучший → противоречие. Химик — Данин, автомеханик — Кириллов; строитель проигрывает автомеханику → строитель Борисов, радиотехник — Савин.'},
+{uid:'pk1',src:'Пед-копилка · №1',title:'Бегуны: кто победил',
+ cond:'После соревнований бегунов на табло появилась надпись:\n• Рустам не был вторым.\n• Эдуард отстатл от Рустама на два места.\n• Яков не был первым.\n• Галина не была не первой ни последней.\n• Карина финишировала сразу за Яковом.',
+ q:'Кто же победил в этих соревнованиях? Каково было распределение бегунов на финише?',
+ key:'Главное: Эдуард = место Рустама + 2; Карина = место Якова + 1; Галина не первая и не последняя.',
+ tables:[T('Бегуны × места',['Рустам','Эдуард','Яков','Галина','Карина'],['1 место','2 место','3 место','4 место','5 место'],1,1,[[1,0,0,0,0],[0,0,1,0,0],[0,0,0,1,0],[0,1,0,0,0],[0,0,0,0,1]])],
+ hint:'Эдуард отстал ровно на два места: какие места вообще возможны для Рустама? Проверь каждый вариант.',
+ sol:'Рустам не 2-й; Эдуард = Рустам+2 → Рустам 1-й или 3-й. Если 3-й, Эдуард 5-й — Карине не встать сразу за Яковом → Рустам 1-й, Эдуард 3-й. Галина 2-я или 4-я; пара Яков–Карина подряд → 4-е и 5-е → Яков 4-й, Карина 5-я, Галина 2-я.'},
+{uid:'pk2',src:'Пед-копилка · №2',title:'Кино, рок-концерт или танцы',
+ cond:'В субботний вечер Семен, Коля и Витя решили развлечься. У них был выбор: кино, рок-концерт или танцы.\n• Семён любит кино, но к танцам менее нетерпим, чем к рок-музыке.\n• Коля любит танцевать, но готов пойти в кино скорее, чем на рок концерт.\n• Витя любит рок-музыку меньше чем танцы, но кино ему всё-таки не так неприятно, как танцы или концерт.',
+ q:'Поскольку вопрос решатся большинством голосов, то куда, на ваш взгляд отправились эти ребята?',
+ key:'Главное: у каждого — свой порядок предпочтений; решение принимается большинством голосов (сравнивай варианты попарно). В таблице ✓ — первый выбор каждого.',
+ tables:[T('Первый выбор каждого (✓ — любимое)',['Семён','Коля','Витя'],['Кино','Рок-концерт','Танцы'],1,99,[[1,0,0],[0,0,1],[1,0,0]])],
+ ans:{type:'choice',options:['Кино','Рок-концерт','Танцы'],ref:'Кино'},
+ hint:'Выпиши предпочтения каждого по порядку. Сравни кино и танцы: за что проголосует каждый из троих?',
+ sol:'Семён: кино > танцы > рок. Коля: танцы > кино > рок. Витя: кино > танцы > рок. Попарно: кино против танцев — Семён и Витя за кино (2:1); кино против рока — 3:0. Кино побеждает любой вариант → отправились в кино.'},
+{uid:'pk3',src:'Пед-копилка · №3',title:'Костя, Фома, Марат и девочки',
+ cond:'Трое мальчиков Костя, Фома и Марат дружили с тремя девочками – Женей, Светой и Мариной. Но вскоре компания разделилась на пары, потому, что оказалось:\n• Света ненавидит ходить на лыжах.\n• Костя, Женин брат часто катается со своей подружкой на лыжах\n• А Фома теперь бежит на свидание к Костиной сестре.',
+ q:'С кем же проводит время Марат?',
+ key:'Главное: Костя и Женя — брат и сестра (не пара!); подружка Кости катается на лыжах; Света лыжи ненавидит.',
+ tables:[T('Пары: мальчики × девочки',['Костя','Фома','Марат'],['Женя','Света','Марина'],1,1,[[0,0,1],[1,0,0],[0,1,0]])],
+ hint:'Кто в компании брат и сестра? Кто из девочек точно не катается на лыжах?',
+ sol:'Костя — Женин брат → его подружка не Женя; она катается на лыжах → не Света → Марина. Фома идёт к Костиной сестре Жене. Марату остаётся Света.'},
+{uid:'pk4',src:'Пед-копилка · №4',title:'Завтрак в буфете',
+ cond:'Шестеро друзей в ожидании электрички заскочили в буфет.\n• Маша взяла то же, что и Егор, и вдобавок ещё бутерброд с сыром.\n• Аня купила, то же, что и Саша, но не стала покупать шоколадное печенье.\n• Кирилл ел то же, что и Мила, но без луковых чипсов.\n• Егор завтракал тем же что и Аня, но бутерброду с котлетой предпочел картофельные чипсы.\n• Саша ел то же, что и Мила, но вместо молочного коктейля пил лимонад.',
+ q:'Из чего состоял завтрак каждого из друзей?',
+ key:'Главное: начни с Милы — у неё были все продукты, которые у других «убавляют»: печенье, котлета, луковые чипсы, коктейль. Количество галочек в строке указано в подсказке к таблице.',
+ tables:[T('Друзья × продукты (галочек в строке: Маша 4, Аня 3, Кирилл 3, Егор 3, Саша 4, Мила 4)',['Маша','Аня','Кирилл','Егор','Саша','Мила'],['Бутерброд с сыром','Шоколадное печенье','Луковые чипсы','Картофельные чипсы','Бутерброд с котлетой','Молочный коктейль','Лимонад'],[4,3,3,3,4,4],[1,3,5,2,4,2,4],[[1,0,1,1,0,0,1],[0,0,1,0,1,0,1],[0,1,0,0,1,1,0],[0,0,1,1,0,0,1],[0,1,1,0,1,0,1],[0,1,1,0,1,1,0]])],
+ hint:'Проследи цепочку от Милы: Саша = Мила − коктейль + лимонад. Что дальше убирает Аня? А Егор?',
+ sol:'Мила: печенье, котлета, луковые чипсы, коктейль (эти продукты у других «убавляют»). Саша = Мила − коктейль + лимонад. Аня = Саша − печенье. Егор = Аня − котлета + картофельные чипсы. Маша = Егор + бутерброд с сыром. Кирилл = Мила − луковые чипсы. Итог: Маша — луковые и картофельные чипсы, лимонад, сырный бутерброд; Аня — котлета, луковые чипсы, лимонад; Кирилл — печенье, котлета, коктейль; Егор — луковые и картофельные чипсы, лимонад; Саша — печенье, котлета, луковые чипсы, лимонад; Мила — печенье, котлета, луковые чипсы, коктейль.'},
+{uid:'pk5',src:'Пед-копилка · №5',title:'Кафе: кто на какой должности',
+ cond:'В одном небольшом кафе в смене одновременно работали 5 человек: администратор, повар, кондитер, кассир, дворник. Одновременно на работу выходили мисс Галбрейт, мисс Шерман, мистер Вильямс, мистер Вортман и мистер Блейк. При этом известно, что:\n1. Повар – холостяк.\n2. Кассир и администратор жили в одной комнате, когда учились в колледже.\n3. Мистер Блейк и мисс Шерман встречаются только на работе.\n4. Миссис Вильямс расстроилась, когда муж сказал ей, что администратор отказал ему в отгуле.\n5. Вортман собирается быть шафером на свадьбе у кассира и кондитера.',
+ q:'Кто на какой должности в этом кафе?',
+ key:'Главное: Вильямс женат и просил отгул у администратора; кассир и администратор — одного пола; кассир и кондитер — свадебная пара; Вортман — шафер.',
+ tables:[T('Сотрудники × должности',['Галбрейт','Шерман','Вильямс','Вортман','Блейк'],['Администратор','Повар','Кондитер','Кассир','Дворник'],1,1,[[0,0,0,1,0],[1,0,0,0,0],[0,0,0,0,1],[0,1,0,0,0],[0,0,1,0,0]])],
+ hint:'Кто точно не администратор и не повар? Могут ли кассир и администратор быть разного пола?',
+ sol:'Вильямс женат (не повар-холостяк) и просил отгул у администратора (не администратор). Вортман — шафер → не кассир и не кондитер. Кассир и администратор одного пола; кассир и кондитер — пара. Если кассир мужчина, то администратор мужчина, женщинам остаются кондитер и дворник, и администратором был бы Вильямс — противоречие. Значит, кассир и администратор — Галбрейт и Шерман. Кондитер — жених кассира; Блейк и Шерман не пара → кассир Галбрейт, администратор Шерман, кондитер Блейк. Вильямс — дворник, Вортман — повар.'},
+{uid:'pk6',src:'Пед-копилка · самост. №1',title:'Коля, Боря, Вова и Юра',
+ cond:'Коля, Боря, Вова и Юра заняли первые четыре места в спортивном соревновании. На вопрос, какие места они заняли, они ответили:\n1) "Коля не занял ни первое, ни четвертое места".\n2) “Боря занял второе место”.\n3) “Вова не был последним”.',
+ q:'Какое место занял каждый мальчик?',
+ key:'Главное: Боря — точно второй; Коля не 1-й и не 4-й; Вова не последний.',
+ tables:[T('Мальчики × места',['Коля','Боря','Вова','Юра'],['1 место','2 место','3 место','4 место'],1,1,[[0,0,1,0],[0,1,0,0],[1,0,0,0],[0,0,0,1]])],
+ hint:'Начни с точного факта — место Бори. Какие места тогда остаются Коле?',
+ sol:'Боря — 2-й. Коля не 1-й и не 4-й, 2-е занято → 3-й. Вова не последний → 1-й. Юра — 4-й.'},
+{uid:'pk7',src:'Пед-копилка · самост. №2',title:'Врач, физик, юрист и увлечения',
+ cond:'Три одноклассника - Влад, Тимур и Юра встретились спустя 10 лет после окончания школы. Выяснилось, что один из них стал врачом, другой - физиком, а третий - юристом. Один увлекся туризмом, другой - бегом, третий - регби.\n1. Юра сказал, что, на туризм ему не хватает времени, хотя его сестра - единственный врач в семье, заядлый турист.\n2. Врач сказал, что он разделяет увлечение коллеги.\n3. Забавно, но у двоих из друзей в названиях их профессий и увлечений не встречается ни одна буква их имен.',
+ q:'Кто чем любит заниматься в свободное время и у кого какая профессия?',
+ key:'Главное: проверь буквы имён в названиях профессий и увлечений; сестра Юры — врач и турист (коллега врача из п.2).',
+ tables:[T('Профессии',['Влад','Тимур','Юра'],['Врач','Физик','Юрист'],1,1,[[0,0,1],[1,0,0],[0,1,0]]),T('Увлечения',['Влад','Тимур','Юра'],['Туризм','Бег','Регби'],1,1,[[0,0,1],[1,0,0],[0,1,0]])],
+ hint:'Выпиши буквы каждого имени. У Тимура любая профессия содержит его букву — что это значит для «двоих» из пункта 3?',
+ sol:'Тимур (т,и,м,у,р): врач — р, физик — и, юрист — т/и/р → он не из «двоих». Юра (ю,р,а) подходит только с физикой и бегом. Значит, «двое» — Влад и Юра: Юра — физик и бег; Влад — не врач (в,а есть в слове) → юрист; Тимур — врач. Врач разделяет увлечение коллеги-врача — сестры Юры, заядлого туриста → Тимур — туризм, Влад — регби.'},
+{uid:'pk8',src:'Пед-копилка · самост. №3',title:'Учителя в трёх городах',
+ cond:'Три друга — Иван, Дмитрий, Степан преподают различные предметы (химию, литературу, физику) в школах Москвы, Калининграда и Перми. Известно:\n1) Иван работает не в Москве, а Дмитрий не в Калининграде;\n2) москвич преподает не физику;\n3) тот, кто работает в Калининграде, преподает химию;\n4) Дмитрий преподает не литературу.',
+ q:'Какой предмет и в каком городе преподает каждый из товарищей?',
+ key:'Главное: Калининград ↔ химия; москвич не физик; Иван не в Москве; Дмитрий не в Калининграде и не литература.',
+ tables:[T('Города',['Иван','Дмитрий','Степан'],['Москва','Калининград','Пермь'],1,1,[[0,1,0],[0,0,1],[1,0,0]]),T('Предметы',['Иван','Дмитрий','Степан'],['Химия','Литература','Физика'],1,1,[[1,0,0],[0,0,1],[0,1,0]])],
+ hint:'Где может работать Дмитрий? В Москве ему пришлось бы вести химию — но где преподаётся химия?',
+ sol:'Дмитрий не в Калининграде; в Москве не физика и не литература (п.4) → осталась бы химия, но она в Калининграде → Дмитрий в Перми. Иван не в Москве → Калининград → химия. Степан — Москва. Дмитрий не литература → физика; Степану — литература.'},
+{uid:'pk9',src:'Пед-копилка · самост. №4',title:'Девочки и соки',
+ cond:'Четыре девочки Маша, Таня, София и Полина взяли в кафе сок. Каждая из них покупал только один сок, причем две из них купили сок яблочный, одна виноградный, и одна – грушевый. Известно, что у Маши и Тани разные вкусы. Разные соки взяли Маша с Софией, Полина с Софией, Полина с Машей и Таня с Софией. Кроме того известно, что Маша купила не грушевый сок.',
+ q:'Определить, какой сок пила каждая из них.',
+ key:'Главное: яблочных ДВА (в столбце «Яблочный» — 2 галочки), виноградный и грушевый — по одному; София отличается от всех остальных.',
+ tables:[T('Девочки × соки (яблочный — у двоих)',['Маша','Таня','София','Полина'],['Яблочный','Виноградный','Грушевый'],1,[2,1,1],[[0,1,0],[1,0,0],[0,0,1],[1,0,0]])],
+ hint:'Может ли София взять яблочный, если все остальные обязаны отличаться от неё? Какая пара девочек может делить два яблочных?',
+ sol:'Если бы София взяла яблочный, второй яблочный достался бы Маше, Тане или Полине — но все они отличны от Софии → София взяла виноградный или грушевый. Два яблочных — у пары без запрета «разные соки»: Таня и Полина. Маша не грушевый → виноградный; Софии — грушевый.'},
+{uid:'pk10',src:'Пед-копилка · №6',title:'Задача Эйнштейна: пять домов',
+ cond:'Пять домов стоят вдоль дороги, один за другим.\n1. Доцент живёт в красном доме.\n2. Гробовщик держит собак.\n3. Сантехник пьёт чай.\n4. Зелёный дом слева от белого.\n5. Хозяин зелёного дома пьёт кофе.\n6. Любитель «Примы» держит птицу.\n7. Хозяин жёлтого дома курит «Беломор канал».\n8. В центральном доме любят молоко.\n9. Приёмщик стеклотары живёт в первом доме.\n10. Курящий «Яву» сосед хозяина кошек.\n11. Хозяин лошадей – сосед курящего «Беломор».\n12. Любитель пива курит «Кубинские» сигары.\n13. Ночной сторож предпочитает сигареты «Друг».\n14. Приёмщик стеклотары живёт рядом с синим домом.\n15. Курящий «Яву» сосед пьющего воду.',
+ q:'Кто держит рыб? (номер дома, цвет профессия, напитки)',
+ key:'Главное: дома слева направо 1–5; «слева от» — непосредственно слева; заполни пять таблиц и укажи номер дома с рыбами.',
+ tables:[
+  T('Цвета домов',['Дом 1','Дом 2','Дом 3','Дом 4','Дом 5'],['Красный','Зелёный','Белый','Жёлтый','Синий'],1,1,[[0,0,0,1,0],[0,0,0,0,1],[1,0,0,0,0],[0,1,0,0,0],[0,0,1,0,0]]),
+  T('Профессии',['Дом 1','Дом 2','Дом 3','Дом 4','Дом 5'],['Доцент','Гробовщик','Сантехник','Приёмщик стеклотары','Ночной сторож'],1,1,[[0,0,0,1,0],[0,0,1,0,0],[1,0,0,0,0],[0,0,0,0,1],[0,1,0,0,0]]),
+  T('Напитки',['Дом 1','Дом 2','Дом 3','Дом 4','Дом 5'],['Чай','Кофе','Молоко','Пиво','Вода'],1,1,[[0,0,0,0,1],[1,0,0,0,0],[0,0,1,0,0],[0,1,0,0,0],[0,0,0,1,0]]),
+  T('Сигареты',['Дом 1','Дом 2','Дом 3','Дом 4','Дом 5'],['«Прима»','«Беломор»','«Ява»','«Кубинские»','«Друг»'],1,1,[[0,1,0,0,0],[0,0,1,0,0],[1,0,0,0,0],[0,0,0,0,1],[0,0,0,1,0]]),
+  T('Питомцы',['Дом 1','Дом 2','Дом 3','Дом 4','Дом 5'],['Собаки','Птица','Кошки','Лошади','Рыбы'],1,1,[[0,0,1,0,0],[0,0,0,1,0],[0,1,0,0,0],[0,0,0,0,1],[1,0,0,0,0]])],
+ ans:{type:'nums',fields:[{label:'№ дома, где держат рыб',ref:4}]},
+ hint:'Начни с домов 1 и 2 (приёмщик стеклотары, синий дом). Где могут стоять зелёный и белый, если в центре пьют молоко, а в зелёном — кофе?',
+ sol:'Дом 1 — приёмщик (9), рядом синий → дом 2 синий (14). Центр — молоко (8). Зелёный непосредственно слева от белого, в зелёном кофе → зелёный 4, белый 5 (3 занят молоком). Дом 1 не красный/зелёный/белый/синий → жёлтый → «Беломор» (7) → лошади у соседа, дом 2 (11). Дом 3 — красный, доцент (1). Вода — дом 1 (чай у сантехника, кофе 4, молоко 3, пиво с «Кубинскими»); «Ява» — дом 2 (15), кошки — дом 1 (10). Сантехник — дом 2, чай (3). «Прима» — дом 3, птица (6). Сторож — дом 4, «Друг» (13). Пиво и «Кубинские» — дом 5, гробовщик и собаки (2,12). Рыбы — у ночного сторожа: зелёный дом №4, кофе, «Друг».'},
+{uid:'pk11',src:'Пед-копилка · задача учеников',title:'Дискотека: кто с кем танцевал',
+ cond:'На дискотеку пошли 4 девочки: Маша, Оля, Рита. На медленный танец их приглашали Сергей, Рома, Саша, Паша. Кто с кем танцевал, если:\n1) Оля не танцевала с Пашей;\n2) Таня не танцевала с Пашей и Романом;\n3) Рита танцевала с Ромой;\n4) Оле понравился Сергей, но она не танцевала с ним.',
+ q:'Кто с кем танцевал?',
+ key:'Главное: в списке имён источника пропущена четвёртая девочка — это Таня из пункта 2. Рита танцевала с Ромой (точный факт).',
+ tables:[T('Девочки × партнёры',['Маша','Оля','Рита','Таня'],['Сергей','Рома','Саша','Паша'],1,1,[[0,0,0,1],[0,0,1,0],[0,1,0,0],[1,0,0,0]])],
+ hint:'Начни с точной пары: Рита — Рома. Кого исключают пункты 1 и 4 для Оли?',
+ sol:'Рита — с Ромой. Оля: не Паша (1), не Сергей (4), Рома занят → Саша. Таня: не Паша и не Рома (2), Саша занят → Сергей. Маше остаётся Паша.'}
+];
+/* ================= процедурные шаблоны (банк) ================= */
+const POOL3=[['А','Артем,Антон,Алексей','Антонов'],['Б','Борис,Богдан','Белов'],['В','Виктор,Вадим,Владимир','Воронов'],['Г','Георгий,Григорий','Громов'],['Д','Денис,Дмитрий','Дорофеев'],['Е','Егор,Евгений','Ершов'],['И','Иван,Илья','Иванов'],['К','Кирилл,Константин','Кузнецов'],['Л','Леонид,Лев','Лебедев'],['М','Михаил,Марк','Миронов'],['Н','Николай,Никита','Никифоров'],['О','Олег,Осип','Орлов'],['П','Петр,Павел','Петров'],['Р','Роман,Руслан','Романов'],['С','Сергей,Семен,Степан','Сидоров'],['Т','Тимур,Тарас','Тимофеев'],['Ф','Федор,Филипп','Фролов'],['Ю','Юрий,Юлиан','Юдин'],['Я','Яков,Ян','Яковлев']];
+let genCounter=0;
+function solveVprGen(names,items,excl){
+  const n=names.length,sols=[];
+  for(const p of PERMS[n]){let ok=true;for(let i=0;i<n;i++){if(L(names[i])===L(items[p[i]])||(excl[i]||[]).includes(p[i])){ok=false;break;}}if(ok)sols.push(p);}
+  return sols;
+}
+function genVpr3(wide){
+  const pool=wide?POOL3:POOL3.slice(0,14);
+  const letters=shuffle(pool.slice()).slice(0,3);
+  const names=letters.map(x=>pick(x[1].split(','))),surn=letters.map(x=>x[2]);
+  const tk=ri(0,2);let ls=ri(0,2);if(ls===tk)ls=(ls+1)%3;
+  const sols=solveVprGen(names,surn,{[tk]:[ls]});
+  if(sols.length!==1)return null;
+  const ans=sols[0].map(x=>x+1).join('');
+  const id=++genCounter;
+  return{uid:'g3-'+id+'-'+ri(100,999),src:'Сгенерировано · шаблон «имена–фамилии 3×3»',gen:true,title:names.join(', '),
+    cond:'На '+pick(['встречу','пикник','концерт','собрание','прогулку'])+' пришли три мальчика: '+names.join(', ')+'. Фамилии мальчиков — '+surn.join(', ')+'. '+names[tk]+' во время разговора с '+surn[ls]+'ым заметил, что ни у одного из них первая буква своего имени и первая буква своей фамилии не совпадают.',
+    q:'Соотнесите имена и фамилии.',key:'Главное: первые буквы имени и фамилии не совпадают; '+names[tk]+' — не '+surn[ls]+'.',instr:INSTR[0],
+    tables:[{cap:'Имена × фамилии',rows:names,cols:surn,rq:1,cq:1,letters:true,ref:refMatrix(3,ans)}],
+    ans:{type:'seq',n:3,ref:ans},
+    hint:'Начни с говорящего: фамилия собеседника ему не принадлежит. Затем вычеркни фамилии на ту же букву, что и имя.',
+    sol:vprExplain(names,surn,{[tk]:[ls]},ans,()=>'разговор')};
+}
+const SUBJ=[['Русский язык','русский язык'],['Химия','химию'],['Алгебра','алгебру'],['Геометрия','геометрию'],['Биология','биологию'],['История','историю'],['Математика','математику'],['Обществознание','обществознание'],['Физика','физику'],['Литература','литературу'],['Информатика','информатику'],['География','географию']];
+const BOY={'А':'Андрей,Антон,Артем','Б':'Борис,Богдан','В':'Виктор,Вадим','Г':'Григорий,Георгий','Д':'Денис,Дмитрий','И':'Иван,Илья','К':'Кирилл','Л':'Леонид','М':'Марк,Михаил','О':'Олег','Р':'Руслан,Роман','С':'Сергей,Семен','Т':'Тимур','Ф':'Федор','Х':'Харитон','Ю':'Юрий','Я':'Яков'};
+function genVpr4(wide){
+  const subs=shuffle(SUBJ.slice()).slice(0,4);
+  const names=[];
+  for(const s of subs){const b=BOY[s[0][0].toUpperCase()];if(!b)return null;names.push(pick(b.split(',')));}
+  const items=subs.map(x=>x[0]);
+  const i1=ri(0,3);let i2=ri(0,3);if(i2===i1)i2=(i2+1)%4;
+  const cand=[0,1,2,3].filter(i=>L(names[i])!==L(items[i1])&&L(names[i])!==L(items[i2]));
+  if(cand.length<2)return null;
+  const ns=shuffle(cand).slice(0,2);
+  const excl={[ns[0]]:[i1,i2],[ns[1]]:[i1,i2]};
+  const sols=solveVprGen(names,items,excl);
+  if(sols.length!==1)return null;
+  const ans=sols[0].map(x=>x+1).join('');
+  const id=++genCounter;
+  return{uid:'g4-'+id+'-'+ri(100,999),src:'Сгенерировано · шаблон «предметы 4×4»',gen:true,title:names.join(', '),
+    cond:'Четыре мальчика ('+names.join(', ')+') собираются сдавать экзамены. Все четверо выбрали различные предметы — '+subs.map(x=>x[1]).join(', ')+'. Известно, что ни у одного мальчика имя и название выбранного предмета не начинаются на одну букву. '+names[ns[0]]+' и мальчик, сдающий '+subs[i1][1]+', уверены в своих знаниях, а '+names[ns[1]]+' и мальчик, сдающий '+subs[i2][1]+', думают, что им необходимо ещё подготовиться.',
+    q:'Какой предмет выбрал каждый из мальчиков? Для каждого имени мальчика укажите предмет, который он выбрал для сдачи.',
+    key:'Главное: правило первых букв; названные пары — разные люди.',instr:INSTR[1],
+    tables:[{cap:'Имена × предметы',rows:names,cols:items,rq:1,cq:1,letters:true,ref:refMatrix(4,ans)}],
+    ans:{type:'seq',n:4,ref:ans},
+    hint:'У названных в подсказках мальчиков запрещены сразу два предмета плюс один по букве. Сколько вариантов остаётся?',
+    sol:vprExplain(names,items,excl,ans,()=>'по условию — другой человек')};
+}
+const ORD=['первым','вторым','третьим','четвёртым','пятым','шестым'];
+const RNAMES=['Аня','Боря','Вера','Глеб','Даша','Егор','Женя','Ира','Костя','Лена','Миша','Настя','Олег','Полина','Рита','Саша','Таня','Юра'];
+function genRace(wide){
+  const n=wide?ri(3,6):ri(4,5);
+  const names=shuffle(RNAMES.slice()).slice(0,n);
+  const hidden=shuffle([...Array(n).keys()]);
+  const place=i=>hidden.indexOf(i)+1;
+  const clues=[],cons=[];
+  const addC=(txt,fn)=>{clues.push(txt);cons.push(fn);};
+  let tries=0;
+  const uniq=()=>PERMS[n].filter(p=>cons.every(f=>f(p))).length;
+  while(tries++<10){
+    const type=ri(0,2);
+    if(type===0){const x=ri(0,n-1),k=ri(0,n-1);if(hidden[x]===k)continue;addC(names[x]+' не был '+ORD[k]+'.',p=>p[x]!==k);}
+    else if(type===1){const z=ri(0,n-1),y=ri(0,n-1);if(y===z||place(y)!==place(z)+1)continue;addC(names[y]+' финишировал сразу за '+names[z]+'.',p=>p[y]===p[z]+1);}
+    else{const d=ri(2,wide?3:2),v=ri(0,n-1),w=ri(0,n-1);if(w===v||place(w)!==place(v)+d)continue;addC(names[w]+' отстал от '+names[v]+' на '+d+' места.',p=>p[w]===p[v]+d);}
+    if(clues.length>=3&&uniq()===1)break;
+    if(clues.length>=7)return null;
+  }
+  if(uniq()!==1)return null;
+  const sols=PERMS[n].filter(p=>cons.every(f=>f(p)));
+  const ansM=[];for(let i=0;i<n;i++){const row=Array(n).fill(0);row[sols[0][i]]=1;ansM.push(row);}
+  const id=++genCounter;
+  const cols=[...Array(n).keys()].map(k=>(k+1)+' место');
+  return{uid:'gr-'+id+'-'+ri(100,999),src:'Сгенерировано · шаблон «гонки»',gen:true,title:'Гонки: '+names.slice(0,3).join(', ')+'…',
+    cond:'На соревнованиях '+names.join(', ')+' заняли первые '+n+' мест (все места разные). Известно:\n'+clues.map((c,i)=>(i+1)+') '+c).join('\n'),
+    q:'Какое место занял каждый участник?',key:'Главное: «сразу за» — на одно место позже; «отстал на d мест» — разница ровно d.',
+    tables:[T('Участники × места',names,cols,1,1,ansM)],
+    hint:'Начни с самого жёсткого ограничения («отстал на … мест»): вариантов для этой пары мало. Перебери их.',
+    sol:'Перебор всех расстановок мест с учётом условий оставляет единственный вариант:\n'+names.map((nm,i)=>nm+' — '+(sols[0][i]+1)+' место').join('; ')+'.'};
+}
+const BALLCOLS=['Красные','Оранжевые','Жёлтые','Зелёные'];
+const PAIRS=[[0,1],[1,2],[2,3]];
+const PAIRNAME=['красный и оранжевый','оранжевый и жёлтый','жёлтый и зелёный'];
+function ballsTask(p){
+  const boys=['Вася','Петя','Коля'];
+  const reports=boys.map((b,i)=>{const r=p.cnt.slice();const[a,b2]=PAIRS[p.asg[i]];[r[a],r[b2]]=[r[b2],r[a]];return r;});
+  const refM=boys.map((b,i)=>{const row=[0,0,0];row[p.asg[i]]=1;return row;});
+  return{uid:'mm7',src:'Малый мехмат · №7 (данные сгенерированы)',gen:true,title:'Шарики четырёх цветов',
+    cond:'Вася, Петя и Коля пересчитали кучу шариков четырёх цветов. При этом каждый из них правильно различал какие-то два цвета, а два других мог путать: один путал красный и оранжевый, другой - оранжевый и жёлтый, а третий - жёлтый и зелёный. (Если мальчик путает, например, красный и оранжевый, то он все красные шарики называет оранжевыми, а все оранжевые – красными). Результаты их подсчётов приведены в таблице.',
+    q:'Сколько каких шариков было на самом деле?',
+    key:'Главное: каждый отчёт — настоящие числа с одной перепутанной парой соседних цветов. Таблица подсчётов сгенерирована (в источнике она недоступна).',
+    given:{cap:'Результаты подсчётов (сгенерировано)',rows:boys,cols:BALLCOLS,data:reports},
+    tables:[T('Кто какую пару путал',boys,['Красный↔Оранжевый','Оранжевый↔Жёлтый','Жёлтый↔Зелёный'],1,1,refM)],
+    ans:{type:'nums',fields:BALLCOLS.map((c,i)=>({label:c+' (на самом деле)',ref:p.cnt[i]}))},
+    hint:'«Верни» каждому мальчику его пару обратно и проверь: настоящие числа должны получиться одинаковыми во всех трёх отчётах.',
+    sol:'Перебираем, кто какую пару путал, и отменяем перестановку в его отчёте. Все три отчёта сходятся только так: '+boys.map((b,i)=>b+' путал '+PAIRNAME[p.asg[i]]).join('; ')+'.\nНастоящие числа: красных — '+p.cnt[0]+', оранжевых — '+p.cnt[1]+', жёлтых — '+p.cnt[2]+', зелёных — '+p.cnt[3]+'.'};
+}
+function genBalls(wide){
+  const hi=wide?14:9;
+  const cnt=[];while(cnt.length<4){const v=ri(2,hi);if(!cnt.includes(v))cnt.push(v);}
+  const asg=shuffle([0,1,2]);
+  return ballsTask({cnt:cnt,asg:asg});
+}
+const TPL=[genVpr3,genVpr4,genRace,genBalls];
+/* ================= дедупликация и сборка варианта ================= */
+function referenceOf(t){
+  return JSON.stringify({m:t.tables.map(x=>x.ref),a:t.ans?t.ans.ref:null});
+}
+function makeSignature(t){
+  const raw=(t.cond+' '+(t.q||'')+' '+t.tables.map(x=>x.cap+' '+x.rows.join(' ')+' '+x.cols.join(' ')).join(' ')+' '+(t.given?JSON.stringify(t.given.data):'')+' '+(t.ans&&t.ans.type==='nums'?JSON.stringify(t.ans.fields.map(f=>f.ref)):''));
+  const text=raw.toLowerCase().replace(/<[^>]*>/g,' ').replace(/[^a-zа-яё0-9\s]/gi,' ').replace(/\s+/g,' ').trim();
+  const nums=(text.match(/\d+/g)||[]).join(',');
+  return text+'|'+nums+'|'+referenceOf(t);
+}
+function buildVariant(){
+  const sigs=new Set(),out=[];
+  const add=t=>{if(!t)return false;const s=makeSignature(t);if(sigs.has(s))return false;sigs.add(s);out.push(t);return true;};
+  const fixed=shuffle(V3.map(buildV3).concat(V4.map(buildV4)).concat(FIX.map(x=>JSON.parse(JSON.stringify(x)))));
+  for(const t of fixed){if(out.length>=59)break;add(t);}
+  const addGen=(tpl,startWide)=>{let wide=startWide||false;for(let a=0;a<40;a++){if(a===20)wide=true;const t=tpl(wide);if(t&&add(t))return true;}return false;};
+  if(out.length<59&&!out.some(t=>t.uid==='mm7'))addGen(genBalls,false);
+  let guard=0;
+  while(out.length<59&&guard++<300){addGen(pick(TPL),guard>120);}
+  return shuffle(out).slice(0,59);
+}
+/* ================= состояние ================= */
+const LSK='logtab7.v1';
+const S={tasks:[],cur:0,st:{},spent:0,t0:Date.now(),kbd:false,finalPlayed:false};
+let autoTimer=null,P=null,activeTile=null,lastAppend=-1,drag=null,focusNum=0;
+function elapsed(){return S.spent+(Date.now()-S.t0);}
+function save(){S.spent=elapsed();S.t0=Date.now();try{localStorage.setItem(LSK,JSON.stringify({tasks:S.tasks,st:S.st,spent:S.spent,finalPlayed:S.finalPlayed}));}catch(e){}}
+function load(){
+  let ok=false;
+  try{const d=JSON.parse(localStorage.getItem(LSK));
+    if(d&&Array.isArray(d.tasks)&&d.tasks.length===59){const seen=new Set();S.tasks=shuffle(d.tasks.filter(t=>{if(!t||!t.uid||seen.has(t.uid))return false;seen.add(t.uid);return true;}));S.st=d.st||{};S.spent=d.spent||0;S.finalPlayed=!!d.finalPlayed;ok=S.tasks.length===59;}
+  }catch(e){}
+  if(!ok){S.tasks=buildVariant();S.st={};S.spent=0;S.finalPlayed=false;}
+  S.t0=Date.now();
+}
+function stFor(t){
+  if(!S.st[t.uid])S.st[t.uid]={m:t.tables.map(tb=>Array(tb.rows.length*tb.cols.length).fill(0)),seq:'',choice:'',nums:(t.ans&&t.ans.type==='nums')?t.ans.fields.map(()=>''):[],status:null,checked:false};
+  return S.st[t.uid];
+}
+const cur=()=>S.tasks[S.cur];
+const correctCount=()=>S.tasks.filter(t=>S.st[t.uid]&&S.st[t.uid].status==='correct').length;
+/* ================= звук/тема ================= */
+try{Snd.on=localStorage.getItem('logtab7.snd')!=='0';}catch(e){}
+function updSndIcon(){$('#sndBtn').setAttribute('aria-label',Snd.on?'Выключить звук':'Включить звук');$('#sndPath').setAttribute('d',Snd.on?'M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z':'M3 9v6h4l5 5V4L7 9H3zm18.6 3 2.1-2.1-1.4-1.4-2.1 2.1-2.1-2.1-1.4 1.4 2.1 2.1-2.1 2.1 1.4 1.4 2.1-2.1 2.1 2.1 1.4-1.4-2.1-2.1z');}
+function updThemeIcon(){const dark=document.documentElement.getAttribute('data-theme')==='dark';$('#thPath').setAttribute('d',dark?'M12 4a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0V5a1 1 0 0 1 1-1zm0 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 3a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0v-1a1 1 0 0 1 1-1zM4 11h1a1 1 0 1 1 0 2H4a1 1 0 1 1 0-2zm15 0h1a1 1 0 1 1 0 2h-1a1 1 0 1 1 0-2zM5.6 4.2l.8.7A1 1 0 1 1 5 6.4l-.8-.8a1 1 0 0 1 1.4-1.4zm12.8 12.8.8.8a1 1 0 0 1-1.4 1.4l-.8-.8a1 1 0 0 1 1.4-1.4zm1.4-12.8a1 1 0 0 1 0 1.4l-.8.8a1 1 0 1 1-1.4-1.4l.8-.8a1 1 0 0 1 1.4 0zM6.4 17.6a1 1 0 0 1 0 1.4l-.8.8a1 1 0 0 1-1.4-1.4l.8-.8a1 1 0 0 1 1.4 0z':'M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z');}
+/* ================= рендер ================= */
+const LET='АБВГДЕ';
+function markChar(v){return v===1?'✓':v===-1?'✗':'';}
+function cellHTML(t,ti,r,c){
+  const tb=t.tables[ti],st=stFor(t),i=r*tb.cols.length+c,v=st.m[ti][i];
+  const rn=tb.rows[r],cn=tb.cols[c];
+  return '<td><button class="cell'+(v===1?' v1':v===-1?' v-1':'')+'" data-t="'+ti+'" data-i="'+i+'" aria-label="'+esc(rn+' — '+cn+': '+(v===1?'галочка':v===-1?'крестик':'пусто'))+'">'+markChar(v)+'</button></td>';
+}
+function tableHTML(t,ti){
+  const tb=t.tables[ti];let h='<div class="tcap">'+esc(tb.cap)+'</div><div class="tscroll"><table class="lt"><thead><tr><th class="rowh"></th>';
+  tb.cols.forEach((c,j)=>{h+='<th scope="col">'+esc(tb.letters?(j+1)+') '+c:c)+'</th>';});
+  h+='</tr></thead><tbody>';
+  tb.rows.forEach((r,i)=>{h+='<tr><th class="rowh" scope="row">'+esc(tb.letters?LET[i]+') '+r:r)+'</th>';tb.cols.forEach((c,j)=>{h+=cellHTML(t,ti,i,j);});h+='</tr>';});
+  return h+'</tbody></table></div>';
+}
+function givenHTML(g){
+  let h='<div class="given"><div class="tcap">'+esc(g.cap)+'</div><div class="tscroll"><table><tr><th></th>'+g.cols.map(c=>'<th>'+esc(c)+'</th>').join('')+'</tr>';
+  g.rows.forEach((r,i)=>{h+='<tr><th>'+esc(r)+'</th>'+g.data[i].map(v=>'<td>'+v+'</td>').join('')+'</tr>';});
+  return h+'</table></div></div>';
+}
+function answerHTML(t){
+  const st=stFor(t);if(!t.ans)return'';
+  let h='<div class="ansblock"><div class="anslabel">✏️ Ответ — собирается из заполненной таблицы'+(t.instr?' · '+esc(t.instr):'')+'</div>';
+  if(t.ans.type==='seq'){
+    h+='<div class="slots" id="slots">';
+    for(let i=0;i<t.ans.n;i++){const d=st.seq[i]||'';h+='<div class="slotwrap"><span class="slotlab">'+LET[i]+'</span><button class="slot'+(d?' filled':'')+'" data-slot="'+i+'" aria-label="Клетка ответа '+LET[i]+(d?': '+d:', пустая')+'">'+d+'</button></div>';}
+    h+='</div><div class="tiles" id="tiles">';
+    for(let d=1;d<=t.ans.n;d++)h+='<button class="tile" data-digit="'+d+'" aria-label="Плитка '+d+'">'+d+'</button>';
+    h+='<button class="tile tool" data-act="erase" aria-label="Стереть последнюю цифру">⌫ Стереть</button><button class="tile tool" data-act="clearseq" aria-label="Очистить ответ">Очистить</button></div>';
+    h+='<div class="tcap" style="font-weight:400">Проверка идёт прямо по таблице. Когда таблица заполнена, ответ соберётся из неё сам; плитки — для ручной записи (нажми плитку, или перетащи её в клетку, или нажми плитку, затем клетку).</div>';
+  }else if(t.ans.type==='choice'){
+    h+='<div class="choices">'+t.ans.options.map(o=>'<button class="choice'+(st.choice===o?' sel':'')+'" data-act="choice" data-v="'+esc(o)+'">'+esc(o)+'</button>').join('')+'</div>';
+  }else if(t.ans.type==='nums'){
+    h+='<div class="nums">'+t.ans.fields.map((f,i)=>'<div class="numwrap"><label for="num'+i+'">'+esc(f.label)+'</label><input class="numin" id="num'+i+'" data-k="'+i+'" inputmode="numeric" pattern="[0-9]*" maxlength="3" autocomplete="off" value="'+esc(st.nums[i]||'')+'" aria-label="'+esc(f.label)+'"></div>').join('')+'</div>';
+    h+='<button class="kbd-toggle" data-act="kbd" aria-expanded="'+S.kbd+'" aria-controls="kbdwrap">⌨️ Экранная клавиатура '+(S.kbd?'▴':'▾')+'</button><div class="kbd-wrap'+(S.kbd?' open':'')+'" id="kbdwrap"><div class="kbd">'+[1,2,3,4,5,6,7,8,9,0].map(d=>'<button class="key" data-act="key" data-v="'+d+'" aria-label="Цифра '+d+'">'+d+'</button>').join('')+'<button class="key" data-act="key" data-v="back" aria-label="Стереть цифру">⌫</button></div></div>';
+  }
+  return h+'</div>';
+}
+function renderTask(){
+  const t=cur(),st=stFor(t);
+  let h='<div class="ttitle"><h2>№'+(S.cur+1)+' · '+esc(t.title)+'</h2><span class="badge">'+esc(t.src)+'</span>'+(t.gen?'<span class="badge gen">сгенерировано</span>':'')+'</div>';
+  h+='<div class="cond">'+esc(t.cond)+'</div>';
+  if(t.given)h+=givenHTML(t.given);
+  h+='<div class="keyline">🔑 '+esc(t.key)+'</div>';
+  h+='<div class="quest">❓ Что надо определить: '+esc(t.q)+'</div>';
+  h+='<div id="tables">'+t.tables.map((tb,ti)=>tableHTML(t,ti)).join('')+'</div><div class="scrollhint" id="scrollhint">⇆ таблицу можно прокручивать по горизонтали</div>';
+  h+=answerHTML(t);
+  h+='<div class="hintbox" id="hintbox">💡 '+esc(t.hint)+'</div>';
+  h+='<div class="fb" id="fb"></div><div class="sol" id="sol"><b>Разбор.</b>\n'+t.sol+'</div>';
+  $('#taskCard').innerHTML=h;
+  if(st.checked&&st.status){showFb(st.status==='correct'?'ok':'bad',st.status==='correct'?'✓ Верно! Таблица заполнена правильно.':'✗ Неверно. Посмотри разбор ниже и исправь таблицу.');$('#sol').classList.add('show');if(st.status==='incorrect')markWarn(t);}
+  $('#tasksel').value=String(S.cur);
+  $('#counter').textContent=(S.cur+1)+' из '+S.tasks.length;
+  $('#prevBtn').disabled=S.cur===0;$('#nextBtn').disabled=S.cur===S.tasks.length-1;
+  requestAnimationFrame(()=>{document.querySelectorAll('.tscroll').forEach(w=>{if(w.scrollWidth>w.clientWidth+4)$('#scrollhint').style.display='block';});});
+  activeTile=null;lastAppend=-1;closePopup();
+}
+function renderSelect(){
+  const sel=$('#tasksel');let h='';
+  S.tasks.forEach((t,i)=>{const st=S.st[t.uid];const s=st&&st.status==='correct'?'верно':st&&st.status==='incorrect'?'ошибка':'не решено';h+='<option value="'+i+'">№'+(i+1)+' · '+esc(t.title.slice(0,42))+' · '+s+'</option>';});
+  sel.innerHTML=h;sel.value=String(S.cur);
+}
+function renderProgress(){
+  const c=correctCount();$('#pfill').style.width=(c/S.tasks.length*100)+'%';$('#pbar').setAttribute('aria-valuenow',String(c));
+}
+function renderAll(){renderSelect();renderProgress();renderTask();}
+function showFb(cls,txt){const f=$('#fb');f.className='fb show '+cls;f.textContent=txt;}
+function markWarn(t){
+  const st=stFor(t);
+  document.querySelectorAll('#tables .cell').forEach(b=>{const ti=+b.dataset.t,i=+b.dataset.i,tb=t.tables[ti],r=Math.floor(i/tb.cols.length),c=i%tb.cols.length,v=st.m[ti][i];if(v&&((v===1)!==(tb.ref[r][c]===1)))b.classList.add('warn');});
+}
+function clearWarn(){document.querySelectorAll('#tables .cell.warn').forEach(b=>b.classList.remove('warn'));}
+function updCell(ti,i,anim){
+  const t=cur(),st=stFor(t),b=document.querySelector('#tables .cell[data-t="'+ti+'"][data-i="'+i+'"]');if(!b)return;
+  const v=st.m[ti][i];b.textContent=markChar(v);b.classList.remove('v1','v-1','auto','warn','fill');
+  if(v===1)b.classList.add('v1');if(v===-1)b.classList.add('v-1');
+  if(anim){b.classList.add('auto','fill');}
+  const tb=t.tables[ti],r=Math.floor(i/tb.cols.length),c=i%tb.cols.length;
+  b.setAttribute('aria-label',tb.rows[r]+' — '+tb.cols[c]+': '+(v===1?'галочка':v===-1?'крестик':'пусто'));
+}
+/* ================= механика таблицы ================= */
+function openPopup(btn){
+  P={btn:btn,ti:+btn.dataset.t,i:+btn.dataset.i};
+  const p=$('#popup'),r=btn.getBoundingClientRect();p.classList.add('show');
+  const pw=p.offsetWidth,ph=p.offsetHeight;
+  let x=Math.min(Math.max(8,r.left+r.width/2-pw/2),window.innerWidth-pw-8);
+  let y=r.bottom+8;if(y+ph>window.innerHeight-8)y=Math.max(8,r.top-ph-8);
+  p.style.left=x+'px';p.style.top=y+'px';
+  p.querySelector('.pbtn.yes').focus();
+}
+function closePopup(){const p=$('#popup');if(p.classList.contains('show')){p.classList.remove('show');if(P&&P.btn&&document.contains(P.btn))P.btn.focus();}P=null;}
+function quota(q,idx){return Array.isArray(q)?q[idx]:q;}
+function applyMark(v){
+  if(!P)return;const t=cur(),st=stFor(t),ti=P.ti,i=P.i,tb=t.tables[ti];
+  st.m[ti][i]=v;updCell(ti,i,false);clearWarn();
+  const r=Math.floor(i/tb.cols.length),c=i%tb.cols.length;
+  let anim=[];
+  if(v===1){
+    const rq=quota(tb.rq,r),cq=quota(tb.cq,c);
+    let rowYes=0,colYes=0;
+    for(let j=0;j<tb.cols.length;j++)if(st.m[ti][r*tb.cols.length+j]===1)rowYes++;
+    for(let k=0;k<tb.rows.length;k++)if(st.m[ti][k*tb.cols.length+c]===1)colYes++;
+    if(rowYes>=rq)for(let j=0;j<tb.cols.length;j++){const idx=r*tb.cols.length+j;if(j!==c&&st.m[ti][idx]===0){st.m[ti][idx]=-1;anim.push([ti,idx]);}}
+    if(colYes>=cq)for(let k=0;k<tb.rows.length;k++){const idx=k*tb.cols.length+c;if(k!==r&&st.m[ti][idx]===0&&!anim.some(a=>a[1]===idx&&a[0]===ti)){st.m[ti][idx]=-1;anim.push([ti,idx]);}}
+    anim.forEach((a,k)=>setTimeout(()=>updCell(a[0],a[1],true),90+k*70));
+    Snd.beep(720,.08,'sine',0,.08);
+  }
+  deriveAnswer(t);
+  save();closePopup();scheduleAuto(900+anim.length*70);
+}
+function tablesDone(t){const st=stFor(t);return t.tables.every((tb,ti)=>st.m[ti].every(v=>v!==0));}
+function scheduleAuto(delay){
+  clearTimeout(autoTimer);const t=cur();
+  if(tablesDone(t))autoTimer=setTimeout(()=>{if(cur()===t&&tablesDone(t))checkAnswer(true);},delay||900);
+}
+/* ================= ответ собирается из таблицы ================= */
+function deriveAnswer(t){
+  if(!t.ans)return;const st=stFor(t);
+  if(t.ans.type==='seq'){
+    const tb=t.tables[0];let s='';
+    for(let r=0;r<tb.rows.length;r++){
+      let idx=-1,cnt=0;
+      for(let c=0;c<tb.cols.length;c++)if(st.m[0][r*tb.cols.length+c]===1){idx=c;cnt++;}
+      if(cnt!==1)return;
+      s+=String(idx+1);
     }
-    const r = document.getElementById('result');
-    r.className = 'result show success'; r.textContent = '✅ Верно!';
+    st.seq=s;renderSlots(t);activeTile=null;lastAppend=-1;updActiveTile();
+  }else if(t.ans.type==='choice'){
+    const tb=t.tables[0];let best=-1,bn=-1,tie=false;
+    for(let c=0;c<tb.cols.length;c++){let n=0;for(let r=0;r<tb.rows.length;r++)if(st.m[0][r*tb.cols.length+c]===1)n++;if(n>bn){bn=n;best=c;tie=false;}else if(n===bn)tie=true;}
+    if(best>=0&&!tie&&bn>0){st.choice=tb.cols[best];document.querySelectorAll('.choice').forEach(b=>b.classList.toggle('sel',b.dataset.v===st.choice));}
+  }else if(t.ans.type==='nums'){
+    if(t.uid==='mm7'&&t.given){
+      const tb=t.tables[0],asg=[];
+      for(let r=0;r<tb.rows.length;r++){let idx=-1,cnt=0;for(let c=0;c<tb.cols.length;c++)if(st.m[0][r*tb.cols.length+c]===1){idx=c;cnt++;}if(cnt!==1)return;asg.push(idx);}
+      const rep=t.given.data[0].slice();const pr=PAIRS[asg[0]];const tmp=rep[pr[0]];rep[pr[0]]=rep[pr[1]];rep[pr[1]]=tmp;
+      st.nums=rep.map(String);
+    }else{
+      const petT=t.tables[4];if(!petT)return;const fishCol=petT.cols.indexOf('Рыбы');if(fishCol<0)return;
+      let house=-1,cnt=0;for(let r=0;r<petT.rows.length;r++)if(st.m[4][r*petT.cols.length+fishCol]===1){house=r;cnt++;}
+      if(cnt===1)st.nums=[String(house+1)];else return;
+    }
+    t.ans.fields.forEach((f,i)=>{const inp=document.getElementById('num'+i);if(inp)inp.value=st.nums[i]||'';});
   }
-  t.names.forEach((_, i) => {
-    document.getElementById(`sel-${i}`).addEventListener('change', e => {
-      if (!answers[currentIndex]) answers[currentIndex] = t.names.map(() => '');
-      answers[currentIndex][i] = e.target.value;
-    });
-  });
-  document.getElementById('btnCheck').onclick = checkCurrent;
-  document.getElementById('btnHint').onclick = () => document.getElementById('hint').classList.toggle('show');
-  document.getElementById('btnReset').onclick = resetCurrent;
-  document.getElementById('btnNext').onclick = nextTask;
 }
-
-function checkCurrent() {
-  const t = tasks[currentIndex];
-  const result = document.getElementById('result');
-  let allFilled = true, allCorrect = true;
-  for (let i = 0; i < t.names.length; i++) {
-    const sel = document.getElementById(`sel-${i}`);
-    sel.classList.remove('correct', 'incorrect');
-    if (!sel.value) { allFilled = false; continue; }
-    if (parseInt(sel.value) === t.correct[i]) sel.classList.add('correct');
-    else { sel.classList.add('incorrect'); allCorrect = false; }
+/* ================= проверка прямо по таблице ================= */
+function evaluate(t){
+  const st=stFor(t);let done=true,ok=true;
+  t.tables.forEach((tb,ti)=>{for(let r=0;r<tb.rows.length;r++)for(let c=0;c<tb.cols.length;c++){const v=st.m[ti][r*tb.cols.length+c];if(v===0)done=false;if(v!==0&&((v===1)!==(tb.ref[r][c]===1)))ok=false;}});
+  return{done:done,ok:ok,verdict:!done?'incomplete':(ok?'correct':'incorrect')};
+}
+function checkAnswer(auto){
+  const t=cur(),st=stFor(t),ev=evaluate(t);
+  if(ev.verdict==='incomplete'){
+    if(!auto)showFb('info','Заполни таблицу до конца — ответ проверяется прямо по заполненной таблице.');
+    return;
   }
-  result.className = 'result show';
-  if (!allFilled) { result.classList.add('error'); result.textContent = '⚠️ Заполните все поля.'; return; }
-  if (allCorrect) { result.classList.add('success'); result.textContent = '✅ Верно!'; solved.add(currentIndex); }
-  else { result.classList.add('error'); result.textContent = '❌ Есть ошибки. Попробуйте ещё раз.'; solved.delete(currentIndex); }
-  buildNav(); updateProgress();
-}
-
-function resetCurrent() {
-  const t = tasks[currentIndex];
-  for (let i = 0; i < t.names.length; i++) {
-    const sel = document.getElementById(`sel-${i}`);
-    if (sel) { sel.value = ''; sel.classList.remove('correct', 'incorrect'); }
+  deriveAnswer(t);
+  st.checked=true;st.status=ev.verdict==='correct'?'correct':'incorrect';
+  clearWarn();
+  let ansTxt='';
+  if(t.ans){
+    if(t.ans.type==='seq'&&st.seq)ansTxt=' Ответ: '+st.seq+'.';
+    else if(t.ans.type==='choice'&&st.choice)ansTxt=' Ответ: '+st.choice+'.';
+    else if(t.ans.type==='nums'&&st.nums.length&&st.nums.every(x=>x!==''))ansTxt=' Ответ: '+st.nums.join(', ')+'.';
   }
-  answers[currentIndex] = t.names.map(() => '');
-  document.getElementById('result').classList.remove('show');
-  document.getElementById('hint').classList.remove('show');
-  solved.delete(currentIndex); buildNav(); updateProgress();
+  if(ev.verdict==='correct'){showFb('ok','✓ Верно! Таблица заполнена правильно.'+ansTxt);Snd.ok();}
+  else{showFb('bad','✗ Неверно. Ошибочные ячейки обведены красным. Посмотри разбор и исправь таблицу.');Snd.bad();markWarn(t);}
+  $('#sol').classList.add('show');
+  save();renderSelect();renderProgress();
+  if(correctCount()===S.tasks.length&&!S.finalPlayed){S.finalPlayed=true;save();Snd.fin();setTimeout(openSummary,600);}
 }
-
-buildNav(); renderTask(); updateProgress();
+/* ================= ответ: плитки/клавиатура (ручная запись) ================= */
+function setSeq(t,s){const st=stFor(t);st.seq=s;save();renderSlots(t);clearWarn();}
+function renderSlots(t){
+  const st=stFor(t);document.querySelectorAll('#slots .slot').forEach((b,i)=>{const d=st.seq[i]||'';b.textContent=d;b.classList.toggle('filled',!!d);b.setAttribute('aria-label','Клетка ответа '+LET[i]+(d?': '+d:', пустая'));});
+}
+function tileTap(d){
+  const t=cur();if(!t.ans||t.ans.type!=='seq')return;const st=stFor(t);
+  let s=st.seq;
+  if(s.length<t.ans.n){s=s+String(d);lastAppend=s.length-1;}
+  else{s=s.slice(0,-1)+String(d);lastAppend=s.length-1;}
+  activeTile=d;setSeq(t,s);updActiveTile();
+}
+function updActiveTile(){document.querySelectorAll('#tiles .tile[data-digit]').forEach(b=>b.classList.toggle('active',+b.dataset.digit===activeTile));}
+function slotTap(idx){
+  const t=cur();if(!t.ans||t.ans.type!=='seq')return;const st=stFor(t);let s=st.seq;
+  if(activeTile!=null){
+    while(s.length<idx)s+=' ';
+    if(lastAppend>=0&&lastAppend!==idx&&s[lastAppend]===String(activeTile))s=s.slice(0,lastAppend)+' '+s.slice(lastAppend+1);
+    s=(s.slice(0,idx)+String(activeTile)+s.slice(idx+1)).replace(/\s+$/,'');
+    if(s.includes(' '))s=s.replace(/ /g,'');
+    activeTile=null;lastAppend=-1;updActiveTile();setSeq(t,s);
+  }else if(s[idx]){s=s.slice(0,idx)+s.slice(idx+1);setSeq(t,s);}
+}
+function placeDigit(idx,d){
+  const t=cur();const st=stFor(t);let s=st.seq;while(s.length<idx)s+='0';
+  s=s.slice(0,idx)+String(d)+s.slice(idx+1);s=s.slice(0,t.ans.n);
+  activeTile=null;lastAppend=-1;updActiveTile();setSeq(t,s);
+}
+function startDrag(e,btn){
+  const d=+btn.dataset.digit;
+  drag={d:d,btn:btn,x0:e.clientX,y0:e.clientY,moved:false,ghost:null,target:null};
+  try{btn.setPointerCapture(e.pointerId);}catch(err){}
+}
+function moveDrag(e){
+  if(!drag)return;
+  if(!drag.moved&&Math.hypot(e.clientX-drag.x0,e.clientY-drag.y0)>8){
+    drag.moved=true;const g=document.createElement('div');g.className='ghost';g.textContent=drag.d;document.body.appendChild(g);drag.ghost=g;
+  }
+  if(drag.moved){
+    drag.ghost.style.left=(e.clientX-32)+'px';drag.ghost.style.top=(e.clientY-32)+'px';
+    const el=document.elementFromPoint(e.clientX,e.clientY);const slot=el&&el.closest?el.closest('.slot'):null;
+    document.querySelectorAll('#slots .slot.drop').forEach(s=>s.classList.remove('drop'));
+    drag.target=slot;if(slot)slot.classList.add('drop');
+    e.preventDefault();
+  }
+}
+function endDrag(e){
+  if(!drag)return;const d=drag;drag=null;
+  document.querySelectorAll('#slots .slot.drop').forEach(s=>s.classList.remove('drop'));
+  if(!d.moved){tileTap(d.d);return;}
+  if(d.target){const idx=+d.target.dataset.slot;d.ghost.remove();placeDigit(idx,d.d);}
+  else{const r=d.btn.getBoundingClientRect();d.ghost.style.transition='left .25s ease, top .25s ease, opacity .25s';d.ghost.style.left=r.left+'px';d.ghost.style.top=r.top+'px';d.ghost.style.opacity='0';setTimeout(()=>d.ghost.remove(),260);}
+}
+function numKey(v){
+  const t=cur();if(!t.ans||t.ans.type!=='nums')return;const st=stFor(t);
+  const inp=document.getElementById('num'+focusNum);if(!inp)return;
+  let s=st.nums[focusNum]||'';
+  s=v==='back'?s.slice(0,-1):(s.length<3?s+v:s);
+  st.nums[focusNum]=s;inp.value=s;save();clearWarn();
+}
+/* ================= итоги/вариант ================= */
+function openSummary(){
+  const c=correctCount(),errs=S.tasks.map((t,i)=>({t:t,i:i})).filter(x=>S.st[x.t.uid]&&S.st[x.t.uid].status==='incorrect');
+  const unsolved=S.tasks.length-S.tasks.filter(t=>S.st[t.uid]&&S.st[t.uid].status).length;
+  $('#mstats').innerHTML='<p><b>'+c+' из '+S.tasks.length+'</b> решено верно</p><p>Ошибок: '+errs.length+' · Не решено: '+unsolved+'</p><p>Затраченное время: '+fmtT(elapsed())+'</p>';
+  let h='';
+  if(errs.length){h+='<div class="tcap">Ошибки — открой и исправь:</div>';errs.forEach(x=>{h+='<div class="erritem"><div class="t">№'+(x.i+1)+' · '+esc(x.t.title)+'</div><div class="s">'+esc(x.t.sol.replace(/<[^>]*>/g,'').slice(0,160))+'…</div><button class="btn" data-act="goto" data-v="'+x.i+'">Открыть задание</button></div>';});}
+  else h+='<p style="margin-top:8px">Ошибок нет. Так держать!</p>';
+  $('#merrors').innerHTML=h;$('#modal').classList.add('show');
+}
+function closeModal(){$('#modal').classList.remove('show');}
+function newVariant(){
+  S.tasks=buildVariant();S.st={};S.spent=0;S.t0=Date.now();S.cur=0;S.kbd=false;S.finalPlayed=false;
+  save();renderAll();toast('Создан новый вариант: порядок перемешан, генерация обновлена');window.scrollTo({top:0});
+}
+function resetProgress(){
+  if(!confirm('Сбросить весь прогресс этого варианта?'))return;
+  S.st={};S.spent=0;S.t0=Date.now();S.finalPlayed=false;save();renderAll();toast('Прогресс сброшен');
+}
+let toastTimer=null;
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2600);}
+/* ================= события (делегирование, без дублей) ================= */
+document.addEventListener('click',e=>{
+  const act=e.target.closest('[data-act]');
+  const cell=e.target.closest('#tables .cell');
+  if(cell&&!act){openPopup(cell);return;}
+  const slot=e.target.closest('#slots .slot');
+  if(slot&&!act){slotTap(+slot.dataset.slot);return;}
+  const tile=e.target.closest('#tiles .tile[data-digit]');
+  if(tile&&!act){if(e.detail===0)tileTap(+tile.dataset.digit);return;}
+  if(!act){if($('#popup').classList.contains('show')&&!e.target.closest('#popup'))closePopup();return;}
+  const a=act.dataset.act,v=act.dataset.v;
+  if(a==='mark')applyMark(+v);
+  else if(a==='prev'){if(S.cur>0){S.cur--;save();renderTask();window.scrollTo({top:0});}}
+  else if(a==='next'){if(S.cur<S.tasks.length-1){S.cur++;save();renderTask();window.scrollTo({top:0});}}
+  else if(a==='check')checkAnswer(false);
+  else if(a==='hint'){$('#hintbox').classList.toggle('show');}
+  else if(a==='clear'){const t=cur(),st=stFor(t);st.m=t.tables.map(tb=>Array(tb.rows.length*tb.cols.length).fill(0));st.seq='';st.choice='';if(t.ans&&t.ans.type==='nums')st.nums=t.ans.fields.map(()=>'');save();renderTask();toast('Таблица очищена');}
+  else if(a==='erase'){const t=cur();if(t.ans&&t.ans.type==='seq'){setSeq(t,stFor(t).seq.slice(0,-1));activeTile=null;updActiveTile();}}
+  else if(a==='clearseq'){const t=cur();if(t.ans&&t.ans.type==='seq'){setSeq(t,'');activeTile=null;updActiveTile();}}
+  else if(a==='choice'){const t=cur();stFor(t).choice=v;save();document.querySelectorAll('.choice').forEach(b=>b.classList.toggle('sel',b.dataset.v===v));clearWarn();}
+  else if(a==='kbd'){S.kbd=!S.kbd;const w=$('#kbdwrap');w.classList.toggle('open',S.kbd);act.setAttribute('aria-expanded',String(S.kbd));act.textContent='⌨️ Экранная клавиатура '+(S.kbd?'▴':'▾');}
+  else if(a==='key')numKey(v);
+  else if(a==='new'){closeModal();newVariant();}
+  else if(a==='summary')openSummary();
+  else if(a==='closemodal')closeModal();
+  else if(a==='goto'){S.cur=+v;closeModal();save();renderTask();window.scrollTo({top:0});}
+  else if(a==='reset')resetProgress();
+  else if(a==='theme'){const cur=document.documentElement.getAttribute('data-theme');const nx=cur==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',nx);try{localStorage.setItem('logtab7.theme',nx);}catch(err){}updThemeIcon();}
+  else if(a==='sound'){Snd.on=!Snd.on;try{localStorage.setItem('logtab7.snd',Snd.on?'1':'0');}catch(err){}updSndIcon();if(Snd.on)Snd.ok();toast(Snd.on?'Звук включён':'Звук выключен');}
+});
+document.addEventListener('pointerdown',e=>{const tile=e.target.closest('#tiles .tile[data-digit]');if(tile)startDrag(e,tile);});
+document.addEventListener('pointermove',moveDrag,{passive:false});
+document.addEventListener('pointerup',endDrag);
+document.addEventListener('pointercancel',()=>{if(drag&&drag.ghost)drag.ghost.remove();drag=null;document.querySelectorAll('#slots .slot.drop').forEach(s=>s.classList.remove('drop'));});
+$('#tasksel').addEventListener('change',e=>{S.cur=+e.target.value;save();renderTask();window.scrollTo({top:0});});
+document.addEventListener('input',e=>{
+  const inp=e.target.closest('.numin');if(!inp)return;const t=cur();if(!t.ans||t.ans.type!=='nums')return;
+  const k=+inp.dataset.k;inp.value=inp.value.replace(/\D/g,'').slice(0,3);stFor(t).nums[k]=inp.value;save();clearWarn();
+});
+document.addEventListener('focusin',e=>{
+  const inp=e.target.closest('.numin');if(!inp)return;focusNum=+inp.dataset.k;
+  setTimeout(()=>{inp.scrollIntoView({block:'center',behavior:'smooth'});},300);
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closePopup();closeModal();const hb=$('#hintbox');if(hb)hb.classList.remove('show');if(S.kbd){S.kbd=false;const w=$('#kbdwrap');if(w){w.classList.remove('open');const b=document.querySelector('[data-act="kbd"]');if(b){b.setAttribute('aria-expanded','false');b.textContent='⌨️ Экранная клавиатура ▾';}}}return;}
+  if(e.key==='Enter'){
+    const tag=e.target.tagName;
+    if(tag==='BUTTON'||tag==='A'||tag==='SELECT')return;
+    if(e.target.classList&&e.target.classList.contains('numin')){e.preventDefault();checkAnswer(false);return;}
+    if($('#modal').classList.contains('show'))return;
+    e.preventDefault();checkAnswer(false);
+  }
+});
+window.addEventListener('beforeunload',save);
+/* ================= старт ================= */
+load();updSndIcon();updThemeIcon();renderAll();save();
 </script>
 </body>
 </html>
