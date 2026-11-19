@@ -1,506 +1,819 @@
 <!DOCTYPE html>
-<html lang="ru">
+<!--
+  ============================================================================
+  ТРЕНАЖЁР «ИНФОРМАТИКА, 7 КЛАСС. КОДИРОВКА АДРЕСА ФАЙЛА» (ВПР, задание 4)
+  ============================================================================
+  Класс: 7. Тема: кодировка адреса файла в сети Интернет (протокол://сервер/каталог/имя.расширение).
+  Механика (по описанию учителя): ответ собирается из частей-фрагментов нажатием на крупные
+  кнопки-карточки (мышь/палец/стилус/доска). Поле «Ответ — адрес файла» показывает сам
+  собираемый адрес крупно и заметно (большой моноширинный шрифт, акцентная рамка, поле
+  растёт по высоте без обрезаний); последовательность кодов фрагментов (форма ответа ВПР) —
+  в компактном окне ниже. В условиях заданий все данные (имена файлов, серверы, протоколы,
+  адреса, каталоги, годы) выделены жирным. Среди фрагментов есть лишние — в заданиях на
+  перемещение, как в каталоге; простые задания каталога используют все 7 фрагментов и
+  сохранены без изменений. Когда набрано нужное число фрагментов — автоматическая проверка;
+  при верном ответе сверху падает конфетти. Дополнительно: перетаскивание карточки в поле
+  ответа на Pointer Events (подсветка цели, возврат при промахе), альтернатива — нажатие.
+  Ряд действий под ответом: «Стереть», «Очистить», «Проверить», рядом — «Назад» и «Далее»
+  (на телефоне весь ряд — липкая нижняя панель с safe-area).
+  Шапка: слева название, справа в конце — иконки «На главную», «Тема», «Звук».
+  Проверяемые умения: составлять адрес файла (протокол, «://», сервер, «/», каталоги, имя,
+  расширение); декодировать адрес, закодированный буквами/цифрами; учитывать повторное
+  использование фрагмента «/»; отбрасывать лишние фрагменты старого адреса при перемещении.
+  ИСТОЧНИК (по требованию учителя — строгая точная копия, БЕЗ генерации):
+  https://inf7-vpr.sdamgia.ru/test?theme=4 — содержимое открыто и перенесено 20.11.2026:
+  ВСЕ 36 заданий каталога (№159–183, 441, 693, 708, 738, 776, 1182, 1197, 1212, 1242, 1257,
+  1272), условия/фрагменты/ответы без изменений; эталоны пересчитаны и перепроверены
+  программно (сборка адреса из фрагментов по кодам ответа). Процедурная генерация ОТКЛЮЧЕНА
+  по требованию учителя: вариант = все 36 заданий каталога в случайном порядке.
+  Примечания к источнику: №179 и №181 в каталоге совпадают по содержанию, но это разные
+  задания каталога — по требованию учителя сохранены ОБА; исправлены только явные опечатки
+  каталога: №183 «буквами от 1 до 7» → «цифрами от 1 до 7» (фрагменты и ответ — цифры),
+  в разборе №1212/№179/№181 адрес восстановлен по условию.
+  Дедупликация (makeSignature/buildVariant): сигнатура = номер каталога + нормализованное
+  условие (без регистра, лишних пробелов и разметки) + все числа условия и фрагментов +
+  эталон; Set сигнатур отбрасывает повторное добавление одного и того же задания каталога
+  при сборке варианта (содержательно совпадающие №179/№181 имеют разные номера и оба входят).
+  Режимы: «Тренировка» (по умолчанию), подсказки включены (наводящая мысль), разбор после
+  ответа включён, таймер отключён (время учитывается скрыто для итогов), звук включён
+  (один переключатель), прогресс в localStorage + кнопка сброса, «Новый вариант» — новый
+  случайный порядок тех же 36 заданий каталога со сбросом прогресса; порядок случаен при
+  каждом запуске.
+  Палитра: светлая — фон #fdf6e3 («Кремовый»), акцент #0ea5e9; тёмная — фон #1b1440
+  («Индиго»), акцент #22d3ee; поверхности/границы — сдвиг оттенка фона; контраст текста ≥4.5:1;
+  все цвета — CSS-переменными, тема атрибутом data-theme на <html>, без мигания при загрузке.
+  Один самодостаточный файл: чистый JS, без фреймворков, сборки, CDN, внешних шрифтов,
+  картинок и fetch; работает по file:// и на GitHub Pages.
+  ============================================================================
+-->
+<html lang="ru" data-theme="light">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ВПР 7 класс: Сборка интернет-адреса (с условием)</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Кодировка адреса файла — тренажёр, 7 класс</title>
+<script>
+(function(){try{var t=localStorage.getItem('addr7.theme');
+if(t!=='light'&&t!=='dark'){t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}
+document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','light');}})();
+</script>
 <style>
-  :root {
-    --primary: #3498db;
-    --success: #27ae60;
-    --danger: #e74c3c;
-    --warning: #f39c12;
-    --bg: #f0f4f8;
-    --text: #2c3e50;
-    --slot-bg: #ffffff;
+/* ====== ВСЕ ЦВЕТА — ЗДЕСЬ ====== */
+:root{
+  --bg:#fdf6e3; --surface:#fffbef; --surface2:#f3ead0; --border:#d9cba4;
+  --text:#2b2416; --muted:#6a5d45;
+  --accent:#0ea5e9; --accent-ink:#0369a1; --on-accent:#082f49;
+  --ok:#166534; --ok-bg:#e3f1dd; --err:#b91c1c; --err-bg:#f9e3dc;
+  --code-bg:#efe6c8; --focus:#0369a1; --answer-ring:rgba(14,165,233,.20);
+  --shadow:0 6px 24px rgba(90,70,20,.10); --ghost-shadow:0 12px 30px rgba(90,70,20,.28);
+}
+html[data-theme="dark"]{
+  --bg:#1b1440; --surface:#241b52; --surface2:#2d2263; --border:#4a3d85;
+  --text:#f1edff; --muted:#b9b0dd;
+  --accent:#22d3ee; --accent-ink:#22d3ee; --on-accent:#06272e;
+  --ok:#4ade80; --ok-bg:#123527; --err:#fda4a4; --err-bg:#47202f;
+  --code-bg:#2d2263; --focus:#22d3ee; --answer-ring:rgba(34,211,238,.25);
+  --shadow:0 6px 24px rgba(0,0,0,.35); --ghost-shadow:0 12px 30px rgba(0,0,0,.55);
+}
+/* ================================ */
+*{box-sizing:border-box}
+html{font-size:20px}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:"Segoe UI",Roboto,"PT Sans",Arial,sans-serif;font-size:1rem;line-height:1.45;
+  overflow-x:hidden;-webkit-tap-highlight-color:transparent;
+}
+[hidden]{display:none!important}
+.wrap{max-width:1100px;margin:0 auto;padding:14px 16px 24px}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:10px}
+.visually-hidden{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+code,.mono{font-family:Consolas,"Courier New",monospace}
+/* Шапка: название слева, иконки «На главную», «Тема», «Звук» — справа в конце */
+.top{display:flex;align-items:center;gap:12px;flex-wrap:nowrap;padding:6px 0 12px}
+.top h1{font-size:1.3rem;margin:0;line-height:1.2;flex:1 1 auto;min-width:0}
+.top .sub{display:block;font-size:1rem;color:var(--muted);font-weight:400}
+.top-actions{margin-left:auto;display:flex;gap:10px;flex:0 0 auto}
+.icon-btn{
+  width:52px;height:52px;min-width:52px;display:inline-flex;align-items:center;justify-content:center;
+  background:var(--surface2);border:2px solid var(--border);border-radius:14px;cursor:pointer;
+  color:var(--accent-ink);text-decoration:none;flex:0 0 auto;
+}
+.icon-btn svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* Панели */
+.panel{background:var(--surface);border:2px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
+.toolbar-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+select{
+  font:inherit;min-height:52px;flex:1 1 320px;max-width:100%;color:var(--text);
+  background:var(--surface2);border:2px solid var(--border);border-radius:12px;padding:8px 12px;cursor:pointer;
+}
+.counter{font-size:1.1rem;font-weight:700;white-space:nowrap}
+.progress{height:16px;background:var(--surface2);border:2px solid var(--border);border-radius:999px;overflow:hidden;margin:12px 0 4px}
+#progressFill{height:100%;width:0;background:var(--accent);border-radius:999px;transition:width .3s ease}
+.stats{display:flex;gap:12px;flex-wrap:wrap;align-items:center;color:var(--muted);font-size:1rem;margin-bottom:10px}
+.toolbar-btns{display:flex;gap:10px;flex-wrap:wrap}
+.btn{
+  min-height:52px;min-width:52px;padding:10px 18px;border-radius:14px;cursor:pointer;
+  background:var(--surface2);border:2px solid var(--border);font-size:1.05rem;font-weight:600;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn.primary{background:var(--accent);color:var(--on-accent);border-color:transparent}
+.btn:disabled{opacity:.45;cursor:default}
+.mode-note{color:var(--muted);font-size:1rem;margin-top:10px}
+/* Задание */
+.task-head{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.badge{background:var(--code-bg);border:2px solid var(--border);border-radius:999px;padding:4px 14px;font-size:1rem;font-weight:700}
+.badge.level{color:var(--accent-ink)}
+.task-text{font-size:1.1rem;margin:0 0 14px;white-space:pre-line;overflow-wrap:anywhere}
+.task-text strong{font-weight:800;color:var(--accent-ink)} /* данные в условии — жирным и заметнее */
+.fragments{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:14px}
+.frag{
+  min-height:78px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  background:var(--surface);border:2px solid var(--border);border-radius:14px;cursor:pointer;
+  padding:8px 6px;touch-action:none;user-select:none;-webkit-user-select:none;box-shadow:var(--shadow);
+}
+.frag:active{transform:scale(.97)}
+.frag-c{
+  min-width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;
+  background:var(--code-bg);color:var(--accent-ink);border-radius:10px;font-weight:800;font-size:1.2rem;padding:0 8px;
+}
+.frag-t{font-family:Consolas,"Courier New",monospace;font-size:1.05rem;overflow-wrap:anywhere;text-align:center;max-width:100%}
+.ghost{position:fixed;left:0;top:0;z-index:70;pointer-events:none;opacity:.94;box-shadow:var(--ghost-shadow);margin:0}
+.mech-note{color:var(--muted);font-size:1rem;margin:0 0 10px}
+.answer-zone{border:2px dashed transparent;border-radius:14px;padding:10px;transition:background .15s ease}
+.answer-zone.drop{border-color:var(--accent);background:var(--surface2)}
+.answer-zone>label{display:block;font-weight:800;font-size:1.15rem;margin-bottom:8px}
+/* Главное поле «Ответ» — сам адрес: крупно и заметно */
+#answer{
+  width:100%;min-height:96px;resize:none;display:block;overflow-y:hidden;
+  font-family:Consolas,"Courier New",monospace;font-size:1.6rem;font-weight:700;line-height:1.35;
+  letter-spacing:.5px;color:var(--text);background:var(--code-bg);
+  border:3px solid var(--accent);border-radius:14px;box-shadow:0 0 0 4px var(--answer-ring);
+  padding:12px 16px;word-break:break-all;overflow-wrap:anywhere;white-space:pre-wrap;
+}
+#answer::placeholder{color:var(--muted);font-weight:400}
+.answer-zone.is-ok #answer{border-color:var(--ok);box-shadow:0 0 0 4px var(--ok-bg)}
+.answer-zone.is-err #answer{border-color:var(--err);box-shadow:0 0 0 4px var(--err-bg)}
+/* Небольшое окно с последовательностью кодов — ниже */
+.codes-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.codes-row label{font-weight:600;font-size:1rem;color:var(--muted)}
+#codes{
+  width:16ch;max-width:100%;min-height:48px;
+  font-family:Consolas,"Courier New",monospace;font-size:1.1rem;letter-spacing:3px;
+  color:var(--text);background:var(--surface2);border:2px solid var(--border);border-radius:10px;padding:6px 10px;
+}
+.codes-count{color:var(--muted);font-size:1rem}
+/* Ряд действий: Стереть, Очистить, Проверить + рядом Назад и Далее */
+.answer-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+#prevBtn{margin-left:auto}
+.fb{border-radius:14px;padding:12px 14px;margin-top:12px;font-size:1.05rem;border:2px solid;overflow-wrap:anywhere;animation:fadein .25s ease}
+.fb.ok{background:var(--ok-bg);color:var(--ok);border-color:var(--ok)}
+.fb.err{background:var(--err-bg);color:var(--err);border-color:var(--err)}
+.fb.info{background:var(--surface2);color:var(--muted);border-color:var(--border)}
+.fb code{font-weight:700}
+@keyframes fadein{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+/* Подсказка-спойлер (плавное раскрытие, без скачка) */
+.hint{margin-top:14px}
+.hint-toggle{
+  min-height:52px;width:100%;text-align:left;background:var(--surface2);border:2px solid var(--border);
+  border-radius:14px;padding:10px 16px;cursor:pointer;font-weight:700;display:flex;align-items:center;gap:10px;
+}
+.hint-toggle .chev{transition:transform .25s ease;margin-left:auto}
+.hint.open .hint-toggle .chev{transform:rotate(180deg)}
+.hint-body{display:grid;grid-template-rows:0fr;visibility:hidden;transition:grid-template-rows .28s ease,visibility .28s}
+.hint.open .hint-body{grid-template-rows:1fr;visibility:visible}
+.hint-inner{overflow:hidden}
+.hint-inner p{margin:10px 4px 2px;color:var(--muted);font-size:1.05rem}
+.solution{margin-top:14px;background:var(--surface2);border:2px solid var(--border);border-radius:14px;padding:12px 16px;animation:fadein .25s ease}
+.solution h3{margin:0 0 8px;font-size:1.1rem}
+.solution p{margin:6px 0;font-size:1.05rem;overflow-wrap:anywhere}
+.solution code{background:var(--code-bg);border-radius:8px;padding:2px 8px;font-weight:700}
+/* Итоги */
+#overlay{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{background:var(--surface);border:2px solid var(--border);border-radius:18px;box-shadow:var(--shadow);max-width:760px;width:100%;max-height:90vh;overflow:auto;padding:20px}
+.modal h2{margin:0 0 8px;font-size:1.3rem}
+.score{font-size:2rem;font-weight:800;color:var(--accent-ink);margin:6px 0}
+.sum-line{color:var(--muted);font-size:1.05rem;margin:4px 0}
+.err-list{list-style:none;margin:12px 0;padding:0;display:flex;flex-direction:column;gap:10px}
+.err-list li{background:var(--err-bg);border:2px solid var(--err);border-radius:14px;padding:10px 14px;color:var(--text)}
+.err-list .e-title{font-weight:700;color:var(--err)}
+.err-list p{margin:6px 0;font-size:1rem;overflow-wrap:anywhere}
+.err-list code{background:var(--code-bg);border-radius:8px;padding:2px 8px}
+.modal-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+#confetti{position:fixed;inset:0;z-index:80;pointer-events:none}
+/* Адаптив */
+@media (max-width:720px){
+  .wrap{padding:10px 12px calc(180px + env(safe-area-inset-bottom))}
+  .top h1{font-size:1.1rem}
+  .toolbar-btns .btn,select{flex:1 1 100%;width:100%}
+  #answer{font-size:1.4rem;min-height:88px}
+  .fragments{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+  /* Весь ряд действий — липкая нижняя панель: Стереть/Очистить/Проверить, ниже Назад/Далее */
+  .answer-btns{
+    position:fixed;left:0;right:0;bottom:0;z-index:40;margin:0;
+    display:grid;grid-template-columns:repeat(6,1fr);gap:8px;
+    padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+    background:var(--surface);border-top:2px solid var(--border);box-shadow:var(--shadow);
   }
-  body { 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-    background: var(--bg); margin: 0; padding: 20px; 
-    display: flex; flex-direction: column; align-items: center; 
-    color: var(--text); user-select: none; min-height: 100vh;
-  }
-  h1 { font-size: 1.8rem; margin-bottom: 5px; text-align: center; }
-  .progress-bar { 
-    width: 100%; max-width: 1000px; height: 12px; background: #dfe6e9; 
-    border-radius: 6px; margin-bottom: 15px; overflow: hidden; 
-  }
-  .progress-fill { 
-    height: 100%; background: var(--success); width: 0%; transition: width 0.5s ease; 
-  }
-  .hint-box { 
-    background: #e8f4f8; border-left: 5px solid var(--primary); 
-    padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; 
-    font-size: 1.05rem; max-width: 1000px; width: 100%; box-sizing: border-box; text-align: center;
-  }
-  
-  .task-container { 
-    width: 100%; max-width: 1000px; background: #ffffff; 
-    padding: 30px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.08); 
-    display: none; animation: fadeIn 0.4s ease;
-  }
-  .task-container.active { display: block; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-  
-  .task-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-  .task-number { font-size: 1.2rem; font-weight: bold; color: var(--primary); }
-  .score-display { font-size: 1.1rem; font-weight: bold; color: var(--warning); }
-
-  .task-text { 
-    font-size: 1.25rem; line-height: 1.5; margin-bottom: 25px; font-weight: 500; 
-    text-align: center; background: #f8f9fa; padding: 20px; border-radius: 10px; border: 1px solid #e9ecef;
-  }
-  .highlight-protocol { color: #8e44ad; font-weight: bold; }
-  .highlight-server { color: #2980b9; font-weight: bold; }
-  .highlight-file { color: #c0392b; font-weight: bold; }
-  
-  /* Зона ответа (слоты) */
-  .answer-zone { 
-    display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; 
-    margin-bottom: 30px; padding: 20px; background: #f8f9fa; border-radius: 12px; border: 2px dashed #bdc3c7;
-  }
-  .slot { 
-    width: 90px; height: 65px; background: var(--slot-bg); border: 3px solid #bdc3c7; 
-    border-radius: 8px; display: flex; flex-direction: column; align-items: center; 
-    justify-content: center; cursor: pointer; transition: all 0.2s; position: relative;
-  }
-  .slot:hover { border-color: var(--primary); background: #ebf5fb; }
-  .slot.filled { border-color: var(--primary); background: #d6eaf8; }
-  .slot.correct { border-color: var(--success); background: #d5f5e3; }
-  .slot.wrong { border-color: var(--danger); background: #fadbd8; animation: shake 0.4s ease; }
-  @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-  
-  .slot-letter { font-size: 0.8rem; color: #7f8c8d; font-weight: bold; margin-bottom: 2px; }
-  .slot-text { font-size: 1rem; font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; word-break: break-all; text-align: center; line-height: 1.1; }
-
-  /* Зона фрагментов (пул) */
-  .pool-zone { 
-    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; 
-    margin-bottom: 25px; min-height: 80px;
-  }
-  .fragment { 
-    padding: 12px 16px; background: white; border: 2px solid var(--primary); 
-    border-radius: 8px; cursor: pointer; transition: all 0.2s; 
-    display: flex; flex-direction: column; align-items: center; min-width: 70px;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-  }
-  .fragment:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); background: #ebf5fb; }
-  .fragment .letter { font-size: 0.85rem; color: var(--primary); font-weight: bold; margin-bottom: 4px; }
-  .fragment .text { font-size: 1.1rem; font-weight: bold; color: #2c3e50; font-family: 'Consolas', monospace; }
-
-  .controls { display: flex; gap: 15px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
-  .action-btn { 
-    padding: 14px 28px; font-size: 1.15rem; border: none; border-radius: 10px; 
-    cursor: pointer; font-weight: bold; color: white; transition: 0.2s; 
-    display: flex; align-items: center; gap: 8px;
-  }
-  .check-btn { background: var(--success); }
-  .check-btn:hover { background: #219653; }
-  .check-btn:disabled { background: #95a5a6; cursor: not-allowed; }
-  .next-btn { background: var(--primary); display: none; }
-  .next-btn:hover { background: #2980b9; }
-  .reset-btn { background: #95a5a6; }
-  .reset-btn:hover { background: #7f8c8d; }
-
-  .result-msg { text-align: center; font-size: 1.3rem; font-weight: bold; margin-top: 25px; min-height: 35px; }
-  .explanation { 
-    text-align: left; color: #34495e; font-size: 1.05rem; margin-top: 15px; 
-    background: #f8f9fa; padding: 20px; border-radius: 8px; display: none; border-left: 4px solid var(--primary);
-  }
-  .explanation.visible { display: block; animation: fadeIn 0.5s ease; }
-  .correct-url { color: var(--success); font-weight: bold; font-family: 'Consolas', monospace; font-size: 1.2rem; display: block; margin: 10px 0; text-align: center;}
-  .step-reason { margin-bottom: 8px; }
-
-  @media (max-width: 768px) {
-    .slot { width: 70px; height: 60px; }
-    .slot-text { font-size: 0.85rem; }
-    .fragment { min-width: 60px; padding: 10px; }
-    .fragment .text { font-size: 0.95rem; }
-    .task-text { font-size: 1.1rem; padding: 15px; }
-  }
+  .answer-btns .btn{width:100%;min-width:0;padding:10px 4px;font-size:1rem}
+  #eraseBtn,#clearBtn,#checkBtn{grid-column:span 2}
+  #prevBtn,#nextBtn{grid-column:span 3;margin-left:0}
+  .b-ico{display:none}
+  .modal-btns .btn{flex:1 1 100%}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
 </style>
 </head>
 <body>
+<div class="wrap">
+  <header class="top">
+    <h1>Кодировка адреса файла<span class="sub">Информатика · 7 класс · ВПР, задание 4</span></h1>
+    <div class="top-actions">
+      <a class="icon-btn" href="../index.html" aria-label="На главную" title="На главную">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M10 20v-5h4v5"/></svg>
+      </a>
+      <button type="button" id="themeBtn" class="icon-btn" aria-label="Переключить тему" title="Тёмная тема">
+        <svg id="sunIcon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.5 4.5l2 2M17.5 17.5l2 2M19.5 4.5l-2 2M6.5 17.5l-2 2"/></svg>
+        <svg id="moonIcon" viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"/></svg>
+      </button>
+      <button type="button" id="soundBtn" class="icon-btn" aria-label="Выключить звук" title="Выключить звук" aria-pressed="true">
+        <svg id="soundOnIcon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8.5 8.5 0 0 1 0 12"/></svg>
+        <svg id="soundOffIcon" viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="m16 9 6 6"/><path d="m22 9-6 6"/></svg>
+      </button>
+    </div>
+  </header>
 
-<h1>🌐 ВПР 7 класс: Сборка интернет-адреса</h1>
-<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-<div class="hint-box">💡 <b>Как работать:</b> Сначала прочитай условие и найди протокол, сервер и файл. Затем нажми на фрагмент внизу, чтобы переместить его в первую свободную ячейку наверху. Нажми на ячейку наверху, чтобы вернуть фрагмент обратно.</div>
+  <section class="panel" aria-label="Управление вариантом">
+    <div class="toolbar-row">
+      <label class="visually-hidden" for="taskSelect">Список заданий</label>
+      <select id="taskSelect" aria-label="Список заданий: номер, подпись и статус"></select>
+      <span class="counter" id="counter">1 из 36</span>
+    </div>
+    <div class="progress" id="progressBar" role="progressbar" aria-label="Прогресс: отвечено заданий" aria-valuemin="0" aria-valuemax="36" aria-valuenow="0">
+      <div id="progressFill"></div>
+    </div>
+    <div class="stats"><span id="statsChip">Верно: 0 · Ошибки: 0</span></div>
+    <div class="toolbar-btns">
+      <button type="button" class="btn primary" id="newBtn">Новый вариант</button>
+      <button type="button" class="btn" id="sumBtn">Итоги</button>
+      <button type="button" class="btn" id="resetBtn">Сброс прогресса</button>
+    </div>
+    <p class="mode-note">Режим: Тренировка · все 36 заданий — точная копия каталога РЕШУ ВПР · подсказки и разбор включены · таймер отключён · прогресс сохраняется</p>
+  </section>
 
-<div id="tasksContainer"></div>
-
-<div class="controls">
-  <button class="action-btn reset-btn" onclick="resetCurrentTask()">🔄 Сбросить</button>
-  <button class="action-btn check-btn" id="checkBtn" onclick="checkAnswer()" disabled>✅ Проверить</button>
-  <button class="action-btn next-btn" id="nextBtn" onclick="nextTask()">➡️ Следующее задание</button>
+  <main class="panel" id="taskCard" aria-label="Текущее задание">
+    <div class="task-head">
+      <span class="badge" id="taskNo">Задание 1</span>
+      <span class="badge level" id="taskSrc">ВПР</span>
+    </div>
+    <p class="task-text" id="taskText"></p>
+    <div class="fragments" id="fragments" role="group" aria-label="Фрагменты адреса: нажми или перетащи в поле ответа"></div>
+    <p class="mech-note" id="mechNote"></p>
+    <div class="answer-zone" id="answerZone">
+      <label for="answer">Ответ — адрес файла:</label>
+      <textarea id="answer" rows="1" readonly inputmode="none" autocomplete="off" placeholder="Адрес соберётся из фрагментов…" aria-label="Ответ: адрес файла. Собирается карточками-фрагментами; клавиши с кодами добавляют фрагмент, Backspace стирает, Enter проверяет"></textarea>
+      <div class="codes-row">
+        <label for="codes">Коды фрагментов:</label>
+        <input id="codes" readonly inputmode="none" autocomplete="off" placeholder="—" aria-label="Последовательность кодов фрагментов — форма ответа ВПР">
+        <span class="codes-count" id="fragCount">фрагментов: 0 из 7</span>
+      </div>
+      <div class="answer-btns" role="group" aria-label="Действия с ответом и переход между заданиями">
+        <button type="button" class="btn" id="eraseBtn" aria-label="Стереть последний фрагмент"><span class="b-ico" aria-hidden="true">⌫</span> Стереть</button>
+        <button type="button" class="btn" id="clearBtn">Очистить</button>
+        <button type="button" class="btn primary" id="checkBtn">Проверить</button>
+        <button type="button" class="btn" id="prevBtn" aria-label="Предыдущее задание">← Назад</button>
+        <button type="button" class="btn" id="nextBtn" aria-label="Следующее задание">Далее →</button>
+      </div>
+    </div>
+    <div id="feedback" role="status" aria-live="polite"></div>
+    <div class="hint" id="hintBox">
+      <button type="button" class="hint-toggle" id="hintBtn" aria-expanded="false" aria-controls="hintBody">
+        Подсказка <span class="chev" aria-hidden="true">▾</span>
+      </button>
+      <div class="hint-body" id="hintBody"><div class="hint-inner"><p id="hintText"></p></div></div>
+    </div>
+    <section class="solution" id="solutionBox" hidden aria-label="Разбор задания">
+      <h3>Разбор</h3>
+      <div id="solutionText"></div>
+    </section>
+  </main>
 </div>
 
-<div class="result-msg" id="resultMsg"></div>
-<div class="explanation" id="explanation"></div>
+<div id="overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="sumTitle">
+    <h2 id="sumTitle">Итоги варианта</h2>
+    <div class="score" id="sumScore"></div>
+    <p class="sum-line" id="sumTime"></p>
+    <p class="sum-line" id="sumCounts"></p>
+    <ul class="err-list" id="errList"></ul>
+    <p class="sum-line" id="sumRest"></p>
+    <div class="modal-btns">
+      <button type="button" class="btn primary" id="sumNewBtn">Новый вариант</button>
+      <button type="button" class="btn" id="sumCloseBtn">Закрыть</button>
+    </div>
+  </div>
+</div>
+<canvas id="confetti" aria-hidden="true"></canvas>
+<noscript><p style="padding:16px">Для работы тренажёра включите JavaScript.</p></noscript>
 
 <script>
-const tasks = [
-  {
-    id: 1,
-    protocol: "http",
-    server: "school.ru",
-    file: "index.html",
-    fragments: [
-      { letter: 'А', text: '.ru' },
-      { letter: 'Б', text: '/' },
-      { letter: 'В', text: 'http' },
-      { letter: 'Г', text: '://' },
-      { letter: 'Д', text: 'school' },
-      { letter: 'Е', text: 'index' },
-      { letter: 'Ж', text: '.html' }
-    ],
-    correctOrder: ['В', 'Г', 'Д', 'А', 'Б', 'Е', 'Ж']
-  },
-  {
-    id: 2,
-    protocol: "https",
-    server: "mysite.org",
-    file: "about.html",
-    fragments: [
-      { letter: 'А', text: 'https' },
-      { letter: 'Б', text: '.org' },
-      { letter: 'В', text: '://' },
-      { letter: 'Г', text: '/' },
-      { letter: 'Д', text: 'about' },
-      { letter: 'Е', text: 'mysite' },
-      { letter: 'Ж', text: '.html' }
-    ],
-    correctOrder: ['А', 'В', 'Е', 'Б', 'Г', 'Д', 'Ж']
-  },
-  {
-    id: 3,
-    protocol: "http",
-    server: "site.com",
-    file: "info.htm",
-    fragments: [
-      { letter: 'А', text: '/' },
-      { letter: 'Б', text: 'com' },
-      { letter: 'В', text: 'http' },
-      { letter: 'Г', text: '://' },
-      { letter: 'Д', text: 'site' },
-      { letter: 'Е', text: 'info' },
-      { letter: 'Ж', text: '.htm' }
-    ],
-    correctOrder: ['В', 'Г', 'Д', 'Б', 'А', 'Е', 'Ж']
-  },
-  {
-    id: 4,
-    protocol: "https",
-    server: "portal.net",
-    file: "login.php",
-    fragments: [
-      { letter: 'А', text: 'net' },
-      { letter: 'Б', text: '/' },
-      { letter: 'В', text: 'https' },
-      { letter: 'Г', text: '://' },
-      { letter: 'Д', text: 'portal' },
-      { letter: 'Е', text: 'login' },
-      { letter: 'Ж', text: '.php' }
-    ],
-    correctOrder: ['В', 'Г', 'Д', 'А', 'Б', 'Е', 'Ж']
-  },
-  {
-    id: 5,
-    protocol: "http",
-    server: "exam.ru",
-    file: "vpr.pdf",
-    fragments: [
-      { letter: 'А', text: 'ru' },
-      { letter: 'Б', text: '://' },
-      { letter: 'В', text: '/' },
-      { letter: 'Г', text: 'http' },
-      { letter: 'Д', text: 'exam' },
-      { letter: 'Е', text: 'vpr' },
-      { letter: 'Ж', text: '.pdf' }
-    ],
-    correctOrder: ['Г', 'Б', 'Д', 'А', 'В', 'Е', 'Ж']
-  },
-  {
-    id: 6,
-    protocol: "https",
-    server: "library.edu",
-    file: "book.zip",
-    fragments: [
-      { letter: 'А', text: 'https' },
-      { letter: 'Б', text: '.edu' },
-      { letter: 'В', text: '://' },
-      { letter: 'Г', text: '/' },
-      { letter: 'Д', text: 'library' },
-      { letter: 'Е', text: 'book' },
-      { letter: 'Ж', text: '.zip' }
-    ],
-    correctOrder: ['А', 'В', 'Д', 'Б', 'Г', 'Е', 'Ж']
-  },
-  {
-    id: 7,
-    protocol: "http",
-    server: "wiki.org",
-    file: "main.html",
-    fragments: [
-      { letter: 'А', text: '/' },
-      { letter: 'Б', text: 'org' },
-      { letter: 'В', text: 'http' },
-      { letter: 'Г', text: '://' },
-      { letter: 'Д', text: 'wiki' },
-      { letter: 'Е', text: 'main' },
-      { letter: 'Ж', text: '.html' }
-    ],
-    correctOrder: ['В', 'Г', 'Д', 'Б', 'А', 'Е', 'Ж']
-  },
-  {
-    id: 8,
-    protocol: "https",
-    server: "shop.com",
-    file: "cart.html",
-    fragments: [
-      { letter: 'А', text: 'com' },
-      { letter: 'Б', text: '://' },
-      { letter: 'В', text: '/' },
-      { letter: 'Г', text: 'https' },
-      { letter: 'Д', text: 'shop' },
-      { letter: 'Е', text: 'cart' },
-      { letter: 'Ж', text: '.html' }
-    ],
-    correctOrder: ['Г', 'Б', 'Д', 'А', 'В', 'Е', 'Ж']
-  },
-  {
-    id: 9,
-    protocol: "http",
-    server: "news.ru",
-    file: "sport.htm",
-    fragments: [
-      { letter: 'А', text: 'ru' },
-      { letter: 'Б', text: '/' },
-      { letter: 'В', text: 'http' },
-      { letter: 'Г', text: '://' },
-      { letter: 'Д', text: 'news' },
-      { letter: 'Е', text: 'sport' },
-      { letter: 'Ж', text: '.htm' }
-    ],
-    correctOrder: ['В', 'Г', 'Д', 'А', 'Б', 'Е', 'Ж']
-  },
-  {
-    id: 10,
-    protocol: "https",
-    server: "cloud.net",
-    file: "file.txt",
-    fragments: [
-      { letter: 'А', text: 'https' },
-      { letter: 'Б', text: '.net' },
-      { letter: 'В', text: '://' },
-      { letter: 'Г', text: '/' },
-      { letter: 'Д', text: 'cloud' },
-      { letter: 'Е', text: 'file' },
-      { letter: 'Ж', text: '.txt' }
-    ],
-    correctOrder: ['А', 'В', 'Д', 'Б', 'Г', 'Е', 'Ж']
-  }
+'use strict';
+/* ================= ДАННЫЕ ИСТОЧНИКА: точная копия всех 36 заданий каталога ================= */
+/* https://inf7-vpr.sdamgia.ru/test?theme=4 (перенесено 20.11.2026, эталоны перепроверены)   */
+const LETTERS='АБВГДЕЖ';
+const TOTAL=36, STORE='addr7.trainer.v2';
+/* k: L — буквы, D — цифры, M — перемещение; f — фрагменты в порядке кодов; a — ответ;
+   u — адрес-эталон; o — старый адрес (для заданий на перемещение) */
+const SOURCES=[
+{n:159,k:'L',t:'Доступ к файлу books.xls, находящемуся на сервере biblio.com, осуществляется по протоколу http. Фрагменты адреса файла закодированы буквами от А до Ж. Запишите последовательность этих букв, кодирующую адрес указанного файла в сети Интернет.',f:['/','biblio.','://','http','com','.xls','books'],a:'ГВБДАЖЕ',u:'http://biblio.com/books.xls'},
+{n:160,k:'L',t:'Доступ к файлу txt.html, находящемуся на сервере ru.net, осуществляется по протоколу http. Фрагменты адреса файла закодированы буквами от А до Ж. Запишите последовательность этих букв, кодирующую адрес указанного файла в сети Интернет.',f:['http','://','.html','txt','/','ru','.net'],a:'АБЕЖДГВ',u:'http://ru.net/txt.html'},
+{n:161,k:'L',t:'Доступ к файлу rus.doc, находящемуся на сервере obr.org, осуществляется по протоколу https. Фрагменты адреса файла закодированы буквами от А до Ж. Запишите последовательность этих букв, кодирующую адрес указанного файла в сети Интернет.',f:['obr.','/','org','://','doc','rus.','https'],a:'ЖГАВБЕД',u:'https://obr.org/rus.doc'},
+{n:162,k:'L',t:'Доступ к файлу table.xls, находящемуся на сервере home.ru, осуществляется по протоколу ftp. В таблице фрагменты адреса файла закодированы буквами от А до Ж. Запишите последовательность этих букв, кодирующую адрес указанного файла в сети Интернет.',f:['home','://','.ru','ftp','table','.xls','/'],a:'ГБАВЖДЕ',u:'ftp://home.ru/table.xls'},
+{n:163,k:'L',t:'Доступ к файлу htm.txt, находящемуся на сервере com.ru, осуществляется по протоколу http. Фрагменты адреса файла закодированы буквами от А до Ж. Запишите последовательность этих букв, кодирующую адрес указанного файла в сети Интернет.',f:['com','http','/','.txt','.ru','://','htm'],a:'БЕАДВЖГ',u:'http://com.ru/htm.txt'},
+{n:164,k:'L',t:'Доступ к файлу hello.jpg, находящемуся на сервере home.info, осуществляется по протоколу ftp. Фрагменты адреса файла закодированы буквами от А до Ж. Запишите последовательность этих букв, кодирующую адрес указанного файла в сети Интернет.',f:['hello','.jpg','ftp','info','home.','/','://'],a:'ВЖДГЕАБ',u:'ftp://home.info/hello.jpg'},
+{n:165,k:'L',t:'Доступ к файлу com.xls, находящемуся на сервере tt.com, осуществляется по протоколу http. Фрагменты адреса файла закодированы буквами от А до Ж. Запишите последовательность этих букв, кодирующую адрес указанного файла в сети Интернет.',f:['com','xls','com.','http','tt.','/','://'],a:'ГЖДАЕВБ',u:'http://tt.com/com.xls'},
+{n:166,k:'L',t:'Доступ к файлу happy.htm, находящемуся на сервере sibline.ru, осуществляется по протоколу http. Фрагменты адреса файла закодированы буквами от А до Ж. Запишите последовательность этих букв, кодирующую адрес указанного файла в сети Интернет.',f:['/','sibline','.htm','://','.ru','happy','http'],a:'ЖГБДАЕВ',u:'http://sibline.ru/happy.htm'},
+{n:167,k:'L',t:'Доступ к файлу tests.rar, находящемуся на сервере olympiada.ru, осуществляется по протоколу http. Фрагменты адреса файла закодированы буквами от А до Ж. Запишите последовательность этих букв, кодирующую адрес указанного файла в сети Интернет.',f:['tests','http','/','.ru','olympiada','://','.rar'],a:'БЕДГВАЖ',u:'http://olympiada.ru/tests.rar'},
+{n:168,k:'L',t:'Доступ к файлу karl.htm, находящемуся на сервере april.ru, осуществляется по протоколу http. Фрагменты адреса файла закодированы буквами от А до Ж. Запишите последовательность этих букв, кодирующую адрес указанного файла в сети Интернет.',f:['http','karl','/','april','.htm','.ru','://'],a:'АЖГЕВБД',u:'http://april.ru/karl.htm'},
+{n:169,k:'D',t:'Доступ к файлу net.txt, находящемуся на сервере html.ru, осуществляется по протоколу http. В таблице фрагменты адреса файла закодированы цифрами от 1 до 7. Запишите последовательность цифр, кодирующую адрес указанного файла в сети Интернет.',f:['.ru','://','html','net','/','http','.txt'],a:'6231547',u:'http://html.ru/net.txt'},
+{n:170,k:'D',t:'Доступ к файлу pas.cpp, находящемуся на сервере com.edu, осуществляется по протоколу ftp. Фрагменты адреса файла закодированы цифрами от 1 до 7. Запишите в ответе последовательность этих цифр, кодирующую адрес указанного файла в сети Интернет.',f:['com','.edu','pas','.cpp','/','://','ftp'],a:'7612534',u:'ftp://com.edu/pas.cpp'},
+{n:171,k:'D',t:'Доступ к файлу inf.docx, находящемуся на сервере teach.ru, осуществляется по протоколу ftp. Фрагменты адреса файла закодированы цифрами от 1 до 7. Запишите в ответе последовательность этих цифр, кодирующую адрес указанного файла в сети Интернет.',f:['teach','ftp','inf','/','://','.docx','.ru'],a:'2517436',u:'ftp://teach.ru/inf.docx'},
+{n:172,k:'D',t:'Доступ к файлу test.xls, находящемуся на сервере school.org, осуществляется по протоколу ftp. Фрагменты адреса файла закодированы цифрами от 1 до 7. Запишите последовательность этих цифр, кодирующую адрес указанного файла в сети Интернет.',f:['test','school','/','://','.org','.xls','ftp'],a:'7425316',u:'ftp://school.org/test.xls'},
+{n:173,k:'M',o:'http://color.net/red/rose.gif',t:'Файл rose.gif был выложен в Интернете по адресу http://color.net/red/rose.gif. Потом его переместили в корневой каталог на сайте box.net, доступ к которому осуществляется по протоколу ftp. Имя файла не изменилось.\nФрагменты нового и старого адресов файла закодированы цифрами от 1 до 9. Запишите последовательность этих цифр, кодирующую адрес файла в сети Интернет после перемещения.',f:['http:/','box','red','rose','.net','ftp:/','/','.gif','color'],a:'6725748',u:'ftp://box.net/rose.gif'},
+{n:174,k:'M',o:'http://box.net/tulip.gif',t:'Файл tulip.gif был выложен в Интернете по адресу http://box.net/tulip.gif. Потом его переместили в каталог red на сайте flowers.net, доступ к которому осуществляется по протоколу ftp. Имя файла не изменилось.\nФрагменты нового и старого адресов файла закодированы цифрами от 1 до 9. Запишите последовательность этих цифр, кодирующую адрес файла в сети Интернет после перемещения.',f:['http:/','box','red','tulip','.net','ftp:/','/','.gif','flowers'],a:'679573748',u:'ftp://flowers.net/red/tulip.gif'},
+{n:175,k:'M',o:'http://mypigs.ru/pig.pdf',t:'Файл pig.pdf был выложен в Интернете по адресу http://mypigs.ru/pig.pdf. Потом его переместили в каталог work на сайте presentation.edu, доступ к которому осуществляется по протоколу ftp. Имя файла не изменилось.\nФрагменты нового и старого адресов файла закодированы цифрами от 1 до 9. Запишите последовательность этих цифр, кодирующую адрес файла в сети Интернет после перемещения.',f:['http:/','pig','work','presentation','.edu','ftp:/','/','.pdf','mypigs'],a:'674573728',u:'ftp://presentation.edu/work/pig.pdf'},
+{n:176,k:'M',o:'ftp://mydogs.ru/dog.pptx',t:'Файл dog.pptx был выложен в Интернете по адресу ftp://mydogs.ru/dog.pptx. Потом его переместили в каталог work на сайте presentation.edu, доступ к которому осуществляется по протоколу http. Имя файла не изменилось.\nФрагменты нового и старого адресов файла закодированы цифрами от 1 до 9. Запишите последовательность этих цифр, кодирующую адрес файла в сети Интернет после перемещения.',f:['http:/','mydogs','dog','presentation','.edu','ftp:/','/','.pptx','work'],a:'174579738',u:'http://presentation.edu/work/dog.pptx'},
+{n:177,k:'M',o:'ftp://weather.info/winter.jpg',t:'Файл winter.jpg был выложен в Интернете по адресу ftp://weather.info/winter.jpg. Потом на сайте создали подкаталог foto, а в нем — подкаталог 2019, и файл переместили в подкаталог 2019.\nФрагменты нового и старого адресов файла закодированы цифрами от 1 до 9. Запишите последовательность этих цифр, кодирующую адрес файла в сети Интернет после перемещения.',f:['http:/','foto','winter','2019','.jpg','ftp:/','/','.info','weather'],a:'67987274735',u:'ftp://weather.info/foto/2019/winter.jpg'},
+{n:178,k:'M',o:'http://spring.info/may.jpeg',t:'Файл may.jpeg был выложен в Интернете по адресу http://spring.info/may.jpeg. Потом на сайте создали подкаталог months и файл переместили в этот подкаталог.\nФрагменты нового и старого адресов файла закодированы цифрами от 1 до 7. Запишите последовательность этих цифр, кодирующую адрес файла в сети Интернет после перемещения.',f:['http:/','spring','months','may','.info','/','.jpeg'],a:'162563647',u:'http://spring.info/months/may.jpeg'},
+{n:179,k:'D',t:'Доступ к файлу rus.doc, находящемуся на сервере obr.org, осуществляется по протоколу https. Фрагменты адреса файла закодированы цифрами от 1 до 7. Запишите последовательность этих цифр, кодирующую адрес указанного файла в сети Интернет.',f:['obr.','/','org','://','doc','rus.','https'],a:'7413265',u:'https://obr.org/rus.doc'},
+{n:180,k:'D',t:'Доступ к файлу math.doc, находящемуся на сервере obr.ru, осуществляется по протоколу https. Фрагменты адреса файла закодированы цифрами от 1 до 7. Запишите последовательность этих цифр, кодирующую адрес указанного файла в сети Интернет.',f:['obr','/','.ru','.doc','://','math','https'],a:'7513264',u:'https://obr.ru/math.doc'},
+{n:181,k:'D',t:'Доступ к файлу rus.doc, находящемуся на сервере obr.org, осуществляется по протоколу https. Фрагменты адреса файла закодированы цифрами от 1 до 7. Запишите последовательность этих цифр, кодирующую адрес указанного файла в сети Интернет.',f:['obr.','/','org','://','doc','rus.','https'],a:'7413265',u:'https://obr.org/rus.doc'},
+{n:182,k:'D',t:'Доступ к файлу page.htm, находящемуся на сервере book.ru, осуществляется по протоколу http. Фрагменты адреса файла закодированы цифрами от 1 до 7. Запишите последовательность этих цифр, кодирующую адрес указанного файла в сети Интернет.',f:['/','page','://','.ru','.htm','book','http'],a:'7364125',u:'http://book.ru/page.htm'},
+{n:183,k:'D',t:'Доступ к файлу summer.jpeg, находящемуся на сервере weather.info, осуществляется по протоколу ftp. Фрагменты адреса файла закодированы цифрами от 1 до 7. Запишите последовательность этих цифр, кодирующую адрес указанного файла в сети Интернет.',f:['://','summer','/','weather','ftp','.jpeg','.info'],a:'5147326',u:'ftp://weather.info/summer.jpeg'},
+{n:441,k:'D',t:'Доступ к файлу info.docx, находящемуся на сервере test.org, осуществляется по протоколу https. Фрагменты адреса файла закодированы цифрами от 1 до 7. Запишите последовательность этих цифр, кодирующую адрес указанного файла в сети Интернет.',f:['test','://','info.','.org','docx','/','https'],a:'7214635',u:'https://test.org/info.docx'},
+{n:693,k:'D',t:'Доступ к файлу turnips.docx, находящемуся на сервере foods.net, осуществляется по протоколу http. Фрагменты адреса файла закодированы цифрами от 1 до 7. Запишите последовательность этих цифр, кодирующую адрес указанного файла в сети Интернет.',f:['docx','turnips.','.net','/','://','http','foods'],a:'6573421',u:'http://foods.net/turnips.docx'},
+{n:708,k:'D',t:'Доступ к файлу pineapple.docx, находящемуся на сервере fruit.net, осуществляется по протоколу http. Фрагменты адреса файла закодированы цифрами от 1 до 7. Запишите последовательность этих цифр, кодирующую адрес указанного файла в сети Интернет.',f:['://','.net','http','pineapple.','docx','fruit','/'],a:'3162745',u:'http://fruit.net/pineapple.docx'},
+{n:738,k:'D',t:'Доступ к файлу carrot.docx, находящемуся на сервере foods.net, осуществляется по протоколу http. Фрагменты адреса файла закодированы цифрами от 1 до 7. Запишите последовательность этих цифр, кодирующую адрес указанного файла в сети Интернет.',f:['carrot.','foods','http','docx','://','/','.net'],a:'3527614',u:'http://foods.net/carrot.docx'},
+{n:776,k:'D',t:'Доступ к файлу apricot.docx, находящемуся на сервере fruit.net, осуществляется по протоколу http. Фрагменты адреса файла закодированы цифрами от 1 до 7. Запишите последовательность этих цифр, кодирующую адрес указанного файла в сети Интернет.',f:['/','.net','fruit','://','docx','apricot.','http'],a:'7432165',u:'http://fruit.net/apricot.docx'},
+{n:1182,k:'D',t:'Доступ к файлу timer.rar, находящемуся на сервере watch.ru, осуществляется по протоколу ftp. Фрагменты адреса файла закодированы цифрами от 1 до 7. Запишите последовательность этих цифр, кодирующую адрес указанного файла в сети Интернет.',f:['rar','ftp','://','.ru','/','watch','timer.'],a:'2364571',u:'ftp://watch.ru/timer.rar'},
+{n:1197,k:'D',t:'Доступ к файлу match.rtf, находящемуся на сервере yes.com, осуществляется по протоколу ftp. Фрагменты адреса файла закодированы цифрами от 1 до 7. Запишите последовательность этих цифр, кодирующую адрес указанного файла в сети Интернет.',f:['.com','match.','://','/','rtf','ftp','yes'],a:'6371425',u:'ftp://yes.com/match.rtf'},
+{n:1212,k:'D',t:'Доступ к файлу ping.png, находящемуся на сервере pong.ru, осуществляется по протоколу https. Фрагменты адреса файла закодированы цифрами от 1 до 7. Запишите последовательность этих цифр, кодирующую адрес указанного файла в сети Интернет.',f:['/','pong','.ru','ping.','://','png','https'],a:'7523146',u:'https://pong.ru/ping.png'},
+{n:1242,k:'D',t:'Доступ к файлу spb.txt, находящемуся на сервере train.org, осуществляется по протоколу https. Фрагменты адреса файла закодированы цифрами от 1 до 7. Запишите последовательность этих цифр, кодирующую адрес указанного файла в сети Интернет.',f:['https','://','spb.','.org','txt','/','train'],a:'1274635',u:'https://train.org/spb.txt'},
+{n:1257,k:'D',t:'Доступ к файлу change.txt, находящемуся на сервере autumn.ru, осуществляется по протоколу ftp. Фрагменты адреса файла закодированы цифрами от 1 до 7. Запишите последовательность этих цифр, кодирующую адрес указанного файла в сети Интернет.',f:['.ru','autumn','ftp','change.','/','://','txt'],a:'3621547',u:'ftp://autumn.ru/change.txt'},
+{n:1272,k:'D',t:'Доступ к файлу water.txt, находящемуся на сервере river.kz, осуществляется по протоколу https. Фрагменты адреса файла закодированы цифрами от 1 до 7. Запишите последовательность этих цифр, кодирующую адрес указанного файла в сети Интернет.',f:['water.','://','txt','.kz','https','river','/'],a:'5264713',u:'https://river.kz/water.txt'}
 ];
-
-let currentTaskIndex = 0;
-let currentAnswer = [];
-let score = 0;
-
-function shuffle(array) {
-  const newArr = [...array];
-  for (let i = newArr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
-  }
-  return newArr;
+/* ================= СЛУЧАЙНОСТЬ ================= */
+function ri(a,b){return a+Math.floor(Math.random()*(b-a+1));}
+function pick(a){return a[ri(0,a.length-1)];}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=ri(0,i);const t=a[i];a[i]=a[j];a[j]=t;}return a;}
+/* ================= ДЕДУПЛИКАЦИЯ И СБОРКА ВАРИАНТА ================= */
+/* Сигнатура: номер каталога + нормализованное условие + все числа + эталон.
+   Генерация отключена по требованию учителя: вариант — точная копия всех 36 заданий. */
+function makeSignature(t){
+  const norm=t.text.toLowerCase().replace(/ё/g,'е').replace(/\u00AD/g,'')
+    .replace(/[^0-9a-zа-яе ]/g,' ').replace(/\s+/g,' ').trim();
+  const nums=(t.text+' '+t.frags.map(f=>f.t).join(' ')).match(/\d+/g)||[];
+  return '№'+t.n+'|'+norm+'|'+nums.join(',')+'|'+t.answer;
 }
-
-function init() {
-  const container = document.getElementById('tasksContainer');
-  
-  tasks.forEach((task, index) => {
-    const div = document.createElement('div');
-    div.className = `task-container ${index === 0 ? 'active' : ''}`;
-    div.id = `task-${index}`;
-    
-    let slotsHTML = '';
-    for (let i = 0; i < 7; i++) {
-      slotsHTML += `
-        <div class="slot" data-index="${i}" onclick="handleSlotClick(${i})">
-          <div class="slot-letter"></div>
-          <div class="slot-text"></div>
-        </div>
-      `;
+function verifyTask(t){
+  const m={};t.frags.forEach(f=>{m[f.c]=f.t;});
+  let s='';
+  for(const ch of t.answer){if(!(ch in m))return false;s+=m[ch];}
+  return s===t.url;
+}
+function computeTokens(url,kind,old){
+  const parts=url.split('/');
+  const file=parts[parts.length-1],site=parts[2],proto=url.split(':')[0];
+  let toks=[file,site,proto];
+  if(kind==='M')toks=[old||'',file,site,proto].concat(parts.slice(3,-1));
+  return Array.from(new Set(toks.filter(Boolean)));
+}
+function taskFromSource(s){
+  const frags=s.f.map((txt,i)=>({c:s.k==='L'?LETTERS[i]:String(i+1),t:txt}));
+  return {n:s.n,src:'vpr',kind:s.k,text:s.t,frags,answer:s.a,url:s.u,old:s.o||null,
+    label:s.u.split('/').pop(),tokens:computeTokens(s.u,s.k,s.o||null),picked:[],status:'new'};
+}
+function buildVariant(){
+  const seen=new Set();const out=[];
+  for(const s of shuffle(SOURCES.slice())){
+    const t=taskFromSource(s);
+    if(!verifyTask(t))continue;
+    const g=makeSignature(t);
+    if(seen.has(g))continue; /* повтор одного и того же задания каталога отбрасывается */
+    seen.add(g);out.push(t);
+  }
+  return shuffle(out); /* все 36 заданий каталога, случайный порядок */
+}
+/* ================= СОСТОЯНИЕ ================= */
+let tasks=[],cur=0,elapsed=0,finishedShown=false,soundOn=true,hintOpen=false;
+const $=id=>document.getElementById(id);
+const els={sel:$('taskSelect'),counter:$('counter'),bar:$('progressBar'),fill:$('progressFill'),stats:$('statsChip'),
+  no:$('taskNo'),src:$('taskSrc'),text:$('taskText'),frags:$('fragments'),mech:$('mechNote'),
+  zone:$('answerZone'),answer:$('answer'),codes:$('codes'),count:$('fragCount'),fb:$('feedback'),
+  hintBox:$('hintBox'),hintBtn:$('hintBtn'),hintText:$('hintText'),sol:$('solutionBox'),solText:$('solutionText'),
+  prev:$('prevBtn'),next:$('nextBtn'),overlay:$('overlay')};
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function escRe(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
+function highlightText(t){ /* все данные условия — жирным */
+  let html=esc(t.text);
+  const toks=(t.tokens||[]).slice().sort((a,b)=>b.length-a.length);
+  if(toks.length){
+    const re=new RegExp('(?<![0-9A-Za-zА-Яа-яЁё])('+toks.map(escRe).join('|')+')(?![0-9A-Za-zА-Яа-яЁё])','g');
+    html=html.replace(re,'<strong>$1</strong>');
+  }
+  return html;
+}
+function statusText(s){return s==='ok'?'верно':(s==='err'?'ошибка':'не решено');}
+function allAnswered(){return tasks.every(t=>t.status!=='new');}
+function save(){
+  try{localStorage.setItem(STORE,JSON.stringify({v:2,tasks,elapsed,finishedShown}));}catch(e){}
+}
+function load(){
+  let ok=false;
+  try{
+    const d=JSON.parse(localStorage.getItem(STORE));
+    if(d&&d.v===2&&Array.isArray(d.tasks)&&d.tasks.length===TOTAL&&d.tasks.every(t=>
+      t&&t.src==='vpr'&&typeof t.n==='number'&&typeof t.text==='string'&&Array.isArray(t.frags)&&
+      typeof t.answer==='string'&&typeof t.url==='string'&&Array.isArray(t.picked)&&
+      ['new','ok','err'].includes(t.status)&&verifyTask(t))){
+      tasks=d.tasks;
+      tasks.forEach(t=>{
+        t.picked=t.picked.filter(c=>t.frags.some(f=>f.c===c));
+        if(!Array.isArray(t.tokens))t.tokens=computeTokens(t.url,t.kind,t.old);
+      });
+      elapsed=Number(d.elapsed)||0;finishedShown=!!d.finishedShown;ok=true;
     }
-    
-    // Формируем текст задачи в стиле ВПР
-    const taskText = `Доступ к файлу <span class="highlight-file">${task.file}</span>, находящемуся на сервере <span class="highlight-server">${task.server}</span>, осуществляется по протоколу <span class="highlight-protocol">${task.protocol}</span>.<br>В таблице приведены фрагменты адреса. Расположи их в правильном порядке.`;
-    
-    div.innerHTML = `
-      <div class="task-header">
-        <div class="task-number">Задание ${task.id} из ${tasks.length}</div>
-        <div class="score-display">Баллы: ${score}</div>
-      </div>
-      <div class="task-text">${taskText}</div>
-      <div class="answer-zone" id="answer-zone-${index}">
-        ${slotsHTML}
-      </div>
-      <div class="pool-zone" id="pool-zone-${index}"></div>
-    `;
-    container.appendChild(div);
-  });
-  
-  renderTask(0);
+  }catch(e){}
+  if(!ok){tasks=buildVariant();elapsed=0;finishedShown=false;save();}
+  shuffle(tasks); /* порядок случаен при каждом запуске, прогресс привязан к заданиям */
+  cur=0;
 }
-
-function renderTask(index) {
-  currentTaskIndex = index;
-  currentAnswer = new Array(7).fill(null);
-  
-  const task = tasks[index];
-  const poolZone = document.getElementById(`pool-zone-${index}`);
-  poolZone.innerHTML = '';
-  
-  const shuffledFragments = shuffle(task.fragments);
-  
-  shuffledFragments.forEach(frag => {
-    const btn = document.createElement('div');
-    btn.className = 'fragment';
-    btn.dataset.letter = frag.letter;
-    btn.dataset.text = frag.text;
-    btn.innerHTML = `<div class="letter">${frag.letter}</div><div class="text">${frag.text}</div>`;
-    btn.onclick = () => handleFragmentClick(frag.letter, frag.text);
-    poolZone.appendChild(btn);
-  });
-  
-  updateSlotsUI(index);
-  
-  document.getElementById('checkBtn').disabled = true;
-  document.getElementById('checkBtn').style.display = 'flex';
-  document.getElementById('nextBtn').style.display = 'none';
-  document.getElementById('resultMsg').innerHTML = '';
-  document.getElementById('explanation').classList.remove('visible');
-  
-  updateProgress();
+/* ================= ЗВУК ================= */
+let actx=null;
+function audio(){
+  if(!soundOn)return null;
+  try{
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if(!AC)return null;
+    actx=actx||new AC();
+    if(actx.state==='suspended')actx.resume();
+    return actx;
+  }catch(e){return null;}
 }
-
-function handleFragmentClick(letter, text) {
-  const emptyIndex = currentAnswer.findIndex(val => val === null);
-  if (emptyIndex !== -1) {
-    currentAnswer[emptyIndex] = { letter, text };
-    updateSlotsUI(currentTaskIndex);
-    checkIfReady();
+function tone(f,d,delay,type,g){
+  const a=audio();if(!a)return;
+  try{
+    const o=a.createOscillator(),gn=a.createGain();
+    o.type=type||'sine';o.frequency.value=f;
+    const t0=a.currentTime+(delay||0);
+    gn.gain.setValueAtTime(0.0001,t0);
+    gn.gain.exponentialRampToValueAtTime(g||0.12,t0+0.02);
+    gn.gain.exponentialRampToValueAtTime(0.0001,t0+d);
+    o.connect(gn);gn.connect(a.destination);
+    o.start(t0);o.stop(t0+d+0.05);
+  }catch(e){}
+}
+function sound(kind){
+  if(kind==='ok'){tone(660,.12,0);tone(880,.2,.1);}
+  else if(kind==='err'){tone(196,.28,0,'sawtooth',0.07);}
+  else if(kind==='fin'){[523,659,784,1047].forEach((f,i)=>tone(f,.18,i*.13,'triangle',0.12));}
+}
+/* ================= КОНФЕТТИ ================= */
+const cv=$('confetti'),cx=cv.getContext('2d');
+let parts=[],confRaf=0;
+function sizeCanvas(){cv.width=innerWidth;cv.height=innerHeight;}
+function confetti(){
+  sizeCanvas();
+  const cs=getComputedStyle(document.documentElement);
+  const colors=[cs.getPropertyValue('--accent').trim(),cs.getPropertyValue('--ok').trim(),
+    '#f59e0b','#a78bfa','#f472b6',cs.getPropertyValue('--err').trim()];
+  for(let i=0;i<140;i++){
+    parts.push({x:Math.random()*cv.width,y:-30-Math.random()*cv.height*0.4,
+      w:7+Math.random()*8,h:5+Math.random()*7,vy:2.2+Math.random()*3.4,vx:-1.4+Math.random()*2.8,
+      r:Math.random()*Math.PI,vr:-0.12+Math.random()*0.24,c:pick(colors)});
+  }
+  if(!confRaf)confRaf=requestAnimationFrame(confStep);
+}
+function confStep(){
+  cx.clearRect(0,0,cv.width,cv.height);
+  parts=parts.filter(p=>p.y<cv.height+40);
+  for(const p of parts){
+    p.x+=p.vx;p.y+=p.vy;p.vy+=0.03;p.r+=p.vr;
+    cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;
+    cx.fillRect(-p.w/2,-p.h/2,p.w,p.h);cx.restore();
+  }
+  if(parts.length){confRaf=requestAnimationFrame(confStep);}
+  else{confRaf=0;cx.clearRect(0,0,cv.width,cv.height);}
+}
+/* ================= РЕНДЕР ================= */
+function fragMap(t){const m={};t.frags.forEach(f=>{m[f.c]=f.t;});return m;}
+function sizeAnswer(){ /* поле адреса растёт по содержимому — без обрезаний */
+  const a=els.answer;
+  a.style.height='auto';
+  a.style.height=(a.scrollHeight+6)+'px';
+}
+function hintFor(t){
+  return t.kind==='M'
+    ?'Протокол и адрес сайта после перемещения — новые, возьми их из условия. Имя файла не изменилось. Каждый каталог отделяется знаком «/», а «://» стоит сразу после протокола. Фрагменты старого адреса могут оказаться лишними.'
+    :'Вспомни порядок частей адреса: сначала протокол, затем «://», потом сервер, затем «/» и только после него имя файла с расширением. Расширение всегда стоит в самом конце.';
+}
+function solutionFor(t){
+  const m=fragMap(t);
+  let h='<p>Адрес в сети Интернет строится по схеме: <code>протокол://сервер/каталог/имя.расширение</code> (каталогов может не быть).</p>';
+  h+='<p>Правильный адрес: <code>'+esc(t.url)+'</code></p>';
+  h+='<p>Коды фрагментов по порядку: <code>'+esc(t.answer)+'</code></p>';
+  const cnt={};for(const ch of t.answer)cnt[ch]=(cnt[ch]||0)+1;
+  const rep=Object.keys(cnt).filter(c=>cnt[c]>1);
+  if(rep.length)h+='<p>Фрагмент «'+esc(m[rep[0]])+'» используется в адресе '+cnt[rep[0]]+' раза — его карточку можно нажимать повторно.</p>';
+  const extra=t.frags.filter(f=>t.answer.indexOf(f.c)<0);
+  if(extra.length)h+='<p>Лишние фрагменты: '+extra.map(f=>esc(f.c)+' ('+esc(f.t)+')').join(', ')+'.</p>';
+  return h;
+}
+function render(){
+  const t=tasks[cur];
+  els.no.textContent='Задание '+(cur+1);
+  els.src.textContent='ВПР · №'+t.n;
+  els.text.innerHTML=highlightText(t);
+  const keepFocus=document.activeElement&&document.activeElement.classList&&document.activeElement.classList.contains('frag')
+    ?document.activeElement.getAttribute('data-c'):null;
+  els.frags.innerHTML=t.frags.map(f=>
+    '<button type="button" class="frag" data-c="'+esc(f.c)+'" aria-label="Фрагмент '+esc(f.c)+': '+esc(f.t)+'">'+
+    '<span class="frag-c">'+esc(f.c)+'</span><span class="frag-t">'+esc(f.t)+'</span></button>').join('');
+  if(keepFocus){
+    const el=els.frags.querySelector('[data-c="'+keepFocus+'"]');
+    if(el)el.focus({preventScroll:true});
+  }
+  const m=fragMap(t);
+  const hasExtra=t.frags.some(f=>t.answer.indexOf(f.c)<0);
+  const cnt={};for(const ch of t.answer)cnt[ch]=(cnt[ch]||0)+1;
+  const hasRep=Object.keys(cnt).some(c=>cnt[c]>1);
+  els.mech.textContent='Нажимай на карточки по порядку или перетаскивай их в поле ответа — соберётся адрес, а ниже появятся коды фрагментов.'+
+    (hasExtra?' Среди фрагментов есть лишние.':'')+
+    (hasRep?' Один и тот же фрагмент можно использовать несколько раз.':'');
+  const built=t.picked.map(c=>m[c]).join('');
+  els.answer.value=built;                 /* поле «Ответ» — сам адрес, крупно */
+  els.codes.value=t.picked.join('');      /* небольшое окно — последовательность кодов */
+  els.count.textContent='фрагментов: '+t.picked.length+' из '+t.answer.length;
+  sizeAnswer();
+  els.zone.classList.toggle('is-ok',t.status==='ok');
+  els.zone.classList.toggle('is-err',t.status==='err');
+  if(t.status==='ok'){
+    els.fb.innerHTML='<div class="fb ok"><strong>Верно!</strong> Адрес собран правильно: <code>'+esc(t.url)+'</code></div>';
+  }else if(t.status==='err'){
+    els.fb.innerHTML='<div class="fb err"><strong>Пока неверно.</strong> Собрано '+t.picked.length+' из '+t.answer.length+
+      ' фрагментов. Проверь порядок и лишние части, сотри и собери заново — или посмотри разбор ниже.</div>';
+  }else{els.fb.innerHTML='';}
+  els.hintText.textContent=hintFor(t);
+  els.hintBox.classList.toggle('open',hintOpen);
+  els.hintBtn.setAttribute('aria-expanded',String(hintOpen));
+  els.sol.hidden=t.status==='new';
+  if(t.status!=='new')els.solText.innerHTML=solutionFor(t);
+  els.sel.innerHTML=tasks.map((x,i)=>
+    '<option value="'+i+'"'+(i===cur?' selected':'')+'>№'+(i+1)+' · '+esc(x.label)+' · '+statusText(x.status)+'</option>').join('');
+  els.counter.textContent=(cur+1)+' из '+TOTAL;
+  const answered=tasks.filter(x=>x.status!=='new').length;
+  const okN=tasks.filter(x=>x.status==='ok').length;
+  const errN=tasks.filter(x=>x.status==='err').length;
+  els.fill.style.width=(answered/TOTAL*100)+'%';
+  els.bar.setAttribute('aria-valuenow',String(answered));
+  els.stats.textContent='Верно: '+okN+' · Ошибки: '+errN;
+  els.prev.disabled=cur===0;
+  els.next.disabled=cur===TOTAL-1;
+}
+function flashInfo(msg){els.fb.innerHTML='<div class="fb info">'+esc(msg)+'</div>';}
+/* ================= МЕХАНИКА ОТВЕТА ================= */
+function touchEdit(t){if(t.status!=='new'){t.status='new';}}
+function append(code){
+  const t=tasks[cur];
+  if(!t.frags.some(f=>f.c===code))return;
+  touchEdit(t);
+  t.picked.push(code);
+  save();
+  if(t.picked.length===t.answer.length){render();check();}
+  else render();
+}
+function erase(){
+  const t=tasks[cur];
+  if(!t.picked.length)return;
+  touchEdit(t);t.picked.pop();save();render();
+}
+function clearAns(){
+  const t=tasks[cur];
+  if(!t.picked.length&&t.status==='new')return;
+  t.picked=[];t.status='new';save();render();
+}
+function check(){
+  const t=tasks[cur];
+  if(!t.picked.length){flashInfo('Ответ пуст. Нажимай на карточки-фрагменты, чтобы собрать адрес.');return;}
+  const ok=t.picked.join('')===t.answer; /* последовательность кодов — сравнение по порядку */
+  t.status=ok?'ok':'err';
+  save();render();
+  if(ok){confetti();sound('ok');}else{sound('err');}
+  if(allAnswered()&&!finishedShown){
+    finishedShown=true;save();
+    setTimeout(()=>{openSummary();sound('fin');},ok?900:450);
   }
 }
-
-function handleSlotClick(index) {
-  if (currentAnswer[index] !== null) {
-    currentAnswer[index] = null;
-    updateSlotsUI(currentTaskIndex);
-    document.getElementById('checkBtn').disabled = true;
-    
-    document.querySelectorAll('.slot').forEach(s => {
-      s.classList.remove('correct', 'wrong');
-    });
-  }
+function goto(i){
+  cur=Math.max(0,Math.min(TOTAL-1,i));
+  hintOpen=false;render();
 }
-
-function updateSlotsUI(taskIndex) {
-  const slots = document.querySelectorAll(`#task-${taskIndex} .slot`);
-  slots.forEach((slot, i) => {
-    const data = currentAnswer[i];
-    const letterDiv = slot.querySelector('.slot-letter');
-    const textDiv = slot.querySelector('.slot-text');
-    
-    if (data) {
-      slot.classList.add('filled');
-      letterDiv.textContent = data.letter;
-      textDiv.textContent = data.text;
-    } else {
-      slot.classList.remove('filled', 'correct', 'wrong');
-      letterDiv.textContent = i + 1;
-      textDiv.textContent = '';
-    }
-  });
+function newVariant(){
+  tasks=buildVariant();cur=0;elapsed=0;finishedShown=false;hintOpen=false;
+  save();closeSummary();render();
 }
-
-function checkIfReady() {
-  const isFull = currentAnswer.every(val => val !== null);
-  document.getElementById('checkBtn').disabled = !isFull;
+function resetProgress(){
+  if(!confirm('Сбросить все ответы и время? Сами задания останутся те же.'))return;
+  tasks.forEach(t=>{t.picked=[];t.status='new';});
+  elapsed=0;finishedShown=false;hintOpen=false;save();render();
 }
-
-function checkAnswer() {
-  const task = tasks[currentTaskIndex];
-  const slots = document.querySelectorAll(`#task-${currentTaskIndex} .slot`);
-  let isAllCorrect = true;
-  
-  currentAnswer.forEach((ans, i) => {
-    const correctLetter = task.correctOrder[i];
-    if (ans.letter === correctLetter) {
-      slots[i].classList.add('correct');
-      slots[i].classList.remove('wrong');
-    } else {
-      slots[i].classList.add('wrong');
-      slots[i].classList.remove('correct');
-      isAllCorrect = false;
-    }
-  });
-  
-  if (isAllCorrect) {
-    score++;
-    document.getElementById('resultMsg').innerHTML = '<span style="color:var(--success)">🎉 Отлично! Адрес собран верно.</span>';
-  } else {
-    document.getElementById('resultMsg').innerHTML = '<span style="color:var(--danger)">❌ Есть ошибки. Проверь порядок фрагментов.</span>';
-  }
-  
-  updateProgress();
-  
-  // Формируем подробное объяснение на основе условия задачи
-  const correctUrl = task.correctOrder.map(letter => {
-    const frag = task.fragments.find(f => f.letter === letter);
-    return frag.text;
+/* ================= ИТОГИ ================= */
+function fmtTime(ms){
+  const s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;
+  return (h?h+' ч ':'')+m+' мин '+String(ss).padStart(2,'0')+' с';
+}
+function openSummary(){
+  const okN=tasks.filter(t=>t.status==='ok').length;
+  const errIdx=tasks.map((t,i)=>t.status==='err'?i:-1).filter(i=>i>=0);
+  const rest=tasks.filter(t=>t.status==='new').length;
+  $('sumScore').textContent=okN+' из '+TOTAL;
+  $('sumTime').textContent='Затраченное время: '+fmtTime(elapsed);
+  $('sumCounts').textContent='Верно: '+okN+' · Ошибки: '+errIdx.length+' · Не решено: '+rest;
+  $('errList').innerHTML=errIdx.map(i=>{
+    const t=tasks[i];
+    return '<li><span class="e-title">№'+(i+1)+' · '+esc(t.label)+' (ВПР №'+t.n+')</span>'+
+      '<p>Правильный адрес: <code>'+esc(t.url)+'</code></p>'+
+      '<p>Ответ: <code>'+esc(t.answer)+'</code></p>'+
+      '<button type="button" class="btn" data-open="'+i+'">Открыть задание</button></li>';
   }).join('');
-  
-  const serverParts = task.server.split('.');
-  const domainName = serverParts[0];
-  const zone = serverParts[1];
-  
-  const expDiv = document.getElementById('explanation');
-  expDiv.innerHTML = `
-    <div style="text-align:center; margin-bottom:15px;">Правильный адрес:<br><span class="correct-url">${correctUrl}</span></div>
-    <div class="step-reason">🔹 <b>Протокол:</b> ${task.protocol} (фрагменты в начале)</div>
-    <div class="step-reason">🔹 <b>Разделитель:</b> :// (всегда идёт после протокола)</div>
-    <div class="step-reason">🔹 <b>Сервер:</b> ${task.server} (сначала имя домена <b>${domainName}</b>, затем зона <b>.${zone}</b>)</div>
-    <div class="step-reason">🔹 <b>Разделитель пути:</b> / (отделяет адрес сервера от файла)</div>
-    <div class="step-reason">🔹 <b>Файл:</b> ${task.file} (имя файла и его расширение в самом конце)</div>
-  `;
-  expDiv.classList.add('visible');
-  
-  document.getElementById('checkBtn').style.display = 'none';
-  if (currentTaskIndex < tasks.length - 1) {
-    document.getElementById('nextBtn').style.display = 'flex';
-  } else {
-    document.getElementById('resultMsg').innerHTML += `<br><span style="font-size:1.1rem; color:var(--primary); margin-top:10px; display:block;">🏆 Тренажёр завершён! Итоговый счёт: ${score} из ${tasks.length}</span>`;
-  }
+  $('sumRest').textContent=errIdx.length?'':'Ошибок нет — отличная работа!';
+  els.overlay.hidden=false;
+  $('sumCloseBtn').focus();
 }
-
-function resetCurrentTask() {
-  renderTask(currentTaskIndex);
+function closeSummary(){els.overlay.hidden=true;}
+/* ================= DRAG НА POINTER EVENTS ================= */
+let drag=null;
+function dragCleanup(){
+  if(drag&&drag.ghost&&drag.ghost.parentNode)drag.ghost.parentNode.removeChild(drag.ghost);
+  els.zone.classList.remove('drop');
+  drag=null;
 }
-
-function nextTask() {
-  currentTaskIndex++;
-  document.querySelectorAll('.task-container').forEach((div, i) => {
-    div.classList.toggle('active', i === currentTaskIndex);
+function overZone(x,y){
+  const r=els.zone.getBoundingClientRect();
+  return x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom;
+}
+function initDrag(){
+  els.frags.addEventListener('pointerdown',e=>{
+    const card=e.target.closest('.frag');
+    if(!card)return;
+    if(e.pointerType==='mouse'&&e.button!==0)return;
+    drag={card,code:card.getAttribute('data-c'),id:e.pointerId,x0:e.clientX,y0:e.clientY,moved:false,ghost:null};
+    try{card.setPointerCapture(e.pointerId);}catch(err){}
   });
-  renderTask(currentTaskIndex);
+  els.frags.addEventListener('pointermove',e=>{
+    if(!drag||e.pointerId!==drag.id)return;
+    const dx=e.clientX-drag.x0,dy=e.clientY-drag.y0;
+    if(!drag.moved&&Math.hypot(dx,dy)>10){
+      drag.moved=true;
+      const r=drag.card.getBoundingClientRect();
+      const g=drag.card.cloneNode(true);
+      g.classList.add('ghost');g.removeAttribute('data-c');
+      g.style.width=r.width+'px';g.style.height=r.height+'px';
+      drag.w=r.width;drag.h=r.height;
+      document.body.appendChild(g);
+      drag.ghost=g;
+    }
+    if(drag.moved&&drag.ghost){
+      drag.ghost.style.transform='translate('+(e.clientX-drag.w/2)+'px,'+(e.clientY-drag.h/2)+'px)';
+      els.zone.classList.toggle('drop',overZone(e.clientX,e.clientY));
+    }
+  });
+  els.frags.addEventListener('pointerup',e=>{
+    if(!drag||e.pointerId!==drag.id)return;
+    const d=drag;drag=null;
+    els.zone.classList.remove('drop');
+    if(!d.moved){append(d.code);return;} /* нажатие на карточку = добавить фрагмент */
+    if(overZone(e.clientX,e.clientY)){
+      if(d.ghost&&d.ghost.parentNode)d.ghost.parentNode.removeChild(d.ghost);
+      append(d.code);
+    }else if(d.ghost){
+      const r=d.card.getBoundingClientRect();
+      d.ghost.style.transition='transform .22s ease';
+      d.ghost.style.transform='translate('+r.left+'px,'+r.top+'px)';
+      setTimeout(()=>{if(d.ghost.parentNode)d.ghost.parentNode.removeChild(d.ghost);},240);
+    }
+  });
+  els.frags.addEventListener('pointercancel',dragCleanup);
+  els.frags.addEventListener('click',e=>{
+    if(e.detail!==0)return; /* только клавиатура (Enter/Space); мышь/палец обработаны выше */
+    const card=e.target.closest('.frag');
+    if(card)append(card.getAttribute('data-c'));
+  });
 }
-
-function updateProgress() {
-  const pct = ((currentTaskIndex + (document.getElementById('checkBtn').style.display === 'none' ? 1 : 0)) / tasks.length) * 100;
-  document.getElementById('progressFill').style.width = `${pct}%`;
-  document.querySelectorAll('.score-display').forEach(el => el.textContent = `Баллы: ${score}`);
+/* ================= ТЕМЫ И ЗВУК UI ================= */
+function applyThemeIcons(){
+  const dark=document.documentElement.getAttribute('data-theme')==='dark';
+  $('sunIcon').hidden=dark;$('moonIcon').hidden=!dark;
+  $('themeBtn').title=dark?'Светлая тема':'Тёмная тема';
 }
-
+function toggleTheme(){
+  const next=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',next);
+  try{localStorage.setItem('addr7.theme',next);}catch(e){}
+  applyThemeIcons();
+}
+function applySoundIcon(){
+  $('soundOnIcon').hidden=!soundOn;$('soundOffIcon').hidden=soundOn;
+  $('soundBtn').setAttribute('aria-pressed',String(soundOn));
+  const lbl=soundOn?'Выключить звук':'Включить звук';
+  $('soundBtn').setAttribute('aria-label',lbl);$('soundBtn').title=lbl;
+}
+function toggleSound(){
+  soundOn=!soundOn;
+  try{localStorage.setItem('addr7.sound',soundOn?'1':'0');}catch(e){}
+  applySoundIcon();
+  if(soundOn)tone(880,.1,0,'sine',0.08);
+}
+/* ================= ИНИЦИАЛИЗАЦИЯ (обработчики — один раз) ================= */
+function init(){
+  try{soundOn=localStorage.getItem('addr7.sound')!=='0';}catch(e){soundOn=true;}
+  applyThemeIcons();applySoundIcon();
+  load();render();sizeCanvas();
+  $('themeBtn').addEventListener('click',toggleTheme);
+  $('soundBtn').addEventListener('click',toggleSound);
+  $('newBtn').addEventListener('click',newVariant);
+  $('sumBtn').addEventListener('click',openSummary);
+  $('resetBtn').addEventListener('click',resetProgress);
+  $('sumNewBtn').addEventListener('click',newVariant);
+  $('sumCloseBtn').addEventListener('click',closeSummary);
+  els.overlay.addEventListener('click',e=>{
+    if(e.target===els.overlay){closeSummary();return;}
+    const b=e.target.closest('[data-open]');
+    if(b){closeSummary();goto(parseInt(b.getAttribute('data-open'),10));
+      $('taskCard').scrollIntoView({block:'start',behavior:'smooth'});}
+  });
+  els.sel.addEventListener('change',()=>goto(parseInt(els.sel.value,10)));
+  els.prev.addEventListener('click',()=>goto(cur-1));
+  els.next.addEventListener('click',()=>goto(cur+1));
+  $('eraseBtn').addEventListener('click',erase);
+  $('clearBtn').addEventListener('click',clearAns);
+  $('checkBtn').addEventListener('click',check);
+  els.hintBtn.addEventListener('click',()=>{
+    hintOpen=!hintOpen;
+    els.hintBox.classList.toggle('open',hintOpen);
+    els.hintBtn.setAttribute('aria-expanded',String(hintOpen));
+  });
+  [els.answer,els.codes].forEach(el=>{
+    el.addEventListener('focus',()=>{
+      setTimeout(()=>el.scrollIntoView({block:'center',behavior:'smooth'}),60);
+    });
+  });
+  initDrag();
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape'){
+      hintOpen=false;els.hintBox.classList.remove('open');
+      els.hintBtn.setAttribute('aria-expanded','false');
+      if(!els.overlay.hidden)closeSummary();
+      dragCleanup();
+      return;
+    }
+    if(!els.overlay.hidden){
+      if(e.key==='Tab'){ /* удержание фокуса в диалоге */
+        const f=els.overlay.querySelectorAll('button');
+        if(f.length){
+          const first=f[0],last=f[f.length-1];
+          if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+          else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+        }
+      }
+      return;
+    }
+    if(e.target===els.answer||e.target===els.codes){
+      if(e.key==='Enter'){e.preventDefault();check();return;}
+      if(e.key==='Backspace'){e.preventDefault();erase();return;}
+      if(e.key.length===1){
+        const ch=e.key.toUpperCase();
+        if(tasks[cur].frags.some(f=>f.c===ch)){e.preventDefault();append(ch);}
+      }
+      return;
+    }
+    if(e.key==='Enter'){
+      const tag=e.target.tagName;
+      if(tag==='BUTTON'||tag==='A'||tag==='SELECT'||tag==='SUMMARY'||tag==='INPUT'||tag==='TEXTAREA')return;
+      e.preventDefault();check();
+    }
+  });
+  window.addEventListener('resize',()=>{sizeCanvas();sizeAnswer();});
+  window.addEventListener('beforeunload',save);
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')save();});
+  setInterval(()=>{ /* таймер отключён в UI: время копится скрыто для итогов */
+    if(document.visibilityState==='visible'&&!allAnswered()){
+      elapsed+=1000;
+      if(elapsed%5000===0)save();
+    }
+  },1000);
+}
 init();
 </script>
 </body>
