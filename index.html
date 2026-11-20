@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Информатика · 7 класс — интерактивные задачи</title>
-<meta name="description" content="Интерактивные задачи по информатике для 7 класса: устройство компьютера, файлы, кодирование, измерение информации, логика и работа в редакторах.">
 
-<!--
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Информатика · 7 класс — интерактивные задачи</title>
+  <meta name="description"
+    content="Интерактивные задачи по информатике для 7 класса: устройство компьютера, файлы, кодирование, измерение информации, логика и работа в редакторах.">
+
+  <!--
   ══════════════════════════════════════════════════════════════
   КАК ДОБАВИТЬ НОВУЮ ЗАДАЧУ
   1. Создай страницу  tasks/task-NN-imya.html
@@ -15,575 +17,1314 @@
   ══════════════════════════════════════════════════════════════
 -->
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Golos+Text:wght@400;500;600;700&family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Russo+One&family=Golos+Text:wght@400;500;600;700&family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;600;800&display=swap"
+    rel="stylesheet">
 
-<style>
-/* ════════ 0. БАЗА И ПЕРЕМЕННЫЕ ════════ */
-:root{
-  --paper:#FAF6EC;
-  --card:#FFFDF6;
-  --ink:#20264F;
-  --ink-soft:#565D8C;
-  --line:rgba(38,50,120,.14);
-  --red:#E4482C;
-  --yellow:#FFD43B;
-  --green:#2FA46A;
-  --hard:6px 6px 0 var(--ink);
-  --r:12px;
-}
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  font-family:'Golos Text',system-ui,sans-serif;
-  color:var(--ink);
-  background-color:var(--paper);
-  background-image:
-    linear-gradient(var(--line) 1px,transparent 1px),
-    linear-gradient(90deg,var(--line) 1px,transparent 1px);
-  background-size:28px 28px;
-  line-height:1.55;
-  overflow-x:hidden;
-}
-/* зернистость бумаги */
-body::after{
-  content:"";position:fixed;inset:0;pointer-events:none;z-index:60;opacity:.05;mix-blend-mode:multiply;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-::selection{background:var(--yellow);color:var(--ink)}
-img{max-width:100%;display:block}
-a{color:inherit}
-button{font-family:inherit;cursor:pointer}
-:focus-visible{outline:3px dashed var(--red);outline-offset:3px;border-radius:4px}
-.mono{font-family:'JetBrains Mono',monospace}
-.caveat{font-family:'Caveat',cursive}
-.wrap{width:min(1160px,92%);margin-inline:auto}
+  <style>
+    /* ════════ 0. БАЗА И ПЕРЕМЕННЫЕ ════════ */
+    :root {
+      --paper: #FAF6EC;
+      --card: #FFFDF6;
+      --ink: #20264F;
+      --ink-soft: #565D8C;
+      --line: rgba(38, 50, 120, .14);
+      --red: #E4482C;
+      --yellow: #FFD43B;
+      --green: #2FA46A;
+      --hard: 6px 6px 0 var(--ink);
+      --r: 12px;
+    }
 
-/* появление блоков при скролле */
-.rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
-.rv.in{opacity:1;transform:none}
-/* «линейная маска» для заголовков */
-.lm{overflow:hidden}
-.lm span{display:inline-block;transform:translateY(120%);transition:transform .8s cubic-bezier(.2,.8,.2,1)}
-.lm.in span{transform:none}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
 
-/* ════════ 1. ШАПКА ════════ */
-.hdr{
-  position:sticky;top:0;z-index:50;
-  background:var(--paper);
-  border-bottom:2px solid var(--ink);
-}
-.hdr-in{display:flex;align-items:center;gap:26px;height:64px}
-.logo{
-  display:grid;place-items:center;width:44px;height:44px;flex:none;
-  background:var(--yellow);border:2px solid var(--ink);border-radius:10px;
-  font-family:'Russo One';font-size:16px;box-shadow:3px 3px 0 var(--ink);
-  text-decoration:none;transition:transform .15s;
-}
-.logo:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
-.hdr-title{font-family:'Russo One';font-size:15px;letter-spacing:.02em;line-height:1.1}
-.hdr-title small{display:block;font-family:'JetBrains Mono';font-weight:400;font-size:10px;color:var(--ink-soft);letter-spacing:.14em;text-transform:uppercase}
-.nav{display:flex;gap:22px;margin-left:auto}
-.nav a{font-family:'JetBrains Mono';font-size:12px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;position:relative;padding:4px 0}
-.nav a::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--red);transition:width .25s}
-.nav a:hover::after{width:100%}
-@media(max-width:820px){.nav{display:none}.hdr-title{margin-right:auto}}
+    html {
+      scroll-behavior: smooth
+    }
 
-/* ════════ 2. ГЕРОЙ — ЛИСТ ТЕТРАДИ ════════ */
-.hero{padding:56px 0 72px}
-.sheet{
-  position:relative;background:var(--card);
-  border:2px solid var(--ink);border-radius:16px;
-  box-shadow:12px 12px 0 rgba(32,38,79,.9);
-  padding:clamp(28px,4.5vw,56px) clamp(22px,4vw,52px) clamp(28px,4.5vw,52px) clamp(78px,8vw,110px);
-}
-/* красная линия полей */
-.sheet::after{content:"";position:absolute;top:0;bottom:0;left:clamp(44px,5.5vw,72px);width:2px;background:var(--red);opacity:.75}
-/* дырки от скоросшивателя */
-.hole{position:absolute;left:calc(clamp(44px,5.5vw,72px)/2 - 9px);width:18px;height:18px;border-radius:50%;
-  background:var(--paper);border:2px solid rgba(32,38,79,.35);box-shadow:inset 2px 2px 3px rgba(32,38,79,.2)}
-.hole:nth-of-type(1){top:18%}.hole:nth-of-type(2){top:50%}.hole:nth-of-type(3){top:82%}
-.hero-body{max-width:660px}
-.kicker{
-  display:inline-flex;align-items:center;gap:10px;
-  font-family:'JetBrains Mono';font-size:12px;letter-spacing:.16em;text-transform:uppercase;
-  border:2px solid var(--ink);border-radius:999px;padding:7px 16px;background:#fff;
-}
-.kicker .dot{width:9px;height:9px;border-radius:50%;background:var(--green);animation:pulse 1.8s infinite}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(47,164,106,.5)}55%{box-shadow:0 0 0 7px rgba(47,164,106,0)}}
-.hero h1{
-  font-family:'Russo One';
-  font-size:clamp(30px,5.2vw,60px);line-height:1.06;letter-spacing:.01em;
-  margin:20px 0 6px;
-}
-.hero h1 .t-cursor{
-  display:inline-block;margin-left:10px;color:var(--red);
-  animation:blink 1.1s steps(1) infinite;
-}
-.hero-sub{font-family:'Caveat';font-weight:700;font-size:clamp(22px,2.6vw,30px);color:var(--ink-soft);margin-bottom:14px}
-.hero-sub mark{background:var(--yellow);padding:0 6px;border-radius:3px}
-.lead{max-width:46ch;color:var(--ink-soft);font-size:16.5px}
-.cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:26px}
-.btn{
-  display:inline-flex;align-items:center;gap:8px;
-  font-family:'Russo One';font-size:14px;text-decoration:none;
-  border:2px solid var(--ink);border-radius:10px;padding:13px 22px;
-  box-shadow:var(--hard);transition:transform .15s,box-shadow .15s;background:#fff;color:var(--ink);
-}
-.btn:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 var(--ink)}
-.btn:active{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink)}
-.btn-primary{background:var(--yellow)}
-.stats{display:flex;flex-wrap:wrap;margin-top:30px;border:2px solid var(--ink);border-radius:var(--r);background:#fff;overflow:hidden}
-.stat{flex:1 1 120px;padding:14px 18px;border-left:2px solid var(--ink)}
-.stat:first-child{border-left:none}
-.stat b{font-family:'Russo One';font-size:clamp(22px,2.6vw,30px);display:block;line-height:1}
-.stat span{font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
-@keyframes blink{50%{opacity:0}}
+    body {
+      font-family: 'Golos Text', system-ui, sans-serif;
+      color: var(--ink);
+      background-color: var(--paper);
+      background-image:
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size: 28px 28px;
+      line-height: 1.55;
+      overflow-x: hidden;
+    }
 
-/* ════════ 3. БЕГУЩАЯ СТРОКА ════════ */
-.ticker{overflow:hidden;border-block:2px solid var(--ink);background:var(--yellow)}
-.ticker-track{display:flex;width:max-content;animation:tick 30s linear infinite}
-.ticker:hover .ticker-track{animation-play-state:paused}
-.ticker-track span{padding:11px 20px;font-family:'JetBrains Mono';font-weight:600;font-size:13px;letter-spacing:.16em;white-space:nowrap}
-@keyframes tick{to{transform:translateX(-50%)}}
+    /* зернистость бумаги */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 60;
+      opacity: .05;
+      mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
 
-/* ════════ 4. ОБЩИЕ ЭЛЕМЕНТЫ СЕКЦИЙ ════════ */
-section{padding:78px 0}
-.sec-head{display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;margin-bottom:38px}
-.sec-no{font-family:'JetBrains Mono';font-weight:800;font-size:14px;color:var(--red);border:2px solid var(--red);border-radius:8px;padding:4px 9px;transform:rotate(-3deg)}
-.sec-head h2{font-family:'Russo One';font-size:clamp(26px,3.6vw,42px);line-height:1.1}
-.sec-note{font-family:'Caveat';font-weight:700;font-size:24px;color:var(--red);margin-left:auto;transform:rotate(-1.5deg)}
-@media(max-width:640px){.sec-note{margin-left:0}}
+    ::selection {
+      background: var(--yellow);
+      color: var(--ink)
+    }
 
-/* ════════ 5. РАЗМИНКА ДНЯ ════════ */
-#warm .sheet{padding:clamp(26px,4vw,44px) clamp(22px,4vw,48px);transform:rotate(-.35deg)}
-.warm-grid{display:flex;justify-content:space-between;gap:32px;flex-wrap:wrap;align-items:center}
-.warm-left{flex:1 1 340px}
-.warm-meta{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--red);margin-bottom:10px}
-.warm-q{font-family:'Caveat';font-weight:700;font-size:clamp(26px,3.4vw,38px);line-height:1.2}
-.warm-a{max-height:0;opacity:0;overflow:hidden;transition:max-height .45s ease,opacity .45s ease;margin-top:0}
-.warm-a.open{max-height:220px;opacity:1;margin-top:16px}
-.warm-a div{border:2px dashed var(--red);border-radius:10px;padding:12px 16px;font-size:15.5px;background:#FFF6E9}
-.warm-a b{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--red);display:block;margin-bottom:2px}
-.warm-ctrl{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+    img {
+      max-width: 100%;
+      display: block
+    }
 
-/* ════════ 6. КАТАЛОГ ЗАДАЧ ════════ */
-.filters{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:30px}
-.chip{
-  font-family:'JetBrains Mono';font-size:12px;letter-spacing:.08em;text-transform:uppercase;
-  border:2px solid var(--ink);border-radius:999px;background:#fff;padding:9px 16px;
-  transition:transform .12s,background .2s,color .2s;box-shadow:3px 3px 0 rgba(32,38,79,.25);
-}
-.chip:hover{transform:translateY(-2px)}
-.chip.active{background:var(--ink);color:var(--paper);box-shadow:3px 3px 0 var(--red)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(252px,1fr));gap:22px}
-.task{
-  position:relative;display:flex;flex-direction:column;gap:8px;
-  background:#fff;border:2px solid var(--ink);border-radius:var(--r);padding:18px;
-  text-decoration:none;transition:transform .2s,box-shadow .2s;
-  animation:pop .4s ease both;
-}
-@keyframes pop{from{opacity:0;transform:scale(.94) translateY(10px)}}
-.task:hover{transform:translate(-4px,-4px);box-shadow:8px 8px 0 var(--ink)}
-.task.gone{display:none}
-.task-top{display:flex;justify-content:space-between;align-items:center}
-.t-num{font-family:'JetBrains Mono';font-weight:800;font-size:13px;color:var(--ink-soft)}
-.t-st{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.12em;text-transform:uppercase;display:inline-flex;align-items:center;gap:6px;color:var(--ink-soft)}
-.t-st.ok{color:var(--green)}
-.t-st.ok::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 1.8s infinite}
-.task h3{font-family:'Russo One';font-size:15.5px;line-height:1.3}
-.task p{font-size:14px;color:var(--ink-soft);flex:1}
-.task-meta{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:4px}
-.t-topic{font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;border:1.5px solid var(--ink);border-radius:999px;padding:4px 10px;background:var(--paper)}
-.t-diff{color:var(--red);letter-spacing:2px;font-size:12px}
-.t-go{
-  margin-top:10px;font-family:'Russo One';font-size:12.5px;
-  background:var(--yellow);border:2px solid var(--ink);border-radius:8px;
-  padding:9px 12px;text-align:center;box-shadow:3px 3px 0 var(--ink);transition:transform .12s;
-}
-.task:hover .t-go{transform:translate(-1px,-1px)}
-.task.soon{background:#F4F0E2;border-style:dashed;cursor:default}
-.task.soon:hover{transform:none;box-shadow:none}
-.task.soon .soon-stamp{
-  position:absolute;top:12px;right:-8px;transform:rotate(6deg);
-  font-family:'JetBrains Mono';font-size:10px;letter-spacing:.14em;text-transform:uppercase;
-  background:var(--ink);color:var(--paper);padding:4px 10px;border-radius:4px;
-}
-.extra-title{
-  display:flex;align-items:center;gap:14px;
-  font-family:'Russo One';font-size:clamp(18px,2.4vw,24px);
-  margin:48px 0 22px;padding-top:34px;border-top:2px dashed var(--ink);
-}
-.extra-title::before{content:"✚";color:var(--red);font-size:1.2em}
-.cat-note{margin-top:26px;font-family:'Caveat';font-weight:600;font-size:21px;color:var(--ink-soft)}
+    a {
+      color: inherit
+    }
 
-/* ════════ 7. КАК РЕШАТЬ — СТИКЕРЫ ════════ */
-.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:24px}
-.step{
-  position:relative;border:2px solid var(--ink);padding:26px 20px 22px;min-height:190px;
-  box-shadow:5px 5px 0 rgba(32,38,79,.85);transform:rotate(var(--rot,0deg));
-  transition:transform .25s,box-shadow .25s;
-}
-.step:hover{transform:rotate(0deg) translateY(-8px);box-shadow:9px 12px 0 rgba(32,38,79,.85)}
-.step::before{ /* скотч */
-  content:"";position:absolute;top:-13px;left:50%;width:86px;height:26px;
-  transform:translateX(-50%) rotate(-2deg);background:rgba(255,212,59,.65);border:1px solid rgba(32,38,79,.25);
-}
-.step .n{font-family:'Russo One';font-size:38px;color:var(--red);line-height:1}
-.step h3{font-family:'Russo One';font-size:15.5px;margin:10px 0 8px}
-.step p{font-size:14px;color:var(--ink-soft)}
-.step:nth-child(1){background:#FFE9A8;--rot:-2deg}
-.step:nth-child(2){background:#FFFDF6;--rot:1.6deg}
-.step:nth-child(3){background:#E3F4E4;--rot:-1.2deg}
-.step:nth-child(4){background:#FFE3DC;--rot:2deg}
+    button {
+      font-family: inherit;
+      cursor: pointer
+    }
 
-/* ════════ 8. ПОДВАЛ ════════ */
-footer{
-  position:relative;background:var(--ink);color:var(--paper);
-  padding:70px 0 30px;margin-top:40px;overflow:hidden;
-}
-/* та же клетка, что на странице, но едва заметная */
-footer::before{
-  content:"";position:absolute;inset:0;pointer-events:none;
-  background-image:
-    linear-gradient(rgba(250,246,236,.05) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(250,246,236,.05) 1px,transparent 1px);
-  background-size:28px 28px;
-}
-.foot-hand{
-  font-family:'Caveat';font-weight:700;
-  font-size:clamp(22px,3vw,30px);color:var(--amber);
-  transform:rotate(-1.5deg);display:inline-block;
-}
-.foot-big{
-  font-family:'Russo One';
-  font-size:clamp(28px,5vw,56px);line-height:1.08;
-  margin:12px 0 0;letter-spacing:.01em;
-}
-.foot-big em{font-style:normal;color:var(--yellow)}
-.foot-grid{
-  position:relative;display:flex;gap:44px;flex-wrap:wrap;
-  margin-top:38px;font-size:14px;
-}
-.foot-grid>div:first-child{flex:1.5;min-width:260px}
-.foot-grid>div:last-child{flex:1;min-width:200px}
-.foot-grid h4{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);margin-bottom:10px}
-.foot-grid p{color:rgba(250,246,236,.65);max-width:42ch}
-.foot-grid a{display:block;text-decoration:none;color:rgba(250,246,236,.75);margin-bottom:7px;transition:color .2s,transform .2s}
-.foot-grid a:hover{color:var(--yellow);transform:translateX(4px)}
-.foot-bottom{
-  position:relative;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
-  border-top:1px solid rgba(250,246,236,.18);margin-top:46px;padding-top:18px;
-  font-family:'JetBrains Mono';font-size:11.5px;color:rgba(250,246,236,.55);
-}
-.foot-ok{color:var(--amber);letter-spacing:.2em}
+    :focus-visible {
+      outline: 3px dashed var(--red);
+      outline-offset: 3px;
+      border-radius: 4px
+    }
 
-/* ════════ 9. АДАПТИВ И ДОСТУПНОСТЬ ════════ */
-@media(max-width:560px){
-  .sheet{padding-left:52px}
-  .sheet::after{left:28px}
-  .hole{left:7px}
-}
-@media(prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
-  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
-  .rv,.lm span{opacity:1!important;transform:none!important}
-  .ticker-track{animation:none;width:auto}
-}
-</style>
+    .mono {
+      font-family: 'JetBrains Mono', monospace
+    }
+
+    .caveat {
+      font-family: 'Caveat', cursive
+    }
+
+    .wrap {
+      width: min(1160px, 92%);
+      margin-inline: auto
+    }
+
+    /* появление блоков при скролле */
+    .rv {
+      opacity: 0;
+      transform: translateY(26px);
+      transition: opacity .7s ease, transform .7s ease
+    }
+
+    .rv.in {
+      opacity: 1;
+      transform: none
+    }
+
+    /* «линейная маска» для заголовков */
+    .lm {
+      overflow: hidden
+    }
+
+    .lm span {
+      display: inline-block;
+      transform: translateY(120%);
+      transition: transform .8s cubic-bezier(.2, .8, .2, 1)
+    }
+
+    .lm.in span {
+      transform: none
+    }
+
+    /* ════════ 1. ШАПКА ════════ */
+    .hdr {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--paper);
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .hdr-in {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      height: 64px
+    }
+
+    .logo {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      flex: none;
+      background: var(--yellow);
+      border: 2px solid var(--ink);
+      border-radius: 10px;
+      font-family: 'Russo One';
+      font-size: 16px;
+      box-shadow: 3px 3px 0 var(--ink);
+      text-decoration: none;
+      transition: transform .15s;
+    }
+
+    .logo:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 var(--ink)
+    }
+
+    .hdr-title {
+      font-family: 'Russo One';
+      font-size: 15px;
+      letter-spacing: .02em;
+      line-height: 1.1
+    }
+
+    .hdr-title small {
+      display: block;
+      font-family: 'JetBrains Mono';
+      font-weight: 400;
+      font-size: 10px;
+      color: var(--ink-soft);
+      letter-spacing: .14em;
+      text-transform: uppercase
+    }
+
+    .nav {
+      display: flex;
+      gap: 22px;
+      margin-left: auto
+    }
+
+    .nav a {
+      font-family: 'JetBrains Mono';
+      font-size: 12px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      position: relative;
+      padding: 4px 0
+    }
+
+    .nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      height: 3px;
+      width: 0;
+      background: var(--red);
+      transition: width .25s
+    }
+
+    .nav a:hover::after {
+      width: 100%
+    }
+
+    @media(max-width:820px) {
+      .nav {
+        display: none
+      }
+
+      .hdr-title {
+        margin-right: auto
+      }
+    }
+
+    /* ════════ 2. ГЕРОЙ — ЛИСТ ТЕТРАДИ ════════ */
+    .hero {
+      padding: 56px 0 72px
+    }
+
+    .sheet {
+      position: relative;
+      background: var(--card);
+      border: 2px solid var(--ink);
+      border-radius: 16px;
+      box-shadow: 12px 12px 0 rgba(32, 38, 79, .9);
+      padding: clamp(28px, 4.5vw, 56px) clamp(22px, 4vw, 52px) clamp(28px, 4.5vw, 52px) clamp(78px, 8vw, 110px);
+    }
+
+    /* красная линия полей */
+    .sheet::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: clamp(44px, 5.5vw, 72px);
+      width: 2px;
+      background: var(--red);
+      opacity: .75
+    }
+
+    /* дырки от скоросшивателя */
+    .hole {
+      position: absolute;
+      left: calc(clamp(44px, 5.5vw, 72px)/2 - 9px);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--paper);
+      border: 2px solid rgba(32, 38, 79, .35);
+      box-shadow: inset 2px 2px 3px rgba(32, 38, 79, .2)
+    }
+
+    .hole:nth-of-type(1) {
+      top: 18%
+    }
+
+    .hole:nth-of-type(2) {
+      top: 50%
+    }
+
+    .hole:nth-of-type(3) {
+      top: 82%
+    }
+
+    .hero-body {
+      max-width: 660px
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'JetBrains Mono';
+      font-size: 12px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      border: 2px solid var(--ink);
+      border-radius: 999px;
+      padding: 7px 16px;
+      background: #fff;
+    }
+
+    .kicker .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 1.8s infinite
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(47, 164, 106, .5)
+      }
+
+      55% {
+        box-shadow: 0 0 0 7px rgba(47, 164, 106, 0)
+      }
+    }
+
+    .hero h1 {
+      font-family: 'Russo One';
+      font-size: clamp(30px, 5.2vw, 60px);
+      line-height: 1.06;
+      letter-spacing: .01em;
+      margin: 20px 0 6px;
+    }
+
+    .hero h1 .t-cursor {
+      display: inline-block;
+      margin-left: 10px;
+      color: var(--red);
+      animation: blink 1.1s steps(1) infinite;
+    }
+
+    .hero-sub {
+      font-family: 'Caveat';
+      font-weight: 700;
+      font-size: clamp(22px, 2.6vw, 30px);
+      color: var(--ink-soft);
+      margin-bottom: 14px
+    }
+
+    .hero-sub mark {
+      background: var(--yellow);
+      padding: 0 6px;
+      border-radius: 3px
+    }
+
+    .lead {
+      max-width: 46ch;
+      color: var(--ink-soft);
+      font-size: 16.5px
+    }
+
+    .cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 26px
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Russo One';
+      font-size: 14px;
+      text-decoration: none;
+      border: 2px solid var(--ink);
+      border-radius: 10px;
+      padding: 13px 22px;
+      box-shadow: var(--hard);
+      transition: transform .15s, box-shadow .15s;
+      background: #fff;
+      color: var(--ink);
+    }
+
+    .btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 8px 8px 0 var(--ink)
+    }
+
+    .btn:active {
+      transform: translate(3px, 3px);
+      box-shadow: 2px 2px 0 var(--ink)
+    }
+
+    .btn-primary {
+      background: var(--yellow)
+    }
+
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 30px;
+      border: 2px solid var(--ink);
+      border-radius: var(--r);
+      background: #fff;
+      overflow: hidden
+    }
+
+    .stat {
+      flex: 1 1 120px;
+      padding: 14px 18px;
+      border-left: 2px solid var(--ink)
+    }
+
+    .stat:first-child {
+      border-left: none
+    }
+
+    .stat b {
+      font-family: 'Russo One';
+      font-size: clamp(22px, 2.6vw, 30px);
+      display: block;
+      line-height: 1
+    }
+
+    .stat span {
+      font-family: 'JetBrains Mono';
+      font-size: 10.5px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--ink-soft)
+    }
+
+    @keyframes blink {
+      50% {
+        opacity: 0
+      }
+    }
+
+    /* ════════ 3. БЕГУЩАЯ СТРОКА ════════ */
+    .ticker {
+      overflow: hidden;
+      border-block: 2px solid var(--ink);
+      background: var(--yellow)
+    }
+
+    .ticker-track {
+      display: flex;
+      width: max-content;
+      animation: tick 30s linear infinite
+    }
+
+    .ticker:hover .ticker-track {
+      animation-play-state: paused
+    }
+
+    .ticker-track span {
+      padding: 11px 20px;
+      font-family: 'JetBrains Mono';
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: .16em;
+      white-space: nowrap
+    }
+
+    @keyframes tick {
+      to {
+        transform: translateX(-50%)
+      }
+    }
+
+    /* ════════ 4. ОБЩИЕ ЭЛЕМЕНТЫ СЕКЦИЙ ════════ */
+    section {
+      padding: 78px 0
+    }
+
+    .sec-head {
+      display: flex;
+      align-items: baseline;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 38px
+    }
+
+    .sec-no {
+      font-family: 'JetBrains Mono';
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--red);
+      border: 2px solid var(--red);
+      border-radius: 8px;
+      padding: 4px 9px;
+      transform: rotate(-3deg)
+    }
+
+    .sec-head h2 {
+      font-family: 'Russo One';
+      font-size: clamp(26px, 3.6vw, 42px);
+      line-height: 1.1
+    }
+
+    .sec-note {
+      font-family: 'Caveat';
+      font-weight: 700;
+      font-size: 24px;
+      color: var(--red);
+      margin-left: auto;
+      transform: rotate(-1.5deg)
+    }
+
+    @media(max-width:640px) {
+      .sec-note {
+        margin-left: 0
+      }
+    }
+
+    /* ════════ 5. РАЗМИНКА ДНЯ ════════ */
+    #warm .sheet {
+      padding: clamp(26px, 4vw, 44px) clamp(22px, 4vw, 48px);
+      transform: rotate(-.35deg)
+    }
+
+    .warm-grid {
+      display: flex;
+      justify-content: space-between;
+      gap: 32px;
+      flex-wrap: wrap;
+      align-items: center
+    }
+
+    .warm-left {
+      flex: 1 1 340px
+    }
+
+    .warm-meta {
+      font-family: 'JetBrains Mono';
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 10px
+    }
+
+    .warm-q {
+      font-family: 'Caveat';
+      font-weight: 700;
+      font-size: clamp(26px, 3.4vw, 38px);
+      line-height: 1.2
+    }
+
+    .warm-a {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height .45s ease, opacity .45s ease;
+      margin-top: 0
+    }
+
+    .warm-a.open {
+      max-height: 220px;
+      opacity: 1;
+      margin-top: 16px
+    }
+
+    .warm-a div {
+      border: 2px dashed var(--red);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 15.5px;
+      background: #FFF6E9
+    }
+
+    .warm-a b {
+      font-family: 'JetBrains Mono';
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--red);
+      display: block;
+      margin-bottom: 2px
+    }
+
+    .warm-ctrl {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: flex-start
+    }
+
+    /* ════════ 6. КАТАЛОГ ЗАДАЧ ════════ */
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 30px
+    }
+
+    .chip {
+      font-family: 'JetBrains Mono';
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      border: 2px solid var(--ink);
+      border-radius: 999px;
+      background: #fff;
+      padding: 9px 16px;
+      transition: transform .12s, background .2s, color .2s;
+      box-shadow: 3px 3px 0 rgba(32, 38, 79, .25);
+    }
+
+    .chip:hover {
+      transform: translateY(-2px)
+    }
+
+    .chip.active {
+      background: var(--ink);
+      color: var(--paper);
+      box-shadow: 3px 3px 0 var(--red)
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(252px, 1fr));
+      gap: 22px
+    }
+
+    .task {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: #fff;
+      border: 2px solid var(--ink);
+      border-radius: var(--r);
+      padding: 18px;
+      text-decoration: none;
+      transition: transform .2s, box-shadow .2s;
+      animation: pop .4s ease both;
+    }
+
+    @keyframes pop {
+      from {
+        opacity: 0;
+        transform: scale(.94) translateY(10px)
+      }
+    }
+
+    .task:hover {
+      transform: translate(-4px, -4px);
+      box-shadow: 8px 8px 0 var(--ink)
+    }
+
+    .task.gone {
+      display: none
+    }
+
+    .task-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center
+    }
+
+    .t-num {
+      font-family: 'JetBrains Mono';
+      font-weight: 800;
+      font-size: 13px;
+      color: var(--ink-soft)
+    }
+
+    .t-st {
+      font-family: 'JetBrains Mono';
+      font-size: 10px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--ink-soft)
+    }
+
+    .t-st.ok {
+      color: var(--green)
+    }
+
+    .t-st.ok::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 1.8s infinite
+    }
+
+    .task h3 {
+      font-family: 'Russo One';
+      font-size: 15.5px;
+      line-height: 1.3
+    }
+
+    .task p {
+      font-size: 14px;
+      color: var(--ink-soft);
+      flex: 1
+    }
+
+    .task-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px
+    }
+
+    .t-topic {
+      font-family: 'JetBrains Mono';
+      font-size: 10.5px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      border: 1.5px solid var(--ink);
+      border-radius: 999px;
+      padding: 4px 10px;
+      background: var(--paper)
+    }
+
+    .t-diff {
+      color: var(--red);
+      letter-spacing: 2px;
+      font-size: 12px
+    }
+
+    .t-go {
+      margin-top: 10px;
+      font-family: 'Russo One';
+      font-size: 12.5px;
+      background: var(--yellow);
+      border: 2px solid var(--ink);
+      border-radius: 8px;
+      padding: 9px 12px;
+      text-align: center;
+      box-shadow: 3px 3px 0 var(--ink);
+      transition: transform .12s;
+    }
+
+    .task:hover .t-go {
+      transform: translate(-1px, -1px)
+    }
+
+    .task.soon {
+      background: #F4F0E2;
+      border-style: dashed;
+      cursor: default
+    }
+
+    .task.soon:hover {
+      transform: none;
+      box-shadow: none
+    }
+
+    .task.soon .soon-stamp {
+      position: absolute;
+      top: 12px;
+      right: -8px;
+      transform: rotate(6deg);
+      font-family: 'JetBrains Mono';
+      font-size: 10px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      background: var(--ink);
+      color: var(--paper);
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    .extra-title {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-family: 'Russo One';
+      font-size: clamp(18px, 2.4vw, 24px);
+      margin: 48px 0 22px;
+      padding-top: 34px;
+      border-top: 2px dashed var(--ink);
+    }
+
+    .extra-title::before {
+      content: "✚";
+      color: var(--red);
+      font-size: 1.2em
+    }
+
+    .cat-note {
+      margin-top: 26px;
+      font-family: 'Caveat';
+      font-weight: 600;
+      font-size: 21px;
+      color: var(--ink-soft)
+    }
+
+    /* ════════ 7. КАК РЕШАТЬ — СТИКЕРЫ ════════ */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+      gap: 24px
+    }
+
+    .step {
+      position: relative;
+      border: 2px solid var(--ink);
+      padding: 26px 20px 22px;
+      min-height: 190px;
+      box-shadow: 5px 5px 0 rgba(32, 38, 79, .85);
+      transform: rotate(var(--rot, 0deg));
+      transition: transform .25s, box-shadow .25s;
+    }
+
+    .step:hover {
+      transform: rotate(0deg) translateY(-8px);
+      box-shadow: 9px 12px 0 rgba(32, 38, 79, .85)
+    }
+
+    .step::before {
+      /* скотч */
+      content: "";
+      position: absolute;
+      top: -13px;
+      left: 50%;
+      width: 86px;
+      height: 26px;
+      transform: translateX(-50%) rotate(-2deg);
+      background: rgba(255, 212, 59, .65);
+      border: 1px solid rgba(32, 38, 79, .25);
+    }
+
+    .step .n {
+      font-family: 'Russo One';
+      font-size: 38px;
+      color: var(--red);
+      line-height: 1
+    }
+
+    .step h3 {
+      font-family: 'Russo One';
+      font-size: 15.5px;
+      margin: 10px 0 8px
+    }
+
+    .step p {
+      font-size: 14px;
+      color: var(--ink-soft)
+    }
+
+    .step:nth-child(1) {
+      background: #FFE9A8;
+      --rot: -2deg
+    }
+
+    .step:nth-child(2) {
+      background: #FFFDF6;
+      --rot: 1.6deg
+    }
+
+    .step:nth-child(3) {
+      background: #E3F4E4;
+      --rot: -1.2deg
+    }
+
+    .step:nth-child(4) {
+      background: #FFE3DC;
+      --rot: 2deg
+    }
+
+    /* ════════ 8. ПОДВАЛ ════════ */
+    footer {
+      position: relative;
+      background: var(--ink);
+      color: var(--paper);
+      padding: 70px 0 30px;
+      margin-top: 40px;
+      overflow: hidden;
+    }
+
+    /* та же клетка, что на странице, но едва заметная */
+    footer::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(250, 246, 236, .05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(250, 246, 236, .05) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    .foot-hand {
+      font-family: 'Caveat';
+      font-weight: 700;
+      font-size: clamp(22px, 3vw, 30px);
+      color: var(--amber);
+      transform: rotate(-1.5deg);
+      display: inline-block;
+    }
+
+    .foot-big {
+      font-family: 'Russo One';
+      font-size: clamp(28px, 5vw, 56px);
+      line-height: 1.08;
+      margin: 12px 0 0;
+      letter-spacing: .01em;
+    }
+
+    .foot-big em {
+      font-style: normal;
+      color: var(--yellow)
+    }
+
+    .foot-grid {
+      position: relative;
+      display: flex;
+      gap: 44px;
+      flex-wrap: wrap;
+      margin-top: 38px;
+      font-size: 14px;
+    }
+
+    .foot-grid>div:first-child {
+      flex: 1.5;
+      min-width: 260px
+    }
+
+    .foot-grid>div:last-child {
+      flex: 1;
+      min-width: 200px
+    }
+
+    .foot-grid h4 {
+      font-family: 'JetBrains Mono';
+      font-size: 11px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 10px
+    }
+
+    .foot-grid p {
+      color: rgba(250, 246, 236, .65);
+      max-width: 42ch
+    }
+
+    .foot-grid a {
+      display: block;
+      text-decoration: none;
+      color: rgba(250, 246, 236, .75);
+      margin-bottom: 7px;
+      transition: color .2s, transform .2s
+    }
+
+    .foot-grid a:hover {
+      color: var(--yellow);
+      transform: translateX(4px)
+    }
+
+    .foot-bottom {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      border-top: 1px solid rgba(250, 246, 236, .18);
+      margin-top: 46px;
+      padding-top: 18px;
+      font-family: 'JetBrains Mono';
+      font-size: 11.5px;
+      color: rgba(250, 246, 236, .55);
+    }
+
+    .foot-ok {
+      color: var(--amber);
+      letter-spacing: .2em
+    }
+
+    /* ════════ 9. АДАПТИВ И ДОСТУПНОСТЬ ════════ */
+    @media(max-width:560px) {
+      .sheet {
+        padding-left: 52px
+      }
+
+      .sheet::after {
+        left: 28px
+      }
+
+      .hole {
+        left: 7px
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+      html {
+        scroll-behavior: auto
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important
+      }
+
+      .rv,
+      .lm span {
+        opacity: 1 !important;
+        transform: none !important
+      }
+
+      .ticker-track {
+        animation: none;
+        width: auto
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<!-- ══════════════ ШАПКА ══════════════ -->
-<header class="hdr">
-  <div class="wrap hdr-in">
-    <a class="logo" href="#" id="logo" title="Нажми — и заголовок соберётся заново">И7</a>
-    <div class="hdr-title">ИНФОРМАТИКА·7<small>интерактивный задачник</small></div>
-    <nav class="nav" aria-label="Основная навигация">
-      <a href="#warm">Разминка</a>
-      <a href="#tasks">Задачи</a>
-      <a href="#how">Как решать</a>
-    </nav>
-  </div>
-</header>
-
-<!-- ══════════════ ГЕРОЙ ══════════════ -->
-<div class="hero wrap">
-  <div class="sheet">
-    <b class="hole"></b><b class="hole"></b><b class="hole"></b>
-    <div class="hero-body">
-      <span class="kicker"><span class="dot"></span> школьный практикум · 7 класс</span>
-      <h1><span id="heroTitleText">ИНФОРМАТИКА</span><span class="t-cursor" aria-hidden="true">▮</span></h1>
-      <p class="hero-sub">рабочая тетрадь с <mark>интерактивными задачами</mark></p>
-      <p class="lead">Здесь будут появляться страницы-тренажёры: устройство компьютера, файлы, кодирование, измерение информации, логика и работа в редакторах. Решай и проверяй себя прямо в браузере.</p>
-      <div class="cta">
-        <a class="btn btn-primary" href="#tasks">Решать задачи ↓</a>
-        <a class="btn" href="#how">Как тут решать</a>
-      </div>
-      <div class="stats" aria-label="Статистика сайта">
-        <div class="stat"><b data-count="19">0</b><span>заданий всего</span></div>
-        <div class="stat"><b data-count="4">0</b><span>уже открыто</span></div>
-        <div class="stat"><b data-count="5">0</b><span>тем курса</span></div>
-        <div class="stat"><b data-count="7">0</b><span>класс</span></div>
-      </div>
+  <!-- ══════════════ ШАПКА ══════════════ -->
+  <header class="hdr">
+    <div class="wrap hdr-in">
+      <a class="logo" href="#" id="logo" title="Нажми — и заголовок соберётся заново">И7</a>
+      <div class="hdr-title">ИНФОРМАТИКА·7<small>интерактивный задачник</small></div>
+      <nav class="nav" aria-label="Основная навигация">
+        <a href="#warm">Разминка</a>
+        <a href="#tasks">Задачи</a>
+        <a href="#how">Как решать</a>
+      </nav>
     </div>
-  </div>
-</div>
-
-<!-- ══════════════ БЕГУЩАЯ СТРОКА ══════════════ -->
-<div class="ticker" aria-hidden="true">
-  <div class="ticker-track" id="tickerTrack"></div>
-</div>
-
-<!-- ══════════════ 01. РАЗМИНКА ДНЯ ══════════════ -->
-<section id="warm" class="wrap">
-  <header class="sec-head rv">
-    <span class="sec-no">01</span>
-    <h2 class="lm"><span>Разминка дня</span></h2>
-    <span class="sec-note">раз в день — и мозг в тонусе ✎</span>
   </header>
-  <div class="sheet rv">
-    <div class="warm-grid">
-      <div class="warm-left">
-        <p class="warm-meta" id="warmMeta">вопрос дня</p>
-        <p class="warm-q" id="warmQ">…</p>
-        <div class="warm-a" id="warmAWrap">
-          <div><b>✓ ответ</b><span id="warmA"></span></div>
+
+  <!-- ══════════════ ГЕРОЙ ══════════════ -->
+  <div class="hero wrap">
+    <div class="sheet">
+      <b class="hole"></b><b class="hole"></b><b class="hole"></b>
+      <div class="hero-body">
+        <span class="kicker"><span class="dot"></span> школьный практикум · 7 класс</span>
+        <h1><span id="heroTitleText">ИНФОРМАТИКА</span><span class="t-cursor" aria-hidden="true">▮</span></h1>
+        <p class="hero-sub">рабочая тетрадь с <mark>интерактивными задачами</mark></p>
+        <p class="lead">Здесь будут появляться страницы-тренажёры: устройство компьютера, файлы, кодирование, измерение
+          информации, логика и работа в редакторах. Решай и проверяй себя прямо в браузере.</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="#tasks">Решать задачи ↓</a>
+          <a class="btn" href="#how">Как тут решать</a>
+        </div>
+        <div class="stats" aria-label="Статистика сайта">
+          <div class="stat"><b data-count="19">0</b><span>заданий всего</span></div>
+          <div class="stat"><b data-count="4">0</b><span>уже открыто</span></div>
+          <div class="stat"><b data-count="5">0</b><span>тем курса</span></div>
+          <div class="stat"><b data-count="7">0</b><span>класс</span></div>
         </div>
       </div>
-      <div class="warm-ctrl">
-        <button class="btn btn-primary" id="btnAnswer">Показать ответ 👀</button>
-        <button class="btn" id="btnNext">Другой вопрос ⟳</button>
-        <p class="caveat" style="font-size:20px;color:var(--ink-soft)">каждый день — новый вопрос!</p>
-      </div>
     </div>
   </div>
-</section>
 
-<!-- ══════════════ 02. КАТАЛОГ ЗАДАЧ ══════════════ -->
-<section id="tasks" class="wrap">
-  <header class="sec-head rv">
-    <span class="sec-no">02</span>
-    <h2 class="lm"><span>Каталог задач</span></h2>
-    <span class="sec-note">зелёные — уже можно решать!</span>
-  </header>
-  <div class="filters rv" id="filters" role="group" aria-label="Фильтр по темам"></div>
-  <div class="grid" id="taskGrid"></div>
-
-  <div id="extraBlock">
-    <h3 class="extra-title rv">Дополнительные задания для подготовки</h3>
-    <div class="grid" id="taskExtraGrid"></div>
+  <!-- ══════════════ БЕГУЩАЯ СТРОКА ══════════════ -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track" id="tickerTrack"></div>
   </div>
 
-  <p class="cat-note rv">✎ задания со статусом «скоро» будут открываться по ходу учебного года…</p>
-</section>
-
-<!-- ══════════════ 03. КАК РЕШАТЬ ══════════════ -->
-<section id="how" class="wrap">
-  <header class="sec-head rv">
-    <span class="sec-no">03</span>
-    <h2 class="lm"><span>Как тут решать</span></h2>
-    <span class="sec-note">четыре шага, всё просто</span>
-  </header>
-  <div class="steps">
-    <div class="step rv"><span class="n">01</span><h3>Выбери задачу</h3><p>В каталоге выше ищи карточки со статусом «открыта» — они уже работают.</p></div>
-    <div class="step rv"><span class="n">02</span><h3>Подумай сам</h3><p>Листок и ручка — лучший отладчик. Набросай решение до того, как открывать интерактив.</p></div>
-    <div class="step rv"><span class="n">03</span><h3>Проверь себя</h3><p>Каждая страница задачи — тренажёр: вводишь ответ и сразу видишь, верно ли.</p></div>
-    <div class="step rv"><span class="n">04</span><h3>Иди дальше</h3><p>Справился? Возвращайся в каталог и выбирай следующее задание.</p></div>
-  </div>
-</section>
-
-<!-- ══════════════ ПОДВАЛ ══════════════ -->
-<footer>
-  <div class="wrap">
-    <span class="foot-hand">урок окончен, а задачи — нет…</span>
-    <p class="foot-big">ИНФОРМАТИКА · <em>7 КЛАСС</em></p>
-
-    <div class="foot-grid">
-      <div>
-        <h4>О сайте</h4>
-        <p>Стартовая страница практикума по информатике для 7 класса. Задания добавляются постепенно — заглядывай почаще!</p>
-      </div>
-      <div>
-        <h4>Разделы</h4>
-        <a href="#warm">Разминка дня</a>
-        <a href="#tasks">Каталог задач</a>
-        <a href="#how">Как тут решать</a>
+  <!-- ══════════════ 01. РАЗМИНКА ДНЯ ══════════════ -->
+  <section id="warm" class="wrap">
+    <header class="sec-head rv">
+      <span class="sec-no">01</span>
+      <h2 class="lm"><span>Разминка дня</span></h2>
+      <span class="sec-note">раз в день — и мозг в тонусе ✎</span>
+    </header>
+    <div class="sheet rv">
+      <div class="warm-grid">
+        <div class="warm-left">
+          <p class="warm-meta" id="warmMeta">вопрос дня</p>
+          <p class="warm-q" id="warmQ">…</p>
+          <div class="warm-a" id="warmAWrap">
+            <div><b>✓ ответ</b><span id="warmA"></span></div>
+          </div>
+        </div>
+        <div class="warm-ctrl">
+          <button class="btn btn-primary" id="btnAnswer">Показать ответ 👀</button>
+          <button class="btn" id="btnNext">Другой вопрос ⟳</button>
+          <p class="caveat" style="font-size:20px;color:var(--ink-soft)">каждый день — новый вопрос!</p>
+        </div>
       </div>
     </div>
+  </section>
 
-    <div class="foot-bottom">
-      <span>© 2026 · практикум для 7 класса</span>
-      <span class="foot-ok" title="01001111 01001011 = ОК">01001111 01001011</span>
-      <span>HTML + CSS + JS · GitHub Pages</span>
+  <!-- ══════════════ 02. КАТАЛОГ ЗАДАЧ ══════════════ -->
+  <section id="tasks" class="wrap">
+    <header class="sec-head rv">
+      <span class="sec-no">02</span>
+      <h2 class="lm"><span>Каталог задач</span></h2>
+      <span class="sec-note">зелёные — уже можно решать!</span>
+    </header>
+    <div class="filters rv" id="filters" role="group" aria-label="Фильтр по темам"></div>
+    <div class="grid" id="taskGrid"></div>
+
+    <div id="extraBlock">
+      <h3 class="extra-title rv">Дополнительные задания для подготовки</h3>
+      <div class="grid" id="taskExtraGrid"></div>
     </div>
-  </div>
-</footer>
 
-<noscript><div style="padding:16px;text-align:center;background:#FFD43B;border-top:2px solid #20264F;font-weight:600">Включи JavaScript — без него интерактивные задачи и тренажёры не работают.</div></noscript>
+    <p class="cat-note rv">✎ задания со статусом «скоро» будут открываться по ходу учебного года…</p>
+  </section>
 
-<script>
-(function(){
-'use strict';
+  <!-- ══════════════ 03. КАК РЕШАТЬ ══════════════ -->
+  <section id="how" class="wrap">
+    <header class="sec-head rv">
+      <span class="sec-no">03</span>
+      <h2 class="lm"><span>Как тут решать</span></h2>
+      <span class="sec-note">четыре шага, всё просто</span>
+    </header>
+    <div class="steps">
+      <div class="step rv"><span class="n">01</span>
+        <h3>Выбери задачу</h3>
+        <p>В каталоге выше ищи карточки со статусом «открыта» — они уже работают.</p>
+      </div>
+      <div class="step rv"><span class="n">02</span>
+        <h3>Подумай сам</h3>
+        <p>Листок и ручка — лучший отладчик. Набросай решение до того, как открывать интерактив.</p>
+      </div>
+      <div class="step rv"><span class="n">03</span>
+        <h3>Проверь себя</h3>
+        <p>Каждая страница задачи — тренажёр: вводишь ответ и сразу видишь, верно ли.</p>
+      </div>
+      <div class="step rv"><span class="n">04</span>
+        <h3>Иди дальше</h3>
+        <p>Справился? Возвращайся в каталог и выбирай следующее задание.</p>
+      </div>
+    </div>
+  </section>
 
-const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  <!-- ══════════════ ПОДВАЛ ══════════════ -->
+  <footer>
+    <div class="wrap">
+      <span class="foot-hand">урок окончен, а задачи — нет…</span>
+      <p class="foot-big">ИНФОРМАТИКА · <em>7 КЛАСС</em></p>
 
-/* ══════════════════════════════════════════════════
-   ДАННЫЕ ЗАДАЧ — добавляй новые задачи сюда.
-   status: 'live' — страница готова, 'soon' — в планах.
-   kind:   'main' — основное задание, 'extra' — дополнительное (блок «Д»).
-   ══════════════════════════════════════════════════ */
-const TASKS = [
-  {id:'task-01', num:'01',  kind:'main',  title:'Устройство компьютера',                                             topic:'pc',      topicLabel:'Компьютер и файлы',   diff:1, status:'live', href:'tasks/task-01-computer-hardware.html',                  desc:'Из чего состоит компьютер: устройства ввода, вывода и обработки.'},
-  {id:'task-02', num:'02',  kind:'main',  title:'Файловая система организации данных',                               topic:'pc',      topicLabel:'Компьютер и файлы',   diff:1, status:'live', href:'tasks/task-02-file-system.html',                        desc:'Деревья папок, диски и правила хранения данных.'},
-  {id:'task-03', num:'03',  kind:'main',  title:'Расширение файлов',                                                 topic:'pc',      topicLabel:'Компьютер и файлы',   diff:1, status:'live', href:'tasks/task-03-file-extensions.html',                    desc:'Определи тип файла по его расширению.'},
-  {id:'task-04', num:'04',  kind:'main',  title:'Кодировка адреса файла',                                            topic:'pc',      topicLabel:'Компьютер и файлы',   diff:2, status:'live', href:'tasks/task-04-file-address-on-the-internet.html',       desc:'Полный адрес файла: диск, папки и имя.'},
-  {id:'task-05', num:'05',  kind:'main',  title:'Решение логических задач табличным способом',                       topic:'logic',   topicLabel:'Логика',              diff:3, status:'live', href:'tasks/task-05-solving-logical-problems.html',           desc:'Разгадай, кто есть кто, с помощью таблицы.'},
-  {id:'task-06', num:'06',  kind:'main',  title:'Кодирование и декодирование информации',                             topic:'coding',  topicLabel:'Кодирование',        diff:2, status:'live', href:'tasks/task-06-coding-and-decoding-informations.html',   desc:'Закодируй сообщение и расшифруй его обратно.'},
-  {id:'task-07', num:'07',  kind:'main',  title:'Определение объема информации',                                      topic:'measure', topicLabel:'Измерение информации',diff:2, status:'soon', href:'',                                              desc:'Вычисли объём информации в сообщении.'},
-  {id:'task-08', num:'08',  kind:'main',  title:'Количественные параметры информационных объектов. Информационный объем', topic:'measure', topicLabel:'Измерение информации',diff:2, status:'soon', href:'',                                           desc:'Сколько бит и байт хранят разные объекты.'},
-  {id:'task-09', num:'09',  kind:'main',  title:'Кодирование и декодирование информации. Передача информации',       topic:'coding',  topicLabel:'Кодирование',         diff:2, status:'soon', href:'',                                              desc:'Источник, приёмник и канал передачи данных.'},
-  {id:'task-10', num:'10',  kind:'main',  title:'Количественные параметры информационных объектов',                  topic:'measure', topicLabel:'Измерение информации',diff:2, status:'soon', href:'',                                              desc:'Размер, объём и количество: сравниваем объекты.'},
-  {id:'task-11', num:'11',  kind:'main',  title:'Кодирование цвета',                                                  topic:'coding',  topicLabel:'Кодирование',         diff:2, status:'live', href:'tasks/task-11-color-coding.html',                      desc:'RGB и глубина цвета: сколько весит картинка.'},
-  {id:'task-12', num:'12',  kind:'main',  title:'Форматирование текста',                                              topic:'editors', topicLabel:'Редакторы и поиск',   diff:1, status:'soon', href:'',                                              desc:'Шрифты, абзацы и оформление документа.'},
-  {id:'task-13', num:'13',  kind:'main',  title:'Использование поиска операционной системы и текстового редактора',  topic:'editors', topicLabel:'Редакторы и поиск',   diff:2, status:'soon', href:'',                                              desc:'Найди файл и слово в тексте быстро.'},
-  {id:'task-14', num:'14',  kind:'main',  title:'Создание презентации или форматирование текста',                    topic:'editors', topicLabel:'Редакторы и поиск',   diff:2, status:'soon', href:'',                                              desc:'Слайды, макеты и оформление.'},
-  {id:'task-15', num:'15',  kind:'main',  title:'Работа в графическом редакторе',                                    topic:'editors', topicLabel:'Редакторы и поиск',   diff:2, status:'soon', href:'',                                              desc:'Инструменты рисования и обработка изображений.'},
-  /* дополнительные задания для подготовки (блок «Д») */
-  {id:'task-d1',  num:'Д1',  kind:'extra', title:'Запросы для поисковых систем с использованием логических выражений', topic:'logic',   topicLabel:'Логика',              diff:3, status:'soon', href:'',                                              desc:'Используй И / ИЛИ / НЕ в поисковых запросах.'},
-  {id:'task-d3',  num:'Д3',  kind:'extra', title:'Расширение файлов',                                                  topic:'pc',      topicLabel:'Компьютер и файлы',   diff:1, status:'soon', href:'',                                              desc:'Ещё больше практики с расширениями.'},
-  {id:'task-d10', num:'Д10', kind:'extra', title:'Количественные параметры информационных объектов',                   topic:'measure', topicLabel:'Измерение информации',diff:2, status:'soon', href:'',                                              desc:'Задачи посложнее про биты и байты.'},
-  {id:'task-d13', num:'Д13', kind:'extra', title:'Использование поиска операционной системы и текстового редактора',   topic:'editors', topicLabel:'Редакторы и поиск',   diff:2, status:'soon', href:'',                                              desc:'Продвинутый поиск в ОС и редакторе.'}
-];
-const TOPICS = [['all','Все'],['pc','Компьютер и файлы'],['coding','Кодирование'],['measure','Измерение информации'],['logic','Логика'],['editors','Редакторы и поиск']];
+      <div class="foot-grid">
+        <div>
+          <h4>О сайте</h4>
+          <p>Стартовая страница практикума по информатике для 7 класса. Задания добавляются постепенно — заглядывай
+            почаще!</p>
+        </div>
+        <div>
+          <h4>Разделы</h4>
+          <a href="#warm">Разминка дня</a>
+          <a href="#tasks">Каталог задач</a>
+          <a href="#how">Как тут решать</a>
+        </div>
+      </div>
 
-/* ── scramble-декодирование заголовка ── */
-const GLYPHS = '01▚▞#ЖШЩФРКНТ+*<>·';
-function scramble(el, text){
-  if(REDUCED){ el.textContent = text; return; }
-  let frame = 0; const total = text.length * 3 + 8;
-  const tick = setInterval(()=>{
-    frame++;
-    let out = '';
-    for(let i=0;i<text.length;i++){
-      if(frame > i*3 + 6) out += text[i];
-      else out += text[i]===' ' ? ' ' : GLYPHS[Math.floor(Math.random()*GLYPHS.length)];
-    }
-    el.textContent = out;
-    if(frame >= total){ el.textContent = text; clearInterval(tick); }
-  }, 28);
-}
-const heroTitleText = document.getElementById('heroTitleText');
-function runHeroScramble(){ scramble(heroTitleText, 'ИНФОРМАТИКА'); }
-runHeroScramble();
-document.getElementById('logo').addEventListener('click', e=>{ e.preventDefault(); runHeroScramble(); });
+      <div class="foot-bottom">
+        <span>© 2026 · практикум для 7 класса</span>
+        <span class="foot-ok" title="01001111 01001011 = ОК">01001111 01001011</span>
+        <span>HTML + CSS + JS · GitHub Pages</span>
+      </div>
+    </div>
+  </footer>
 
-/* ── бегущая строка ── */
-(function(){
-  const words = ['ИНФОРМАЦИЯ','КОДИРОВАНИЕ','БИТ','БАЙТ','ФАЙЛ','ПАПКА','АЛГОРИТМ','ЛОГИКА','ПОИСК','ТЕКСТ','ГРАФИКА','01101000 01101001'];
-  const half = words.map(w=>'<span>'+w+'</span><span>✦</span>').join('');
-  document.getElementById('tickerTrack').innerHTML = half + half;
-})();
+  <noscript>
+    <div style="padding:16px;text-align:center;background:#FFD43B;border-top:2px solid #20264F;font-weight:600">Включи
+      JavaScript — без него интерактивные задачи и тренажёры не работают.</div>
+  </noscript>
 
-/* ── анимированные счётчики ── */
-function countUp(el){
-  const target = +el.dataset.count;
-  if(REDUCED){ el.textContent = target; return; }
-  const t0 = performance.now(), dur = 900;
-  (function step(t){
-    const k = Math.min(1,(t-t0)/dur);
-    el.textContent = Math.round(target*(1-Math.pow(1-k,3)));
-    if(k<1) requestAnimationFrame(step);
-  })(t0);
-}
+  <script>
+    (function () {
+      'use strict';
 
-/* ── появление блоков при скролле ── */
-const io = new IntersectionObserver(entries=>{
-  entries.forEach(en=>{
-    if(!en.isIntersecting) return;
-    en.target.classList.add('in');
-    en.target.querySelectorAll('[data-count]').forEach(c=>{ if(!c.dataset.done){ c.dataset.done=1; countUp(c); } });
-    io.unobserve(en.target);
-  });
-},{threshold:.15});
-document.querySelectorAll('.rv, .lm, .stats').forEach(el=>io.observe(el));
+      const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/* ── разминка дня ── */
-const WARM = [
-  {q:'Сколько бит в одном байте?', a:'Восемь: 1 байт = 8 бит.'},
-  {q:'Как называется минимальная единица информации?', a:'Бит — один двоичный разряд: 0 или 1.'},
-  {q:'Переведи число 5 в двоичную систему.', a:'5₁₀ = 101₂ (4 + 0 + 1).'},
-  {q:'Какое расширение у текстового документа?', a:'Например, .txt или .docx.'},
-  {q:'Что лишнее: бит, байт, килограмм, килобит?', a:'Килограмм — единица массы, а не информации.'},
-  {q:'Сколько бит нужно, чтобы закодировать один из 4 сигналов светофора?', a:'Два бита: 2² = 4 комбинации.'}
-];
-const dayNum = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 864e5);
-let warmIdx = dayNum % WARM.length;
-const warmQ = document.getElementById('warmQ'), warmA = document.getElementById('warmA'),
-      warmAWrap = document.getElementById('warmAWrap'), warmMeta = document.getElementById('warmMeta');
-function renderWarm(){
-  warmQ.textContent = WARM[warmIdx].q;
-  warmA.textContent = WARM[warmIdx].a;
-  warmMeta.textContent = 'вопрос дня №'+(warmIdx+1)+' · '+new Date().toLocaleDateString('ru-RU',{day:'numeric',month:'long'});
-  warmAWrap.classList.remove('open');
-  document.getElementById('btnAnswer').textContent = 'Показать ответ 👀';
-}
-document.getElementById('btnAnswer').addEventListener('click', function(){
-  const open = warmAWrap.classList.toggle('open');
-  this.textContent = open ? 'Спрятать ответ 🙈' : 'Показать ответ 👀';
-});
-document.getElementById('btnNext').addEventListener('click', ()=>{ warmIdx = (warmIdx+1)%WARM.length; renderWarm(); });
-renderWarm();
+      /* ══════════════════════════════════════════════════
+         ДАННЫЕ ЗАДАЧ — добавляй новые задачи сюда.
+         status: 'live' — страница готова, 'soon' — в планах.
+         kind:   'main' — основное задание, 'extra' — дополнительное (блок «Д»).
+         ══════════════════════════════════════════════════ */
+      const TASKS = [
+        { id: 'task-01', num: '01', kind: 'main', title: 'Устройство компьютера', topic: 'pc', topicLabel: 'Компьютер и файлы', diff: 1, status: 'live', href: 'tasks/task-01-computer-hardware.html', desc: 'Из чего состоит компьютер: устройства ввода, вывода и обработки.' },
+        { id: 'task-02', num: '02', kind: 'main', title: 'Файловая система организации данных', topic: 'pc', topicLabel: 'Компьютер и файлы', diff: 1, status: 'live', href: 'tasks/task-02-file-system.html', desc: 'Деревья папок, диски и правила хранения данных.' },
+        { id: 'task-03', num: '03', kind: 'main', title: 'Расширение файлов', topic: 'pc', topicLabel: 'Компьютер и файлы', diff: 1, status: 'live', href: 'tasks/task-03-file-extensions.html', desc: 'Определи тип файла по его расширению.' },
+        { id: 'task-04', num: '04', kind: 'main', title: 'Кодировка адреса файла', topic: 'pc', topicLabel: 'Компьютер и файлы', diff: 2, status: 'live', href: 'tasks/task-04-file-address-on-the-internet.html', desc: 'Полный адрес файла: диск, папки и имя.' },
+        { id: 'task-05', num: '05', kind: 'main', title: 'Решение логических задач табличным способом', topic: 'logic', topicLabel: 'Логика', diff: 3, status: 'live', href: 'tasks/task-05-solving-logical-problems.html', desc: 'Разгадай, кто есть кто, с помощью таблицы.' },
+        { id: 'task-06', num: '06', kind: 'main', title: 'Кодирование и декодирование информации', topic: 'coding', topicLabel: 'Кодирование', diff: 2, status: 'live', href: 'tasks/task-06-coding-and-decoding-informations.html', desc: 'Закодируй сообщение и расшифруй его обратно.' },
+        { id: 'task-07', num: '07', kind: 'main', title: 'Определение объема информации', topic: 'measure', topicLabel: 'Измерение информации', diff: 2, status: 'live', href: 'tasks/task-07-volume-information-message.html', desc: 'Вычисли объём информации в сообщении.' },
+        { id: 'task-08', num: '08', kind: 'main', title: 'Количественные параметры информационных объектов. Информационный объем', topic: 'measure', topicLabel: 'Измерение информации', diff: 2, status: 'soon', href: '', desc: 'Сколько бит и байт хранят разные объекты.' },
+        { id: 'task-09', num: '09', kind: 'main', title: 'Кодирование и декодирование информации. Передача информации', topic: 'coding', topicLabel: 'Кодирование', diff: 2, status: 'soon', href: '', desc: 'Источник, приёмник и канал передачи данных.' },
+        { id: 'task-10', num: '10', kind: 'main', title: 'Количественные параметры информационных объектов', topic: 'measure', topicLabel: 'Измерение информации', diff: 2, status: 'soon', href: '', desc: 'Размер, объём и количество: сравниваем объекты.' },
+        { id: 'task-11', num: '11', kind: 'main', title: 'Кодирование цвета', topic: 'coding', topicLabel: 'Кодирование', diff: 2, status: 'live', href: 'tasks/task-11-color-coding.html', desc: 'RGB и глубина цвета: сколько весит картинка.' },
+        { id: 'task-12', num: '12', kind: 'main', title: 'Форматирование текста', topic: 'editors', topicLabel: 'Редакторы и поиск', diff: 1, status: 'soon', href: '', desc: 'Шрифты, абзацы и оформление документа.' },
+        { id: 'task-13', num: '13', kind: 'main', title: 'Использование поиска операционной системы и текстового редактора', topic: 'editors', topicLabel: 'Редакторы и поиск', diff: 2, status: 'soon', href: '', desc: 'Найди файл и слово в тексте быстро.' },
+        { id: 'task-14', num: '14', kind: 'main', title: 'Создание презентации или форматирование текста', topic: 'editors', topicLabel: 'Редакторы и поиск', diff: 2, status: 'soon', href: '', desc: 'Слайды, макеты и оформление.' },
+        { id: 'task-15', num: '15', kind: 'main', title: 'Работа в графическом редакторе', topic: 'editors', topicLabel: 'Редакторы и поиск', diff: 2, status: 'soon', href: '', desc: 'Инструменты рисования и обработка изображений.' },
+        /* дополнительные задания для подготовки (блок «Д») */
+        { id: 'task-d1', num: 'Д1', kind: 'extra', title: 'Запросы для поисковых систем с использованием логических выражений', topic: 'logic', topicLabel: 'Логика', diff: 3, status: 'soon', href: '', desc: 'Используй И / ИЛИ / НЕ в поисковых запросах.' },
+        { id: 'task-d3', num: 'Д3', kind: 'extra', title: 'Расширение файлов', topic: 'pc', topicLabel: 'Компьютер и файлы', diff: 1, status: 'soon', href: '', desc: 'Ещё больше практики с расширениями.' },
+        { id: 'task-d10', num: 'Д10', kind: 'extra', title: 'Количественные параметры информационных объектов', topic: 'measure', topicLabel: 'Измерение информации', diff: 2, status: 'soon', href: '', desc: 'Задачи посложнее про биты и байты.' },
+        { id: 'task-d13', num: 'Д13', kind: 'extra', title: 'Использование поиска операционной системы и текстового редактора', topic: 'editors', topicLabel: 'Редакторы и поиск', diff: 2, status: 'soon', href: '', desc: 'Продвинутый поиск в ОС и редакторе.' }
+      ];
+      const TOPICS = [['all', 'Все'], ['pc', 'Компьютер и файлы'], ['coding', 'Кодирование'], ['measure', 'Измерение информации'], ['logic', 'Логика'], ['editors', 'Редакторы и поиск']];
 
-/* ── каталог: фильтры и карточки ── */
-const filtersBox = document.getElementById('filters');
-const grid = document.getElementById('taskGrid');
-const gridExtra = document.getElementById('taskExtraGrid');
-const extraBlock = document.getElementById('extraBlock');
+      /* ── scramble-декодирование заголовка ── */
+      const GLYPHS = '01▚▞#ЖШЩФРКНТ+*<>·';
+      function scramble(el, text) {
+        if (REDUCED) { el.textContent = text; return; }
+        let frame = 0; const total = text.length * 3 + 8;
+        const tick = setInterval(() => {
+          frame++;
+          let out = '';
+          for (let i = 0; i < text.length; i++) {
+            if (frame > i * 3 + 6) out += text[i];
+            else out += text[i] === ' ' ? ' ' : GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+          }
+          el.textContent = out;
+          if (frame >= total) { el.textContent = text; clearInterval(tick); }
+        }, 28);
+      }
+      const heroTitleText = document.getElementById('heroTitleText');
+      function runHeroScramble() { scramble(heroTitleText, 'ИНФОРМАТИКА'); }
+      runHeroScramble();
+      document.getElementById('logo').addEventListener('click', e => { e.preventDefault(); runHeroScramble(); });
 
-TOPICS.forEach(([val,label],i)=>{
-  const c = document.createElement('button');
-  c.className = 'chip'+(i===0?' active':'');
-  c.textContent = label; c.dataset.topic = val;
-  c.addEventListener('click', ()=>{
-    filtersBox.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
-    c.classList.add('active');
-    // фильтруем карточки в обеих сетках
-    document.querySelectorAll('#taskGrid .task, #taskExtraGrid .task').forEach(card=>{
-      const show = val==='all' || card.dataset.topic===val;
-      card.classList.toggle('gone', !show);
-      if(show){ card.style.animation='none'; void card.offsetWidth; card.style.animation=''; }
-    });
-    // прячем блок «Д», если по выбранной теме нет дополнительных заданий
-    const anyExtra = [...gridExtra.querySelectorAll('.task')].some(t=>!t.classList.contains('gone'));
-    extraBlock.style.display = anyExtra ? '' : 'none';
-  });
-  filtersBox.appendChild(c);
-});
+      /* ── бегущая строка ── */
+      (function () {
+        const words = ['ИНФОРМАЦИЯ', 'КОДИРОВАНИЕ', 'БИТ', 'БАЙТ', 'ФАЙЛ', 'ПАПКА', 'АЛГОРИТМ', 'ЛОГИКА', 'ПОИСК', 'ТЕКСТ', 'ГРАФИКА', '01101000 01101001'];
+        const half = words.map(w => '<span>' + w + '</span><span>✦</span>').join('');
+        document.getElementById('tickerTrack').innerHTML = half + half;
+      })();
 
-function taskCard(t){
-  const soon = t.status==='soon';
-  const dots = '●'.repeat(t.diff)+'○'.repeat(3-t.diff);
-  const inner =
-    '<div class="task-top"><span class="t-num">'+(t.kind==='extra' ? t.num : '№'+t.num)+'</span><span class="t-st'+(soon?'':' ok')+'">'+(soon?'в разработке':'открыта')+'</span></div>'+
-    '<h3>'+t.title+'</h3>'+
-    '<p>'+t.desc+'</p>'+
-    '<div class="task-meta"><span class="t-topic">'+t.topicLabel+'</span><span class="t-diff" title="Сложность '+t.diff+' из 3">'+dots+'</span></div>'+
-    (soon ? '<span class="soon-stamp">скоро</span>' : '<span class="t-go">решать ↗</span>');
-  if(soon){
-    const d = document.createElement('div');
-    d.className='task soon'; d.dataset.topic=t.topic; d.innerHTML=inner;
-    return d;
-  }
-  const a = document.createElement('a');
-  a.className='task'; a.href=t.href; a.dataset.topic=t.topic; a.innerHTML=inner;
-  return a;
-}
-TASKS.filter(t=>t.kind==='main').forEach(t=>grid.appendChild(taskCard(t)));
-TASKS.filter(t=>t.kind==='extra').forEach(t=>gridExtra.appendChild(taskCard(t)));
+      /* ── анимированные счётчики ── */
+      function countUp(el) {
+        const target = +el.dataset.count;
+        if (REDUCED) { el.textContent = target; return; }
+        const t0 = performance.now(), dur = 900;
+        (function step(t) {
+          const k = Math.min(1, (t - t0) / dur);
+          el.textContent = Math.round(target * (1 - Math.pow(1 - k, 3)));
+          if (k < 1) requestAnimationFrame(step);
+        })(t0);
+      }
 
-})();
-</script>
+      /* ── появление блоков при скролле ── */
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(en => {
+          if (!en.isIntersecting) return;
+          en.target.classList.add('in');
+          en.target.querySelectorAll('[data-count]').forEach(c => { if (!c.dataset.done) { c.dataset.done = 1; countUp(c); } });
+          io.unobserve(en.target);
+        });
+      }, { threshold: .15 });
+      document.querySelectorAll('.rv, .lm, .stats').forEach(el => io.observe(el));
+
+      /* ── разминка дня ── */
+      const WARM = [
+        { q: 'Сколько бит в одном байте?', a: 'Восемь: 1 байт = 8 бит.' },
+        { q: 'Как называется минимальная единица информации?', a: 'Бит — один двоичный разряд: 0 или 1.' },
+        { q: 'Переведи число 5 в двоичную систему.', a: '5₁₀ = 101₂ (4 + 0 + 1).' },
+        { q: 'Какое расширение у текстового документа?', a: 'Например, .txt или .docx.' },
+        { q: 'Что лишнее: бит, байт, килограмм, килобит?', a: 'Килограмм — единица массы, а не информации.' },
+        { q: 'Сколько бит нужно, чтобы закодировать один из 4 сигналов светофора?', a: 'Два бита: 2² = 4 комбинации.' }
+      ];
+      const dayNum = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 864e5);
+      let warmIdx = dayNum % WARM.length;
+      const warmQ = document.getElementById('warmQ'), warmA = document.getElementById('warmA'),
+        warmAWrap = document.getElementById('warmAWrap'), warmMeta = document.getElementById('warmMeta');
+      function renderWarm() {
+        warmQ.textContent = WARM[warmIdx].q;
+        warmA.textContent = WARM[warmIdx].a;
+        warmMeta.textContent = 'вопрос дня №' + (warmIdx + 1) + ' · ' + new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
+        warmAWrap.classList.remove('open');
+        document.getElementById('btnAnswer').textContent = 'Показать ответ 👀';
+      }
+      document.getElementById('btnAnswer').addEventListener('click', function () {
+        const open = warmAWrap.classList.toggle('open');
+        this.textContent = open ? 'Спрятать ответ 🙈' : 'Показать ответ 👀';
+      });
+      document.getElementById('btnNext').addEventListener('click', () => { warmIdx = (warmIdx + 1) % WARM.length; renderWarm(); });
+      renderWarm();
+
+      /* ── каталог: фильтры и карточки ── */
+      const filtersBox = document.getElementById('filters');
+      const grid = document.getElementById('taskGrid');
+      const gridExtra = document.getElementById('taskExtraGrid');
+      const extraBlock = document.getElementById('extraBlock');
+
+      TOPICS.forEach(([val, label], i) => {
+        const c = document.createElement('button');
+        c.className = 'chip' + (i === 0 ? ' active' : '');
+        c.textContent = label; c.dataset.topic = val;
+        c.addEventListener('click', () => {
+          filtersBox.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
+          c.classList.add('active');
+          // фильтруем карточки в обеих сетках
+          document.querySelectorAll('#taskGrid .task, #taskExtraGrid .task').forEach(card => {
+            const show = val === 'all' || card.dataset.topic === val;
+            card.classList.toggle('gone', !show);
+            if (show) { card.style.animation = 'none'; void card.offsetWidth; card.style.animation = ''; }
+          });
+          // прячем блок «Д», если по выбранной теме нет дополнительных заданий
+          const anyExtra = [...gridExtra.querySelectorAll('.task')].some(t => !t.classList.contains('gone'));
+          extraBlock.style.display = anyExtra ? '' : 'none';
+        });
+        filtersBox.appendChild(c);
+      });
+
+      function taskCard(t) {
+        const soon = t.status === 'soon';
+        const dots = '●'.repeat(t.diff) + '○'.repeat(3 - t.diff);
+        const inner =
+          '<div class="task-top"><span class="t-num">' + (t.kind === 'extra' ? t.num : '№' + t.num) + '</span><span class="t-st' + (soon ? '' : ' ok') + '">' + (soon ? 'в разработке' : 'открыта') + '</span></div>' +
+          '<h3>' + t.title + '</h3>' +
+          '<p>' + t.desc + '</p>' +
+          '<div class="task-meta"><span class="t-topic">' + t.topicLabel + '</span><span class="t-diff" title="Сложность ' + t.diff + ' из 3">' + dots + '</span></div>' +
+          (soon ? '<span class="soon-stamp">скоро</span>' : '<span class="t-go">решать ↗</span>');
+        if (soon) {
+          const d = document.createElement('div');
+          d.className = 'task soon'; d.dataset.topic = t.topic; d.innerHTML = inner;
+          return d;
+        }
+        const a = document.createElement('a');
+        a.className = 'task'; a.href = t.href; a.dataset.topic = t.topic; a.innerHTML = inner;
+        return a;
+      }
+      TASKS.filter(t => t.kind === 'main').forEach(t => grid.appendChild(taskCard(t)));
+      TASKS.filter(t => t.kind === 'extra').forEach(t => gridExtra.appendChild(taskCard(t)));
+
+    })();
+  </script>
 </body>
+
 </html>
